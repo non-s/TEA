@@ -49,7 +49,7 @@ npm run format   # formata o código com Prettier
 - [x] Marco 4 — Configurações sensoriais (som, animação, contraste, tamanho de fonte)
 - [x] Marco 5 — Primeira atividade jogável (emparelhamento visual, Módulo 0)
 - [x] Marco 6 — Voz (leitura em voz alta) e reforço positivo
-- [ ] Marco 7 — Currículo completo de reconhecimento de letras
+- [x] Marco 7 — Currículo completo de reconhecimento de letras (maiúscula/minúscula, nomeação receptiva)
 - [ ] Marco 8 — Nomeação expressiva, sílabas e relatório de progresso para o responsável
 - [ ] Marco 9 — Documentação completa e release v1.0.0
 
