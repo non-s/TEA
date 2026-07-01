@@ -2,6 +2,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { encontrarAtividade } from '../../curriculo/trilha-v1'
 import { marcarAtividadeDominada } from '../../progresso/dominadas'
 import { EmparelhamentoIdentico } from '../../components/atividades/EmparelhamentoIdentico'
+import { NomeacaoReceptiva } from '../../components/atividades/NomeacaoReceptiva'
 
 export function Atividade() {
   const { atividadeId } = useParams<{ atividadeId: string }>()
@@ -31,8 +32,12 @@ export function Atividade() {
 
   return (
     <main className="mx-auto flex max-w-xl flex-col items-center gap-6 px-6 py-10">
-      {atividade.tipo === 'emparelhamento-identico' && (
+      {(atividade.tipo === 'emparelhamento-identico' ||
+        atividade.tipo === 'emparelhamento-categoria') && (
         <EmparelhamentoIdentico atividade={atividade} aoDominar={aoDominar} />
+      )}
+      {atividade.tipo === 'nomeacao-receptiva' && (
+        <NomeacaoReceptiva atividade={atividade} aoDominar={aoDominar} />
       )}
     </main>
   )

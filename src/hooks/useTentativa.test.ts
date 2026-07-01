@@ -9,6 +9,7 @@ const atividade: Atividade = {
   tipo: 'emparelhamento-identico',
   nivelDificuldade: 1,
   alvo: { id: 'alvo', rotulo: 'Alvo', iconeId: 'circulo' },
+  resposta: { id: 'alvo', rotulo: 'Alvo', iconeId: 'circulo' },
   distratores: [{ id: 'distrator', rotulo: 'Distrator', iconeId: 'quadrado' }],
   dicas: [
     { ordem: 0, tipo: 'modelagem', descricao: '' },

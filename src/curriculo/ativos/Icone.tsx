@@ -1,7 +1,12 @@
 import type { ReactElement, SVGProps } from 'react'
-import type { IconeId } from './tipos'
+import {
+  ehLetra,
+  caractereDaLetra,
+  type FormaIconeId,
+  type IconeId,
+} from './tipos'
 
-const tracos: Record<IconeId, ReactElement> = {
+const tracos: Record<FormaIconeId, ReactElement> = {
   circulo: <circle cx="50" cy="50" r="38" />,
   quadrado: <rect x="14" y="14" width="72" height="72" rx="10" />,
   triangulo: <polygon points="50,12 88,82 12,82" />,
@@ -34,7 +39,21 @@ export function Icone({ iconeId, titulo, ...props }: IconeProps) {
       {...props}
     >
       {titulo ? <title>{titulo}</title> : null}
-      {tracos[iconeId]}
+      {ehLetra(iconeId) ? (
+        <text
+          x="50"
+          y="54"
+          textAnchor="middle"
+          dominantBaseline="middle"
+          fontSize="70"
+          fontWeight="700"
+          fontFamily="system-ui, 'Segoe UI', sans-serif"
+        >
+          {caractereDaLetra(iconeId)}
+        </text>
+      ) : (
+        tracos[iconeId]
+      )}
     </svg>
   )
 }

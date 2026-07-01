@@ -70,7 +70,7 @@ export function useTentativa(atividade: Atividade) {
     correto: boolean
     dominada: boolean
   } {
-    const correto = estimuloId === atividade.alvo.id
+    const correto = estimuloId === atividade.resposta.id
     const tempoRespostaMs = Date.now() - inicioTentativaRef.current
 
     registrarTentativa({

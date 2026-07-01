@@ -23,7 +23,15 @@ export interface Atividade {
   moduloId: string
   tipo: TipoAtividade
   nivelDificuldade: number
+  /** O estímulo mostrado/falado como amostra ou instrução. */
   alvo: Estimulo
+  /**
+   * O estímulo que deve ser tocado entre as opções. Igual a `alvo` em
+   * emparelhamento idêntico; diferente em emparelhamento por categoria
+   * (ex: alvo "A" maiúsculo, resposta "a" minúsculo) e em nomeação
+   * receptiva (alvo é só a instrução falada/escrita, sem imagem).
+   */
+  resposta: Estimulo
   distratores: Estimulo[]
   dicas: NivelDica[]
   criteriosDominio: {
