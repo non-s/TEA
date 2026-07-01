@@ -1,22 +1,39 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { trilhaV1 } from '../../curriculo/trilha-v1'
 import { lerAtividadesDominadas } from '../../progresso/dominadas'
 import { Icone } from '../../curriculo/ativos/Icone'
 import type { IconeId } from '../../curriculo/ativos/tipos'
+import { usePerfilAtivo } from '../../contexts/PerfilAtivoContext'
 
 export function Trilha() {
   const [dominadas, setDominadas] = useState<Set<string>>(new Set())
+  const { perfilAtivo, encerrarPerfil } = usePerfilAtivo()
+  const navigate = useNavigate()
 
   useEffect(() => {
     setDominadas(lerAtividadesDominadas())
   }, [])
 
+  function aoVoltarParaResponsavel() {
+    encerrarPerfil()
+    navigate('/responsavel/perfis')
+  }
+
   return (
     <main className="mx-auto flex max-w-3xl flex-col gap-8 px-6 py-10">
-      <h1 className="text-center text-3xl font-semibold text-[var(--cor-texto)]">
-        Minha trilha
-      </h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-semibold text-[var(--cor-texto)]">
+          Olá, {perfilAtivo?.nome}!
+        </h1>
+        <button
+          type="button"
+          onClick={aoVoltarParaResponsavel}
+          className="text-sm text-[var(--cor-texto-suave)] underline underline-offset-2"
+        >
+          Área do responsável
+        </button>
+      </div>
 
       {trilhaV1.modulos.map((modulo) => (
         <section key={modulo.id} className="flex flex-col gap-4">

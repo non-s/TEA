@@ -1,0 +1,32 @@
+// Regras do Firestore para as coleções do TEA.
+//
+// Este projeto Firebase (non-s-firebase-20260621) é compartilhado com
+// outros aplicativos do mesmo responsável. Este arquivo documenta apenas
+// o bloco `match /responsaveis/{responsavelId}` que pertence ao TEA — ele
+// precisa ser colado dentro do `match /databases/{database}/documents { ... }`
+// do arquivo de regras completo do projeto no Console do Firebase, junto
+// aos blocos dos outros apps (não publique este arquivo sozinho, ele não
+// é o arquivo de regras completo do projeto).
+//
+// Pressupõe que a função `signedIn()` já existe no arquivo de regras do
+// projeto:
+//
+//   function signedIn() {
+//     return request.auth != null;
+//   }
+
+match /responsaveis/{responsavelId} {
+  allow read, update: if signedIn() && request.auth.uid == responsavelId;
+  allow create: if signedIn() && request.auth.uid == responsavelId;
+  allow delete: if false;
+
+  match /perfisCrianca/{perfilId} {
+    allow read, write: if signedIn() && request.auth.uid == responsavelId;
+
+    match /tentativas/{tentativaId} {
+      allow read: if signedIn() && request.auth.uid == responsavelId;
+      allow create: if signedIn() && request.auth.uid == responsavelId;
+      allow update, delete: if false;
+    }
+  }
+}

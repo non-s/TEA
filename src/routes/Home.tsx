@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom'
-import { AjustesSensoriais } from '../components/ui/AjustesSensoriais'
 
 export function Home() {
   return (
@@ -19,18 +18,20 @@ export function Home() {
         </a>
         .
       </p>
-      <Link
-        to="/crianca/trilha"
-        className="rounded-full bg-[var(--cor-primaria)] px-6 py-3 text-base font-medium text-white"
-      >
-        Ver demonstração da primeira atividade
-      </Link>
-      <p className="text-sm text-[var(--cor-texto-suave)]">
-        (Login e perfis por criança ainda não existem — isso é só uma
-        demonstração temporária do Módulo 0.)
-      </p>
-
-      <AjustesSensoriais />
+      <div className="flex gap-4">
+        <Link
+          to="/entrar"
+          className="rounded-full bg-[var(--cor-primaria)] px-6 py-3 text-base font-medium text-white"
+        >
+          Entrar
+        </Link>
+        <Link
+          to="/cadastro"
+          className="rounded-full border-2 border-[var(--cor-borda)] px-6 py-3 text-base font-medium text-[var(--cor-texto)]"
+        >
+          Criar conta
+        </Link>
+      </div>
     </main>
   )
 }
