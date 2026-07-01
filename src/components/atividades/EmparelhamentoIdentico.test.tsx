@@ -2,8 +2,14 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { axe } from 'vitest-axe'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import type { ReactElement } from 'react'
 import { EmparelhamentoIdentico } from './EmparelhamentoIdentico'
+import { PreferenciasProvider } from '../../contexts/PreferenciasContext'
 import type { Atividade } from '../../curriculo/tipos'
+
+function renderComProvider(elemento: ReactElement) {
+  return render(<PreferenciasProvider>{elemento}</PreferenciasProvider>)
+}
 
 const atividade: Atividade = {
   id: 'teste-a1',
@@ -26,7 +32,9 @@ beforeEach(() => {
 
 describe('EmparelhamentoIdentico', () => {
   it('mostra as opções de resposta e o alvo', () => {
-    render(<EmparelhamentoIdentico atividade={atividade} aoDominar={vi.fn()} />)
+    renderComProvider(
+      <EmparelhamentoIdentico atividade={atividade} aoDominar={vi.fn()} />,
+    )
 
     expect(
       screen.getByText('Toque na figura igual a esta:'),
@@ -39,7 +47,7 @@ describe('EmparelhamentoIdentico', () => {
     vi.useFakeTimers({ shouldAdvanceTime: true })
     const usuario = userEvent.setup({ delay: null })
     const aoDominar = vi.fn()
-    render(
+    renderComProvider(
       <EmparelhamentoIdentico atividade={atividade} aoDominar={aoDominar} />,
     )
 
@@ -51,7 +59,7 @@ describe('EmparelhamentoIdentico', () => {
   })
 
   it('não tem violações de acessibilidade detectáveis automaticamente', async () => {
-    const { container } = render(
+    const { container } = renderComProvider(
       <EmparelhamentoIdentico atividade={atividade} aoDominar={vi.fn()} />,
     )
     const results = await axe(container)

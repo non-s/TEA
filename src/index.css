@@ -28,11 +28,16 @@
   --cor-borda: #ffffff;
 }
 
+html {
+  /* Escala todas as unidades `rem` (inclusive as classes de tamanho de
+     texto do Tailwind), então precisa ficar no elemento raiz, não no body. */
+  font-size: calc(100% * var(--escala-fonte));
+}
+
 body {
   margin: 0;
   background: var(--cor-fundo);
   color: var(--cor-texto);
-  font-size: calc(1rem * var(--escala-fonte));
 }
 
 #root {

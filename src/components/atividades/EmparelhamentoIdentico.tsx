@@ -1,9 +1,11 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import type { Atividade } from '../../curriculo/tipos'
 import { Icone } from '../../curriculo/ativos/Icone'
 import type { IconeId } from '../../curriculo/ativos/tipos'
 import { embaralhar } from '../../utils/embaralhar'
 import { useTentativa } from '../../hooks/useTentativa'
+import { useSpeech } from '../../hooks/useSpeech'
+import { usePreferencias } from '../../contexts/PreferenciasContext'
 
 interface EmparelhamentoIdenticoProps {
   atividade: Atividade
@@ -17,12 +19,20 @@ export function EmparelhamentoIdentico({
   aoDominar,
 }: EmparelhamentoIdenticoProps) {
   const { responder, dicaAtual } = useTentativa(atividade)
+  const { falar } = useSpeech()
+  const { preferencias } = usePreferencias()
   const [feedback, setFeedback] = useState<Feedback>(null)
 
   const opcoes = useMemo(
     () => embaralhar([atividade.alvo, ...atividade.distratores]),
     [atividade],
   )
+
+  const rotuloAlvoFalado = atividade.alvo.audioTexto ?? atividade.alvo.rotulo
+
+  useEffect(() => {
+    falar(`Toque na figura igual a esta: ${rotuloAlvoFalado}`)
+  }, [atividade.id, rotuloAlvoFalado, falar])
 
   const mostrarDestaque =
     dicaAtual?.tipo === 'destaque-visual' || dicaAtual?.tipo === 'modelagem'
@@ -32,6 +42,7 @@ export function EmparelhamentoIdentico({
 
     const resultado = responder(estimuloId)
     setFeedback(resultado.correto ? 'correto' : 'incorreto')
+    falar(resultado.correto ? 'Isso!' : 'Tente de novo')
 
     window.setTimeout(() => {
       setFeedback(null)
@@ -63,7 +74,9 @@ export function EmparelhamentoIdentico({
               type="button"
               onClick={() => aoClicarEmOpcao(opcao.id)}
               aria-label={opcao.rotulo}
-              className={`flex h-24 w-24 items-center justify-center rounded-2xl border-2 bg-[var(--cor-fundo-alt)] text-[var(--cor-texto)] transition-colors motion-reduce:transition-none ${
+              className={`flex h-24 w-24 items-center justify-center rounded-2xl border-2 bg-[var(--cor-fundo-alt)] text-[var(--cor-texto)] ${
+                preferencias.animacoes ? 'transition-colors' : ''
+              } ${
                 mostrarDestaque && ehAlvo
                   ? 'border-[var(--cor-primaria)] ring-4 ring-[var(--cor-primaria)]/40'
                   : 'border-[var(--cor-borda)]'

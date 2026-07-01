@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom'
+import { AjustesSensoriais } from '../components/ui/AjustesSensoriais'
 
 export function Home() {
   return (
-    <main className="mx-auto flex min-h-svh max-w-2xl flex-col items-center justify-center gap-6 px-6 text-center">
+    <main className="mx-auto flex min-h-svh max-w-2xl flex-col items-center justify-center gap-6 px-6 py-10 text-center">
       <h1 className="text-4xl font-semibold text-[var(--cor-texto)]">TEA</h1>
       <p className="text-lg text-[var(--cor-texto-suave)]">
         Plataforma open source de alfabetização para crianças com Transtorno do
@@ -28,6 +29,8 @@ export function Home() {
         (Login e perfis por criança ainda não existem — isso é só uma
         demonstração temporária do Módulo 0.)
       </p>
+
+      <AjustesSensoriais />
     </main>
   )
 }
