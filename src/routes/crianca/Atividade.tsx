@@ -31,14 +31,23 @@ export function Atividade() {
   }
 
   return (
-    <main className="mx-auto flex max-w-xl flex-col items-center gap-6 px-6 py-10">
-      {(atividade.tipo === 'emparelhamento-identico' ||
-        atividade.tipo === 'emparelhamento-categoria') && (
-        <EmparelhamentoIdentico atividade={atividade} aoDominar={aoDominar} />
-      )}
-      {atividade.tipo === 'nomeacao-receptiva' && (
-        <NomeacaoReceptiva atividade={atividade} aoDominar={aoDominar} />
-      )}
+    <main className="mx-auto flex min-h-svh max-w-xl flex-col items-center gap-6 px-6 py-10">
+      <Link
+        to="/crianca/trilha"
+        className="self-start text-sm text-[var(--cor-texto-suave)] underline underline-offset-2"
+      >
+        ← Voltar para a trilha
+      </Link>
+
+      <div className="flex flex-1 flex-col items-center justify-center">
+        {(atividade.tipo === 'emparelhamento-identico' ||
+          atividade.tipo === 'emparelhamento-categoria') && (
+          <EmparelhamentoIdentico atividade={atividade} aoDominar={aoDominar} />
+        )}
+        {atividade.tipo === 'nomeacao-receptiva' && (
+          <NomeacaoReceptiva atividade={atividade} aoDominar={aoDominar} />
+        )}
+      </div>
     </main>
   )
 }

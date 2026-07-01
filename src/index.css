@@ -2,17 +2,39 @@
 
 /*
  * Paleta calma e de alto contraste legível, pensada para reduzir sobrecarga
- * sensorial (tons dessaturados, sem cores vibrantes/neon).
+ * sensorial (tons dessaturados, sem cores vibrantes/neon). O azul é a cor
+ * de ação principal; o terracota é o acento quente (uso pontual, nunca em
+ * grandes áreas); o dourado marca conquistas/domínio, separado do verde de
+ * "resposta correta" para não confundir os dois significados.
  */
 :root {
   --cor-fundo: #f7f5f2;
   --cor-fundo-alt: #ffffff;
   --cor-texto: #2c2a33;
   --cor-texto-suave: #5b5866;
+
   --cor-primaria: #5b7f9e;
   --cor-primaria-escura: #3f5c76;
+  --cor-primaria-clara: #dce8f0;
+
+  --cor-acento: #c97a52;
+  --cor-acento-escura: #a35f3b;
+  --cor-acento-clara: #f3e0d3;
+
   --cor-sucesso: #5a9b7c;
+  --cor-sucesso-clara: #dcece3;
+  --cor-conquista: #c99a3f;
+  --cor-conquista-clara: #f3e8cd;
+  --cor-erro: #b3554a;
+
   --cor-borda: #ddd8d0;
+  --cor-anel-foco: var(--cor-primaria);
+
+  --sombra-cartao:
+    0 1px 2px rgba(44, 42, 51, 0.04), 0 8px 24px -12px rgba(44, 42, 51, 0.12);
+  --sombra-cartao-hover:
+    0 2px 4px rgba(44, 42, 51, 0.06), 0 12px 28px -10px rgba(44, 42, 51, 0.16);
+
   --escala-fonte: 1;
 
   color-scheme: light;
@@ -23,9 +45,26 @@
   --cor-fundo-alt: #000000;
   --cor-texto: #ffffff;
   --cor-texto-suave: #f2f2f2;
+
   --cor-primaria: #ffd60a;
   --cor-primaria-escura: #ffd60a;
+  --cor-primaria-clara: #332b00;
+
+  --cor-acento: #ffd60a;
+  --cor-acento-escura: #ffd60a;
+  --cor-acento-clara: #332b00;
+
+  --cor-sucesso: #6fe3a6;
+  --cor-sucesso-clara: #0d3320;
+  --cor-conquista: #ffd60a;
+  --cor-conquista-clara: #332b00;
+  --cor-erro: #ff8a80;
+
   --cor-borda: #ffffff;
+  --cor-anel-foco: var(--cor-primaria);
+
+  --sombra-cartao: none;
+  --sombra-cartao-hover: none;
 }
 
 html {
@@ -38,8 +77,18 @@ body {
   margin: 0;
   background: var(--cor-fundo);
   color: var(--cor-texto);
+  font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
 }
 
 #root {
   min-height: 100svh;
+}
+
+/* Anel de foco consistente e bem visível para navegação por teclado,
+   substituindo o outline padrão do navegador (que muda de aparência
+   entre navegadores e pode ficar pouco visível em fundos coloridos). */
+:focus-visible {
+  outline: 3px solid var(--cor-anel-foco);
+  outline-offset: 2px;
+  border-radius: 4px;
 }

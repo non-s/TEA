@@ -9,6 +9,9 @@ import {
 } from '../../firebase/perfis'
 import { Icone } from '../../curriculo/ativos/Icone'
 import type { FormaIconeId } from '../../curriculo/ativos/tipos'
+import { corDoAvatar } from '../../components/ui/coresAvatar'
+import { Cartao } from '../../components/ui/Cartao'
+import { Botao } from '../../components/ui/Botao'
 
 const avatares: FormaIconeId[] = [
   'circulo',
@@ -72,39 +75,47 @@ export function GerenciarPerfis() {
         </Link>
       </div>
 
-      <ul className="flex flex-col gap-3">
-        {perfis.map((perfil) => (
-          <li
-            key={perfil.id}
-            className="flex items-center justify-between rounded-xl border border-[var(--cor-borda)] px-4 py-3"
-          >
-            <span className="flex items-center gap-3">
-              <Icone
-                iconeId={perfil.avatarId as FormaIconeId}
-                className="h-8 w-8 text-[var(--cor-primaria-escura)]"
-              />
-              <span className="text-[var(--cor-texto)]">{perfil.nome}</span>
-            </span>
-            <button
-              type="button"
-              onClick={() => aoRemover(perfil.id)}
-              className="text-sm text-red-700 underline underline-offset-2"
-            >
-              Remover
-            </button>
-          </li>
-        ))}
-      </ul>
+      {perfis.length > 0 && (
+        <ul className="flex flex-col gap-3">
+          {perfis.map((perfil) => {
+            const cor = corDoAvatar(perfil.avatarId as FormaIconeId)
+            return (
+              <li key={perfil.id}>
+                <Cartao className="flex items-center justify-between gap-3 p-4">
+                  <span className="flex items-center gap-3">
+                    <span
+                      style={{ background: cor.fundo, color: cor.texto }}
+                      className="flex h-11 w-11 items-center justify-center rounded-xl"
+                    >
+                      <Icone
+                        iconeId={perfil.avatarId as FormaIconeId}
+                        className="h-6 w-6"
+                      />
+                    </span>
+                    <span className="font-medium text-[var(--cor-texto)]">
+                      {perfil.nome}
+                    </span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => aoRemover(perfil.id)}
+                    className="text-sm text-[var(--cor-erro)] underline underline-offset-2"
+                  >
+                    Remover
+                  </button>
+                </Cartao>
+              </li>
+            )
+          })}
+        </ul>
+      )}
 
-      <form
-        onSubmit={aoSubmeter}
-        className="flex flex-col gap-4 rounded-xl border border-[var(--cor-borda)] p-4"
-      >
+      <Cartao as="form" onSubmit={aoSubmeter} className="flex flex-col gap-4">
         <h2 className="text-lg font-medium text-[var(--cor-texto)]">
           Novo perfil
         </h2>
 
-        <label className="flex flex-col gap-1">
+        <label className="flex flex-col gap-1.5">
           <span className="text-sm font-medium text-[var(--cor-texto)]">
             Nome ou apelido da criança
           </span>
@@ -113,7 +124,7 @@ export function GerenciarPerfis() {
             required
             value={nome}
             onChange={(evento) => setNome(evento.target.value)}
-            className="rounded-lg border border-[var(--cor-borda)] bg-[var(--cor-fundo-alt)] px-3 py-2 text-[var(--cor-texto)]"
+            className="rounded-xl border-2 border-[var(--cor-borda)] bg-[var(--cor-fundo-alt)] px-4 py-2.5 text-[var(--cor-texto)]"
           />
         </label>
 
@@ -122,41 +133,39 @@ export function GerenciarPerfis() {
             Avatar
           </legend>
           <div className="flex flex-wrap gap-2">
-            {avatares.map((avatar) => (
-              <button
-                key={avatar}
-                type="button"
-                aria-pressed={avatarId === avatar}
-                onClick={() => setAvatarId(avatar)}
-                className={`flex h-12 w-12 items-center justify-center rounded-xl border-2 ${
-                  avatarId === avatar
-                    ? 'border-[var(--cor-primaria)]'
-                    : 'border-[var(--cor-borda)]'
-                }`}
-              >
-                <Icone
-                  iconeId={avatar}
-                  className="h-7 w-7 text-[var(--cor-primaria-escura)]"
-                />
-              </button>
-            ))}
+            {avatares.map((avatar) => {
+              const cor = corDoAvatar(avatar)
+              const selecionado = avatarId === avatar
+              return (
+                <button
+                  key={avatar}
+                  type="button"
+                  aria-pressed={selecionado}
+                  onClick={() => setAvatarId(avatar)}
+                  style={{ background: cor.fundo, color: cor.texto }}
+                  className={`flex h-12 w-12 items-center justify-center rounded-xl transition-transform motion-reduce:transition-none hover:scale-105 ${
+                    selecionado
+                      ? 'ring-3 ring-[var(--cor-primaria)] ring-offset-2'
+                      : ''
+                  }`}
+                >
+                  <Icone iconeId={avatar} className="h-7 w-7" />
+                </button>
+              )
+            })}
           </div>
         </fieldset>
 
         {erro && (
-          <p role="alert" className="text-sm text-red-700">
+          <p role="alert" className="text-sm text-[var(--cor-erro)]">
             {erro}
           </p>
         )}
 
-        <button
-          type="submit"
-          disabled={enviando}
-          className="rounded-full bg-[var(--cor-primaria)] px-6 py-3 text-base font-medium text-white disabled:opacity-60"
-        >
+        <Botao type="submit" disabled={enviando}>
           {enviando ? 'Criando…' : 'Criar perfil'}
-        </button>
-      </form>
+        </Botao>
+      </Cartao>
     </main>
   )
 }

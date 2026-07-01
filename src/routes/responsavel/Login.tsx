@@ -1,6 +1,9 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { entrar, redefinirSenha } from '../../firebase/auth'
+import { Logo } from '../../components/ui/Logo'
+import { Cartao } from '../../components/ui/Cartao'
+import { Botao } from '../../components/ui/Botao'
 
 const mensagensErro: Record<string, string> = {
   'auth/invalid-credential': 'E-mail ou senha incorretos.',
@@ -16,6 +19,9 @@ function mensagemDoErro(erro: unknown): string {
     'Não foi possível entrar. Tente de novo.'
   )
 }
+
+const classesCampo =
+  'rounded-xl border-2 border-[var(--cor-borda)] bg-[var(--cor-fundo-alt)] px-4 py-2.5 text-[var(--cor-texto)]'
 
 export function Login() {
   const navigate = useNavigate()
@@ -56,67 +62,72 @@ export function Login() {
   }
 
   return (
-    <main className="mx-auto flex min-h-svh max-w-sm flex-col justify-center gap-6 px-6 py-10">
-      <h1 className="text-center text-2xl font-semibold text-[var(--cor-texto)]">
-        Entrar
-      </h1>
+    <main className="mx-auto flex min-h-svh max-w-sm flex-col justify-center gap-8 px-6 py-10">
+      <Link to="/" className="mx-auto">
+        <Logo />
+      </Link>
 
-      <form onSubmit={aoSubmeter} className="flex flex-col gap-4">
-        <label className="flex flex-col gap-1">
-          <span className="text-sm font-medium text-[var(--cor-texto)]">
-            E-mail
-          </span>
-          <input
-            type="email"
-            required
-            autoComplete="email"
-            value={email}
-            onChange={(evento) => setEmail(evento.target.value)}
-            className="rounded-lg border border-[var(--cor-borda)] bg-[var(--cor-fundo-alt)] px-3 py-2 text-[var(--cor-texto)]"
-          />
-        </label>
+      <Cartao className="flex flex-col gap-6">
+        <h1 className="text-center text-2xl font-semibold text-[var(--cor-texto)]">
+          Entrar
+        </h1>
 
-        <label className="flex flex-col gap-1">
-          <span className="text-sm font-medium text-[var(--cor-texto)]">
-            Senha
-          </span>
-          <input
-            type="password"
-            required
-            autoComplete="current-password"
-            value={senha}
-            onChange={(evento) => setSenha(evento.target.value)}
-            className="rounded-lg border border-[var(--cor-borda)] bg-[var(--cor-fundo-alt)] px-3 py-2 text-[var(--cor-texto)]"
-          />
-        </label>
+        <form onSubmit={aoSubmeter} className="flex flex-col gap-4">
+          <label className="flex flex-col gap-1.5">
+            <span className="text-sm font-medium text-[var(--cor-texto)]">
+              E-mail
+            </span>
+            <input
+              type="email"
+              required
+              autoComplete="email"
+              value={email}
+              onChange={(evento) => setEmail(evento.target.value)}
+              className={classesCampo}
+            />
+          </label>
 
-        {erro && (
-          <p role="alert" className="text-sm text-red-700">
-            {erro}
-          </p>
-        )}
-        {mensagem && (
-          <output className="text-sm text-[var(--cor-sucesso)]">
-            {mensagem}
-          </output>
-        )}
+          <label className="flex flex-col gap-1.5">
+            <span className="text-sm font-medium text-[var(--cor-texto)]">
+              Senha
+            </span>
+            <input
+              type="password"
+              required
+              autoComplete="current-password"
+              value={senha}
+              onChange={(evento) => setSenha(evento.target.value)}
+              className={classesCampo}
+            />
+          </label>
 
-        <button
-          type="submit"
-          disabled={enviando}
-          className="rounded-full bg-[var(--cor-primaria)] px-6 py-3 text-base font-medium text-white disabled:opacity-60"
-        >
-          {enviando ? 'Entrando…' : 'Entrar'}
-        </button>
+          {erro && (
+            <p
+              role="alert"
+              className="rounded-lg bg-[var(--cor-erro)]/10 px-3 py-2 text-sm text-[var(--cor-erro)]"
+            >
+              {erro}
+            </p>
+          )}
+          {mensagem && (
+            <output className="rounded-lg bg-[var(--cor-sucesso-clara)] px-3 py-2 text-sm text-[var(--cor-sucesso)]">
+              {mensagem}
+            </output>
+          )}
 
-        <button
-          type="button"
-          onClick={aoClicarEmEsqueciSenha}
-          className="text-sm text-[var(--cor-primaria)] underline underline-offset-2"
-        >
-          Esqueci minha senha
-        </button>
-      </form>
+          <Botao type="submit" disabled={enviando} className="mt-2">
+            {enviando ? 'Entrando…' : 'Entrar'}
+          </Botao>
+
+          <button
+            type="button"
+            onClick={aoClicarEmEsqueciSenha}
+            className="text-center text-sm text-[var(--cor-primaria)] underline underline-offset-2"
+          >
+            Esqueci minha senha
+          </button>
+        </form>
+      </Cartao>
 
       <p className="text-center text-sm text-[var(--cor-texto-suave)]">
         Ainda não tem conta?{' '}

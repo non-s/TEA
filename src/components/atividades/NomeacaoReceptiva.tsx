@@ -68,8 +68,10 @@ export function NomeacaoReceptiva({
               type="button"
               onClick={() => aoClicarEmOpcao(opcao.id)}
               aria-label={opcao.rotulo}
-              className={`flex h-24 w-24 items-center justify-center rounded-2xl border-2 bg-[var(--cor-fundo-alt)] text-[var(--cor-texto)] ${
-                preferencias.animacoes ? 'transition-colors' : ''
+              className={`flex h-24 w-24 items-center justify-center rounded-2xl border-2 bg-[var(--cor-fundo-alt)] text-[var(--cor-texto)] shadow-[var(--sombra-cartao)] ${
+                preferencias.animacoes
+                  ? 'transition-transform hover:scale-105 active:scale-95'
+                  : ''
               } ${
                 mostrarDestaque && ehResposta
                   ? 'border-[var(--cor-primaria)] ring-4 ring-[var(--cor-primaria)]/40'
@@ -82,12 +84,16 @@ export function NomeacaoReceptiva({
         })}
       </fieldset>
 
-      <p className="min-h-8 text-lg font-medium" aria-live="assertive">
+      <p className="min-h-10 text-lg font-medium" aria-live="assertive">
         {feedback === 'correto' && (
-          <span className="text-[var(--cor-sucesso)]">Isso! 🎉</span>
+          <span className="rounded-full bg-[var(--cor-sucesso-clara)] px-4 py-1.5 text-[var(--cor-sucesso)]">
+            Isso! 🎉
+          </span>
         )}
         {feedback === 'incorreto' && (
-          <span className="text-[var(--cor-texto-suave)]">Tente de novo</span>
+          <span className="rounded-full bg-[var(--cor-fundo)] px-4 py-1.5 text-[var(--cor-texto-suave)]">
+            Tente de novo
+          </span>
         )}
       </p>
     </div>
