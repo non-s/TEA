@@ -1,0 +1,40 @@
+@import 'tailwindcss';
+
+/*
+ * Paleta calma e de alto contraste legível, pensada para reduzir sobrecarga
+ * sensorial (tons dessaturados, sem cores vibrantes/neon).
+ */
+:root {
+  --cor-fundo: #f7f5f2;
+  --cor-fundo-alt: #ffffff;
+  --cor-texto: #2c2a33;
+  --cor-texto-suave: #5b5866;
+  --cor-primaria: #5b7f9e;
+  --cor-primaria-escura: #3f5c76;
+  --cor-sucesso: #5a9b7c;
+  --cor-borda: #ddd8d0;
+  --escala-fonte: 1;
+
+  color-scheme: light;
+}
+
+:root[data-alto-contraste='true'] {
+  --cor-fundo: #000000;
+  --cor-fundo-alt: #000000;
+  --cor-texto: #ffffff;
+  --cor-texto-suave: #f2f2f2;
+  --cor-primaria: #ffd60a;
+  --cor-primaria-escura: #ffd60a;
+  --cor-borda: #ffffff;
+}
+
+body {
+  margin: 0;
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+  font-size: calc(1rem * var(--escala-fonte));
+}
+
+#root {
+  min-height: 100svh;
+}
