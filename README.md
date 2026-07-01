@@ -45,7 +45,7 @@ npm run format   # formata o código com Prettier
 
 - [x] Marco 1 — Scaffold do projeto e deploy automático no GitHub Pages
 - [x] Marco 2 — Base de qualidade (testes, acessibilidade automatizada, estrutura de pastas)
-- [ ] Marco 3 — Autenticação do responsável e perfis de criança (Firebase) — código implementado, **aguardando publicar `firestore.rules` no console e testar ponta a ponta**
+- [x] Marco 3 — Autenticação do responsável e perfis de criança (Firebase)
 - [x] Marco 4 — Configurações sensoriais (som, animação, contraste, tamanho de fonte)
 - [x] Marco 5 — Primeira atividade jogável (emparelhamento visual, Módulo 0)
 - [x] Marco 6 — Voz (leitura em voz alta) e reforço positivo
