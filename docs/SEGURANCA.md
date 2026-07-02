@@ -41,7 +41,7 @@ Os dados de progresso (`tentativas`) armazenam apenas: qual atividade, se acerto
 
 - **App Check**: não configurado. Adicionaria uma camada extra contra abuso automatizado da API pública. Candidato a v2.
 - **Rate limiting** de tentativas de login: depende inteiramente dos limites padrão do Firebase Auth.
-- **Exclusão de conta em cascata**: remover um perfil de criança (`removerPerfil`) apaga o documento do perfil, mas não as tentativas na subcoleção (Firestore não faz cascade delete automático) — isso é uma dívida técnica conhecida, não um problema de segurança (os dados órfãos continuam protegidos pelas mesmas regras, só ficam “soltos”).
+- **Exclusão de perfil não remove as tentativas — de propósito.** Remover um perfil de criança (`removerPerfil`) apaga o documento do perfil, mas as regras do Firestore proíbem explicitamente `update`/`delete` na subcoleção `tentativas` (`allow update, delete: if false;`) para que o histórico de progresso seja imutável e auditável (ver "Modelo de dados e isolamento" acima). Isso significa que excluir um perfil deixa as tentativas antigas órfãs, mas ainda protegidas pelas mesmas regras de isolamento por dono — elas não desaparecem sozinhas nem ficam acessíveis a mais ninguém. É uma troca deliberada (integridade do histórico > limpeza automática), não um bug esquecido. Se um responsável realmente precisar apagar esses dados residuais (ex: pedido de exclusão via LGPD), isso hoje só é possível manualmente pelo Console do Firebase — não há um botão de "excluir tudo" na interface do v1.
 - **Logs de auditoria**: não há log de quem acessou o quê além do que o próprio Firebase Console oferece.
 
 ## Reportando uma vulnerabilidade

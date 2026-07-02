@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { trilhaV1 } from '../../curriculo/trilha-v1'
+import { moduloDesbloqueado } from '../../curriculo/progressao'
 import { ouvirPerfil } from '../../firebase/perfis'
 import { Icone } from '../../curriculo/ativos/Icone'
 import type { IconeId } from '../../curriculo/ativos/tipos'
@@ -56,22 +57,34 @@ export function Trilha() {
         const concluidas = modulo.atividades.filter((a) =>
           dominadas.has(a.id),
         ).length
+        const desbloqueado = moduloDesbloqueado(
+          modulo.preRequisitoModuloId,
+          dominadas,
+        )
+        const preRequisito = trilhaV1.modulos.find(
+          (m) => m.id === modulo.preRequisitoModuloId,
+        )
 
         return (
-          <section key={modulo.id} className="flex flex-col gap-4">
+          <section
+            key={modulo.id}
+            className={`flex flex-col gap-4 ${desbloqueado ? '' : 'opacity-60'}`}
+          >
             <div className="flex items-center gap-3">
               <span
                 style={{ background: acento.fundo, color: acento.texto }}
                 className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-semibold"
               >
-                {indice + 1}
+                {desbloqueado ? indice + 1 : '🔒'}
               </span>
               <div>
                 <h2 className="text-xl font-medium text-[var(--cor-texto)]">
                   {modulo.titulo}
                 </h2>
                 <p className="text-sm text-[var(--cor-texto-suave)]">
-                  {concluidas} de {modulo.atividades.length} concluídas
+                  {desbloqueado
+                    ? `${concluidas} de ${modulo.atividades.length} concluídas`
+                    : `Complete "${preRequisito?.titulo}" para desbloquear`}
                 </p>
               </div>
             </div>
@@ -79,6 +92,23 @@ export function Trilha() {
             <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
               {modulo.atividades.map((atividade) => {
                 const dominada = dominadas.has(atividade.id)
+
+                if (!desbloqueado) {
+                  return (
+                    <li key={atividade.id}>
+                      <div className="flex flex-col items-center gap-2 rounded-2xl border-2 border-dashed border-[var(--cor-borda)] bg-[var(--cor-fundo)] p-4">
+                        <Icone
+                          iconeId={atividade.alvo.iconeId as IconeId}
+                          className="h-12 w-12 text-[var(--cor-texto-suave)]"
+                        />
+                        <span className="text-sm text-[var(--cor-texto-suave)]">
+                          🔒
+                        </span>
+                      </div>
+                    </li>
+                  )
+                }
+
                 return (
                   <li key={atividade.id} className="relative">
                     <Link
