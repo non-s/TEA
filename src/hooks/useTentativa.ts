@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
 import type { Atividade } from '../curriculo/tipos'
-import { registrarTentativa } from '../progresso/tentativas'
+import { registrarTentativa } from '../firebase/progresso'
 
 const NIVEL_INDEPENDENTE = 2
 
@@ -57,7 +57,11 @@ function proximoEstado(
   }
 }
 
-export function useTentativa(atividade: Atividade) {
+export function useTentativa(
+  atividade: Atividade,
+  uidResponsavel: string,
+  perfilId: string,
+) {
   const inicioTentativaRef = useRef(Date.now())
   const [estado, setEstado] = useState<EstadoAtividade>(estadoInicial)
 
@@ -73,7 +77,7 @@ export function useTentativa(atividade: Atividade) {
     const correto = estimuloId === atividade.resposta.id
     const tempoRespostaMs = Date.now() - inicioTentativaRef.current
 
-    registrarTentativa({
+    registrarTentativa(uidResponsavel, perfilId, {
       atividadeId: atividade.id,
       moduloId: atividade.moduloId,
       timestamp: Date.now(),

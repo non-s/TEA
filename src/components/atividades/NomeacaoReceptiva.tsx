@@ -10,6 +10,8 @@ import { usePreferencias } from '../../contexts/PreferenciasContext'
 interface NomeacaoReceptivaProps {
   atividade: Atividade
   aoDominar: () => void
+  uidResponsavel: string
+  perfilId: string
 }
 
 type Feedback = 'correto' | 'incorreto' | null
@@ -17,8 +19,14 @@ type Feedback = 'correto' | 'incorreto' | null
 export function NomeacaoReceptiva({
   atividade,
   aoDominar,
+  uidResponsavel,
+  perfilId,
 }: NomeacaoReceptivaProps) {
-  const { responder, dicaAtual } = useTentativa(atividade)
+  const { responder, dicaAtual } = useTentativa(
+    atividade,
+    uidResponsavel,
+    perfilId,
+  )
   const { falar } = useSpeech()
   const { preferencias } = usePreferencias()
   const [feedback, setFeedback] = useState<Feedback>(null)

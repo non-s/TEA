@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { axe } from 'vitest-axe'
 import { describe, expect, it, vi } from 'vitest'
 import type { ReactElement } from 'react'
-import { NomeacaoReceptiva } from './NomeacaoReceptiva'
+import { FormacaoSilaba } from './FormacaoSilaba'
 import { PreferenciasProvider } from '../../contexts/PreferenciasContext'
 import type { Atividade } from '../../curriculo/tipos'
 
@@ -12,14 +12,29 @@ function renderComProvider(elemento: ReactElement) {
 }
 
 const atividade: Atividade = {
-  id: 'teste-nomeacao-a1',
+  id: 'teste-silaba-a1',
   moduloId: 'teste',
-  tipo: 'nomeacao-receptiva',
+  tipo: 'formacao-silaba',
   nivelDificuldade: 1,
-  alvo: { id: 'letra-A', rotulo: 'A', iconeId: 'letra-A', audioTexto: 'á' },
-  resposta: { id: 'letra-A', rotulo: 'A', iconeId: 'letra-A', audioTexto: 'á' },
+  alvo: {
+    id: 'silaba-MA',
+    rotulo: 'MA',
+    iconeId: 'letra-MA',
+    audioTexto: 'MA, de mamãe',
+  },
+  resposta: {
+    id: 'silaba-MA',
+    rotulo: 'MA',
+    iconeId: 'letra-MA',
+    audioTexto: 'MA, de mamãe',
+  },
   distratores: [
-    { id: 'letra-E', rotulo: 'E', iconeId: 'letra-E', audioTexto: 'é' },
+    {
+      id: 'silaba-PA-distrator',
+      rotulo: 'PA',
+      iconeId: 'letra-PA',
+      audioTexto: 'PA, de papai',
+    },
   ],
   dicas: [
     { ordem: 0, tipo: 'modelagem', descricao: '' },
@@ -29,10 +44,10 @@ const atividade: Atividade = {
   criteriosDominio: { acertosConsecutivosNecessarios: 1, janelaTentativas: 10 },
 }
 
-describe('NomeacaoReceptiva', () => {
-  it('mostra a instrução falada/escrita e as opções', () => {
+describe('FormacaoSilaba', () => {
+  it('mostra a instrução com a palavra de apoio e as opções', () => {
     renderComProvider(
-      <NomeacaoReceptiva
+      <FormacaoSilaba
         atividade={atividade}
         aoDominar={vi.fn()}
         uidResponsavel="uid-teste"
@@ -40,9 +55,9 @@ describe('NomeacaoReceptiva', () => {
       />,
     )
 
-    expect(screen.getByText('Toque na letra á')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'A' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'E' })).toBeInTheDocument()
+    expect(screen.getByText('Toque na sílaba MA, de mamãe')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'MA' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'PA' })).toBeInTheDocument()
   })
 
   it('chama aoDominar após atingir o critério de domínio', async () => {
@@ -50,7 +65,7 @@ describe('NomeacaoReceptiva', () => {
     const usuario = userEvent.setup({ delay: null })
     const aoDominar = vi.fn()
     renderComProvider(
-      <NomeacaoReceptiva
+      <FormacaoSilaba
         atividade={atividade}
         aoDominar={aoDominar}
         uidResponsavel="uid-teste"
@@ -58,7 +73,7 @@ describe('NomeacaoReceptiva', () => {
       />,
     )
 
-    await usuario.click(screen.getByRole('button', { name: 'A' }))
+    await usuario.click(screen.getByRole('button', { name: 'MA' }))
     await vi.advanceTimersByTimeAsync(800)
 
     expect(aoDominar).toHaveBeenCalledOnce()
@@ -67,7 +82,7 @@ describe('NomeacaoReceptiva', () => {
 
   it('não tem violações de acessibilidade detectáveis automaticamente', async () => {
     const { container } = renderComProvider(
-      <NomeacaoReceptiva
+      <FormacaoSilaba
         atividade={atividade}
         aoDominar={vi.fn()}
         uidResponsavel="uid-teste"

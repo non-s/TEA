@@ -231,9 +231,110 @@ const modulo2: Modulo = {
   ),
 }
 
+function atividadeNomeacaoExpressiva(
+  letra: LetraNomeacao,
+  distratores: LetraNomeacao[],
+): Atividade {
+  const alvo = estimuloLetra(
+    `letra-${letra.caractere}-expressiva-alvo`,
+    letra.caractere,
+    letra.som,
+  )
+  const resposta = estimuloLetra(
+    `letra-${letra.caractere}-expressiva-resposta`,
+    letra.caractere,
+    letra.som,
+  )
+  return construirAtividade(
+    `m3-${letra.caractere}`,
+    'm3',
+    'nomeacao-expressiva',
+    1,
+    alvo,
+    resposta,
+    distratores.map((d) =>
+      estimuloLetra(
+        `letra-${d.caractere}-expressiva-distrator-${letra.caractere}`,
+        d.caractere,
+        d.som,
+      ),
+    ),
+  )
+}
+
+const modulo3: Modulo = {
+  id: 'm3',
+  titulo: 'Nomeação Expressiva de Letras',
+  descricao:
+    'A letra aparece na tela — toque no nome dela entre as opções. A criança passa a produzir a resposta em vez de só localizar.',
+  ordem: 3,
+  preRequisitoModuloId: 'm2',
+  atividades: letrasModulo2.map((letra, indice) =>
+    atividadeNomeacaoExpressiva(letra, [
+      letrasModulo2[(indice + 1) % letrasModulo2.length],
+      letrasModulo2[(indice + 3) % letrasModulo2.length],
+    ]),
+  ),
+}
+
+interface Silaba {
+  caractere: string
+  palavraApoio: string
+}
+
+const silabasModulo4: Silaba[] = [
+  { caractere: 'MA', palavraApoio: 'mamãe' },
+  { caractere: 'PA', palavraApoio: 'papai' },
+  { caractere: 'TA', palavraApoio: 'tatu' },
+  { caractere: 'LA', palavraApoio: 'lata' },
+  { caractere: 'BA', palavraApoio: 'bala' },
+]
+
+function estimuloSilaba(idUnico: string, silaba: Silaba): Estimulo {
+  return {
+    id: idUnico,
+    rotulo: silaba.caractere,
+    iconeId: iconeLetra(silaba.caractere),
+    audioTexto: `${silaba.caractere}, de ${silaba.palavraApoio}`,
+  }
+}
+
+function atividadeFormacaoSilaba(
+  silaba: Silaba,
+  distratores: Silaba[],
+): Atividade {
+  const estimuloAlvo = estimuloSilaba(`silaba-${silaba.caractere}`, silaba)
+  return construirAtividade(
+    `m4-${silaba.caractere}`,
+    'm4',
+    'formacao-silaba',
+    1,
+    estimuloAlvo,
+    estimuloAlvo,
+    distratores.map((d) =>
+      estimuloSilaba(`silaba-${d.caractere}-distrator-${silaba.caractere}`, d),
+    ),
+  )
+}
+
+const modulo4: Modulo = {
+  id: 'm4',
+  titulo: 'Formação de Sílabas',
+  descricao:
+    'Toque na sílaba falada, sempre associada a uma palavra conhecida (ex: "MA, de mamãe"). Consciência fonológica com apoio de vocabulário familiar.',
+  ordem: 4,
+  preRequisitoModuloId: 'm3',
+  atividades: silabasModulo4.map((silaba, indice) =>
+    atividadeFormacaoSilaba(silaba, [
+      silabasModulo4[(indice + 1) % silabasModulo4.length],
+      silabasModulo4[(indice + 2) % silabasModulo4.length],
+    ]),
+  ),
+}
+
 export const trilhaV1: Trilha = {
   versao: 'v1',
-  modulos: [modulo0, modulo1, modulo2],
+  modulos: [modulo0, modulo1, modulo2, modulo3, modulo4],
 }
 
 export function encontrarAtividade(atividadeId: string): Atividade | undefined {

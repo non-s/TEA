@@ -96,13 +96,21 @@ export function GerenciarPerfis() {
                       {perfil.nome}
                     </span>
                   </span>
-                  <button
-                    type="button"
-                    onClick={() => aoRemover(perfil.id)}
-                    className="text-sm text-[var(--cor-erro)] underline underline-offset-2"
-                  >
-                    Remover
-                  </button>
+                  <span className="flex items-center gap-4">
+                    <Link
+                      to={`/responsavel/progresso/${perfil.id}`}
+                      className="text-sm text-[var(--cor-primaria)] underline underline-offset-2"
+                    >
+                      Progresso
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => aoRemover(perfil.id)}
+                      className="text-sm text-[var(--cor-erro)] underline underline-offset-2"
+                    >
+                      Remover
+                    </button>
+                  </span>
                 </Cartao>
               </li>
             )

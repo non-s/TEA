@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { trilhaV1 } from '../../curriculo/trilha-v1'
-import { lerAtividadesDominadas } from '../../progresso/dominadas'
+import { ouvirPerfil } from '../../firebase/perfis'
 import { Icone } from '../../curriculo/ativos/Icone'
 import type { IconeId } from '../../curriculo/ativos/tipos'
+import { useAuth } from '../../contexts/AuthContext'
 import { usePerfilAtivo } from '../../contexts/PerfilAtivoContext'
 
 const acentosPorModulo: Record<string, { fundo: string; texto: string }> = {
@@ -13,16 +14,22 @@ const acentosPorModulo: Record<string, { fundo: string; texto: string }> = {
   },
   m1: { fundo: 'var(--cor-acento-clara)', texto: 'var(--cor-acento-escura)' },
   m2: { fundo: 'var(--cor-sucesso-clara)', texto: 'var(--cor-sucesso)' },
+  m3: { fundo: 'var(--cor-conquista-clara)', texto: 'var(--cor-conquista)' },
+  m4: { fundo: '#e3ddf0', texto: '#5f4e96' },
 }
 
 export function Trilha() {
   const [dominadas, setDominadas] = useState<Set<string>>(new Set())
+  const { usuario } = useAuth()
   const { perfilAtivo, encerrarPerfil } = usePerfilAtivo()
   const navigate = useNavigate()
 
   useEffect(() => {
-    setDominadas(lerAtividadesDominadas())
-  }, [])
+    if (!usuario || !perfilAtivo) return
+    return ouvirPerfil(usuario.uid, perfilAtivo.id, (perfil) => {
+      setDominadas(new Set(perfil?.atividadesDominadas ?? []))
+    })
+  }, [usuario, perfilAtivo])
 
   function aoVoltarParaResponsavel() {
     encerrarPerfil()

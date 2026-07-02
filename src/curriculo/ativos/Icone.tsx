@@ -45,7 +45,7 @@ export function Icone({ iconeId, titulo, ...props }: IconeProps) {
           y="54"
           textAnchor="middle"
           dominantBaseline="middle"
-          fontSize="70"
+          fontSize={caractereDaLetra(iconeId).length > 1 ? '44' : '70'}
           fontWeight="700"
           fontFamily="system-ui, 'Segoe UI', sans-serif"
         >

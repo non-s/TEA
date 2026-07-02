@@ -10,6 +10,7 @@ import { Cadastro } from './routes/responsavel/Cadastro'
 import { SelecaoPerfil } from './routes/responsavel/SelecaoPerfil'
 import { GerenciarPerfis } from './routes/responsavel/GerenciarPerfis'
 import { Configuracoes } from './routes/responsavel/Configuracoes'
+import { Progresso } from './routes/responsavel/Progresso'
 import { Trilha } from './routes/crianca/Trilha'
 import { Atividade } from './routes/crianca/Atividade'
 
@@ -45,6 +46,14 @@ function App() {
                 element={
                   <RequireAuth>
                     <Configuracoes />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/responsavel/progresso/:perfilId"
+                element={
+                  <RequireAuth>
+                    <Progresso />
                   </RequireAuth>
                 }
               />

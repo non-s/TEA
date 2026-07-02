@@ -7,7 +7,7 @@ import { useTentativa } from '../../hooks/useTentativa'
 import { useSpeech } from '../../hooks/useSpeech'
 import { usePreferencias } from '../../contexts/PreferenciasContext'
 
-interface EmparelhamentoIdenticoProps {
+interface FormacaoSilabaProps {
   atividade: Atividade
   aoDominar: () => void
   uidResponsavel: string
@@ -16,12 +16,12 @@ interface EmparelhamentoIdenticoProps {
 
 type Feedback = 'correto' | 'incorreto' | null
 
-export function EmparelhamentoIdentico({
+export function FormacaoSilaba({
   atividade,
   aoDominar,
   uidResponsavel,
   perfilId,
-}: EmparelhamentoIdenticoProps) {
+}: FormacaoSilabaProps) {
   const { responder, dicaAtual } = useTentativa(
     atividade,
     uidResponsavel,
@@ -36,11 +36,11 @@ export function EmparelhamentoIdentico({
     [atividade],
   )
 
-  const rotuloAlvoFalado = atividade.alvo.audioTexto ?? atividade.alvo.rotulo
+  const instrucao = `Toque na sílaba ${atividade.alvo.audioTexto ?? atividade.alvo.rotulo}`
 
   useEffect(() => {
-    falar(`Toque na figura igual a esta: ${rotuloAlvoFalado}`)
-  }, [atividade.id, rotuloAlvoFalado, falar])
+    falar(instrucao)
+  }, [atividade.id, instrucao, falar])
 
   const mostrarDestaque =
     dicaAtual?.tipo === 'destaque-visual' || dicaAtual?.tipo === 'modelagem'
@@ -63,14 +63,8 @@ export function EmparelhamentoIdentico({
   return (
     <div className="flex flex-col items-center gap-8">
       <p className="text-xl text-[var(--cor-texto)]" aria-live="polite">
-        Toque na figura igual a esta:
+        {instrucao}
       </p>
-
-      <Icone
-        iconeId={atividade.alvo.iconeId as IconeId}
-        titulo={atividade.alvo.rotulo}
-        className="h-24 w-24 text-[var(--cor-primaria-escura)] drop-shadow-sm"
-      />
 
       <fieldset className="grid grid-cols-2 gap-6 border-0 p-0 sm:grid-cols-3">
         <legend className="sr-only">Opções de resposta</legend>

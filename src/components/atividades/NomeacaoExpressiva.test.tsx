@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { axe } from 'vitest-axe'
 import { describe, expect, it, vi } from 'vitest'
 import type { ReactElement } from 'react'
-import { NomeacaoReceptiva } from './NomeacaoReceptiva'
+import { NomeacaoExpressiva } from './NomeacaoExpressiva'
 import { PreferenciasProvider } from '../../contexts/PreferenciasContext'
 import type { Atividade } from '../../curriculo/tipos'
 
@@ -12,15 +12,13 @@ function renderComProvider(elemento: ReactElement) {
 }
 
 const atividade: Atividade = {
-  id: 'teste-nomeacao-a1',
+  id: 'teste-expressiva-a1',
   moduloId: 'teste',
-  tipo: 'nomeacao-receptiva',
+  tipo: 'nomeacao-expressiva',
   nivelDificuldade: 1,
-  alvo: { id: 'letra-A', rotulo: 'A', iconeId: 'letra-A', audioTexto: 'á' },
-  resposta: { id: 'letra-A', rotulo: 'A', iconeId: 'letra-A', audioTexto: 'á' },
-  distratores: [
-    { id: 'letra-E', rotulo: 'E', iconeId: 'letra-E', audioTexto: 'é' },
-  ],
+  alvo: { id: 'letra-M-alvo', rotulo: 'eme', iconeId: 'letra-M' },
+  resposta: { id: 'letra-M-resposta', rotulo: 'eme', iconeId: 'letra-M' },
+  distratores: [{ id: 'letra-P-distrator', rotulo: 'pê', iconeId: 'letra-P' }],
   dicas: [
     { ordem: 0, tipo: 'modelagem', descricao: '' },
     { ordem: 1, tipo: 'destaque-visual', descricao: '' },
@@ -29,10 +27,10 @@ const atividade: Atividade = {
   criteriosDominio: { acertosConsecutivosNecessarios: 1, janelaTentativas: 10 },
 }
 
-describe('NomeacaoReceptiva', () => {
-  it('mostra a instrução falada/escrita e as opções', () => {
+describe('NomeacaoExpressiva', () => {
+  it('mostra a letra e as opções de nome', () => {
     renderComProvider(
-      <NomeacaoReceptiva
+      <NomeacaoExpressiva
         atividade={atividade}
         aoDominar={vi.fn()}
         uidResponsavel="uid-teste"
@@ -40,9 +38,9 @@ describe('NomeacaoReceptiva', () => {
       />,
     )
 
-    expect(screen.getByText('Toque na letra á')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'A' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'E' })).toBeInTheDocument()
+    expect(screen.getByText('Qual é o nome desta letra?')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'eme' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'pê' })).toBeInTheDocument()
   })
 
   it('chama aoDominar após atingir o critério de domínio', async () => {
@@ -50,7 +48,7 @@ describe('NomeacaoReceptiva', () => {
     const usuario = userEvent.setup({ delay: null })
     const aoDominar = vi.fn()
     renderComProvider(
-      <NomeacaoReceptiva
+      <NomeacaoExpressiva
         atividade={atividade}
         aoDominar={aoDominar}
         uidResponsavel="uid-teste"
@@ -58,7 +56,7 @@ describe('NomeacaoReceptiva', () => {
       />,
     )
 
-    await usuario.click(screen.getByRole('button', { name: 'A' }))
+    await usuario.click(screen.getByRole('button', { name: 'eme' }))
     await vi.advanceTimersByTimeAsync(800)
 
     expect(aoDominar).toHaveBeenCalledOnce()
@@ -67,7 +65,7 @@ describe('NomeacaoReceptiva', () => {
 
   it('não tem violações de acessibilidade detectáveis automaticamente', async () => {
     const { container } = renderComProvider(
-      <NomeacaoReceptiva
+      <NomeacaoExpressiva
         atividade={atividade}
         aoDominar={vi.fn()}
         uidResponsavel="uid-teste"

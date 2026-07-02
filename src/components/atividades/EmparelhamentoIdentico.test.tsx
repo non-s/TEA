@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { axe } from 'vitest-axe'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import type { ReactElement } from 'react'
 import { EmparelhamentoIdentico } from './EmparelhamentoIdentico'
 import { PreferenciasProvider } from '../../contexts/PreferenciasContext'
@@ -27,14 +27,15 @@ const atividade: Atividade = {
   criteriosDominio: { acertosConsecutivosNecessarios: 1, janelaTentativas: 10 },
 }
 
-beforeEach(() => {
-  localStorage.clear()
-})
-
 describe('EmparelhamentoIdentico', () => {
   it('mostra as opções de resposta e o alvo', () => {
     renderComProvider(
-      <EmparelhamentoIdentico atividade={atividade} aoDominar={vi.fn()} />,
+      <EmparelhamentoIdentico
+        atividade={atividade}
+        aoDominar={vi.fn()}
+        uidResponsavel="uid-teste"
+        perfilId="perfil-teste"
+      />,
     )
 
     expect(
@@ -49,7 +50,12 @@ describe('EmparelhamentoIdentico', () => {
     const usuario = userEvent.setup({ delay: null })
     const aoDominar = vi.fn()
     renderComProvider(
-      <EmparelhamentoIdentico atividade={atividade} aoDominar={aoDominar} />,
+      <EmparelhamentoIdentico
+        atividade={atividade}
+        aoDominar={aoDominar}
+        uidResponsavel="uid-teste"
+        perfilId="perfil-teste"
+      />,
     )
 
     await usuario.click(screen.getByRole('button', { name: 'círculo' }))
@@ -61,7 +67,12 @@ describe('EmparelhamentoIdentico', () => {
 
   it('não tem violações de acessibilidade detectáveis automaticamente', async () => {
     const { container } = renderComProvider(
-      <EmparelhamentoIdentico atividade={atividade} aoDominar={vi.fn()} />,
+      <EmparelhamentoIdentico
+        atividade={atividade}
+        aoDominar={vi.fn()}
+        uidResponsavel="uid-teste"
+        perfilId="perfil-teste"
+      />,
     )
     const results = await axe(container)
     expect(results.violations).toHaveLength(0)

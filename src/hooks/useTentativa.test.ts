@@ -1,5 +1,5 @@
 import { renderHook, act } from '@testing-library/react'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { useTentativa } from './useTentativa'
 import type { Atividade } from '../curriculo/tipos'
 
@@ -19,13 +19,11 @@ const atividade: Atividade = {
   criteriosDominio: { acertosConsecutivosNecessarios: 3, janelaTentativas: 10 },
 }
 
-beforeEach(() => {
-  localStorage.clear()
-})
-
 describe('useTentativa', () => {
   it('marca a atividade como dominada após acertos consecutivos suficientes no nível independente', () => {
-    const { result } = renderHook(() => useTentativa(atividade))
+    const { result } = renderHook(() =>
+      useTentativa(atividade, 'uid-teste', 'perfil-teste'),
+    )
 
     expect(result.current.nivelDicaAtual).toBe(2)
 
@@ -44,7 +42,9 @@ describe('useTentativa', () => {
   })
 
   it('reduz o nível de dica (mais suporte) após uma resposta incorreta', () => {
-    const { result } = renderHook(() => useTentativa(atividade))
+    const { result } = renderHook(() =>
+      useTentativa(atividade, 'uid-teste', 'perfil-teste'),
+    )
 
     act(() => {
       result.current.responder('distrator')
@@ -54,7 +54,9 @@ describe('useTentativa', () => {
   })
 
   it('não marca como dominada enquanto ainda está recebendo dica', () => {
-    const { result } = renderHook(() => useTentativa(atividade))
+    const { result } = renderHook(() =>
+      useTentativa(atividade, 'uid-teste', 'perfil-teste'),
+    )
 
     act(() => {
       result.current.responder('distrator')

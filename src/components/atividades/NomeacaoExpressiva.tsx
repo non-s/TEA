@@ -7,7 +7,7 @@ import { useTentativa } from '../../hooks/useTentativa'
 import { useSpeech } from '../../hooks/useSpeech'
 import { usePreferencias } from '../../contexts/PreferenciasContext'
 
-interface EmparelhamentoIdenticoProps {
+interface NomeacaoExpressivaProps {
   atividade: Atividade
   aoDominar: () => void
   uidResponsavel: string
@@ -16,12 +16,18 @@ interface EmparelhamentoIdenticoProps {
 
 type Feedback = 'correto' | 'incorreto' | null
 
-export function EmparelhamentoIdentico({
+/**
+ * "Expressiva" aqui significa a criança produzir/escolher ativamente o nome
+ * da letra mostrada, em vez de apenas localizá-la (nomeação receptiva). Como
+ * a plataforma não faz reconhecimento de fala, a produção acontece por
+ * seleção entre opções de nome — acessível também a crianças não-verbais.
+ */
+export function NomeacaoExpressiva({
   atividade,
   aoDominar,
   uidResponsavel,
   perfilId,
-}: EmparelhamentoIdenticoProps) {
+}: NomeacaoExpressivaProps) {
   const { responder, dicaAtual } = useTentativa(
     atividade,
     uidResponsavel,
@@ -36,21 +42,19 @@ export function EmparelhamentoIdentico({
     [atividade],
   )
 
-  const rotuloAlvoFalado = atividade.alvo.audioTexto ?? atividade.alvo.rotulo
-
   useEffect(() => {
-    falar(`Toque na figura igual a esta: ${rotuloAlvoFalado}`)
-  }, [atividade.id, rotuloAlvoFalado, falar])
+    falar('Qual é o nome desta letra?')
+  }, [atividade.id, falar])
 
   const mostrarDestaque =
     dicaAtual?.tipo === 'destaque-visual' || dicaAtual?.tipo === 'modelagem'
 
-  function aoClicarEmOpcao(estimuloId: string) {
+  function aoClicarEmOpcao(estimuloId: string, rotulo: string) {
     if (feedback) return
 
     const resultado = responder(estimuloId)
     setFeedback(resultado.correto ? 'correto' : 'incorreto')
-    falar(resultado.correto ? 'Isso!' : 'Tente de novo')
+    falar(resultado.correto ? `Isso! ${rotulo}` : 'Tente de novo')
 
     window.setTimeout(() => {
       setFeedback(null)
@@ -63,16 +67,16 @@ export function EmparelhamentoIdentico({
   return (
     <div className="flex flex-col items-center gap-8">
       <p className="text-xl text-[var(--cor-texto)]" aria-live="polite">
-        Toque na figura igual a esta:
+        Qual é o nome desta letra?
       </p>
 
       <Icone
         iconeId={atividade.alvo.iconeId as IconeId}
-        titulo={atividade.alvo.rotulo}
+        titulo="Letra a nomear"
         className="h-24 w-24 text-[var(--cor-primaria-escura)] drop-shadow-sm"
       />
 
-      <fieldset className="grid grid-cols-2 gap-6 border-0 p-0 sm:grid-cols-3">
+      <fieldset className="grid grid-cols-1 gap-4 border-0 p-0 sm:grid-cols-3">
         <legend className="sr-only">Opções de resposta</legend>
         {opcoes.map((opcao) => {
           const ehResposta = opcao.id === atividade.resposta.id
@@ -80,9 +84,8 @@ export function EmparelhamentoIdentico({
             <button
               key={opcao.id}
               type="button"
-              onClick={() => aoClicarEmOpcao(opcao.id)}
-              aria-label={opcao.rotulo}
-              className={`flex h-24 w-24 items-center justify-center rounded-2xl border-2 bg-[var(--cor-fundo-alt)] text-[var(--cor-texto)] shadow-[var(--sombra-cartao)] ${
+              onClick={() => aoClicarEmOpcao(opcao.id, opcao.rotulo)}
+              className={`min-w-24 rounded-2xl border-2 bg-[var(--cor-fundo-alt)] px-6 py-4 text-2xl font-semibold text-[var(--cor-texto)] shadow-[var(--sombra-cartao)] ${
                 preferencias.animacoes
                   ? 'transition-transform hover:scale-105 active:scale-95'
                   : ''
@@ -92,7 +95,7 @@ export function EmparelhamentoIdentico({
                   : 'border-[var(--cor-borda)]'
               }`}
             >
-              <Icone iconeId={opcao.iconeId as IconeId} className="h-14 w-14" />
+              {opcao.rotulo}
             </button>
           )
         })}
