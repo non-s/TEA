@@ -5,7 +5,7 @@ import {
   orderBy,
   query,
 } from 'firebase/firestore'
-import { db } from './config'
+import { db } from './db'
 import type { Tentativa } from '../curriculo/tipos'
 
 function colecaoTentativas(uidResponsavel: string, perfilId: string) {

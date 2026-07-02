@@ -50,8 +50,15 @@ src/
 └── test/                # setup global de testes (mocks do SDK do Firebase)
 ```
 
+## Code splitting por rota e por SDK do Firebase
+
+Toda rota exceto a home (`src/routes/Home.tsx`) é carregada via `React.lazy()` em `App.tsx`. Isso sozinho não bastava: `AuthProvider` precisa saber se há sessão ativa em toda a árvore (inclusive na home pública), então `firebase/auth` é importado de forma eager — e como `firebase/config.ts` originalmente inicializava Auth _e_ Firestore no mesmo módulo, o SDK do Firestore (a maior fatia do bundle) acabava entrando no chunk inicial de qualquer forma, mesmo a home nunca usando Firestore.
+
+A correção foi separar a inicialização em três módulos: `src/firebase/app.ts` (só `initializeApp`, eager), `src/firebase/config.ts` (só `getAuth`, eager — usado por `AuthContext`) e `src/firebase/db.ts` (só `getFirestore`, importado apenas pelos módulos usados dentro de rotas lazy: `firebase/perfis.ts`, `firebase/progresso.ts`, `firebase/auth.ts`). Resultado: o chunk inicial caiu de ~845kB para ~357kB (medido antes/depois com `npm run build`); o SDK do Firestore (~450kB) só é baixado quando a pessoa navega para uma tela que realmente precisa dele (login, cadastro, ou qualquer tela dentro da conta).
+
+Isso importa porque muitas famílias que mais precisam desta plataforma têm conexões de internet limitadas — carregar menos JavaScript na primeira visita (antes mesmo de decidir criar conta) é uma questão de acessibilidade, não só de performance.
+
 ## Débitos técnicos conhecidos (não escondidos, documentados)
 
-- **Tamanho do bundle**: o build de produção passa de 500kB (aviso do Vite), principalmente pelo SDK do Firebase. Candidato a `dynamic import()` ou `manualChunks` numa v2, mas não é um problema real de performance ainda dado o tamanho do app.
 - **Exclusão em cascata**: ver `docs/SEGURANCA.md`.
 - **`Cartao` polimórfico**: o componente `src/components/ui/Cartao.tsx` suporta `as="div" | "form"` via união de tipos manual — funciona, mas não escala bem se precisar de mais tags no futuro (nesse caso, vale considerar uma lib de polimorfismo tipo `Slot` do Radix, mas isso seria over-engineering para as duas variantes atuais).

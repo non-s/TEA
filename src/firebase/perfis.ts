@@ -8,7 +8,7 @@ import {
   serverTimestamp,
   updateDoc,
 } from 'firebase/firestore'
-import { db } from './config'
+import { db } from './db'
 
 export type TamanhoFonte = 'normal' | 'grande' | 'extra-grande'
 

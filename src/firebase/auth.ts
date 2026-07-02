@@ -5,7 +5,8 @@ import {
   signOut,
 } from 'firebase/auth'
 import { doc, serverTimestamp, setDoc } from 'firebase/firestore'
-import { auth, db } from './config'
+import { auth } from './config'
+import { db } from './db'
 
 export async function cadastrar(email: string, senha: string, nome: string) {
   const credencial = await createUserWithEmailAndPassword(auth, email, senha)

@@ -1,17 +1,11 @@
-import { initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
-import { getFirestore } from 'firebase/firestore'
+import { app } from './app'
 
-const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-}
-
-const app = initializeApp(firebaseConfig)
-
+/**
+ * Só inicializa Auth aqui, não Firestore — AuthContext importa `auth`
+ * de forma eager (a sessão do responsável precisa ser conhecida em toda
+ * a árvore, inclusive na home pública). Firestore fica em `./db.ts`,
+ * importado só pelos módulos usados dentro de rotas lazy-loaded, para
+ * não inflar o bundle inicial de quem só está vendo a home.
+ */
 export const auth = getAuth(app)
-export const db = getFirestore(app)
