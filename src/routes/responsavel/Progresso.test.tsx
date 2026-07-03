@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { axe } from 'vitest-axe'
@@ -224,6 +224,15 @@ describe('Progresso', () => {
     expect(
       screen.getByText(/Os nomes dos arquivos não incluem o nome da criança/),
     ).toBeInTheDocument()
+    const resumoPacote = screen.getByRole('region', {
+      name: 'Resumo do pacote local',
+    })
+
+    expect(within(resumoPacote).getByText('Tentativas')).toBeInTheDocument()
+    expect(within(resumoPacote).getByText('1')).toBeInTheDocument()
+    expect(within(resumoPacote).getByText('Observacoes')).toBeInTheDocument()
+    expect(within(resumoPacote).getByText('2')).toBeInTheDocument()
+    expect(within(resumoPacote).getByText('estrela')).toBeInTheDocument()
 
     await usuario.click(
       screen.getByRole('button', { name: 'Baixar plano fora da tela' }),

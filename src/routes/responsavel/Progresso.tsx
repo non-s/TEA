@@ -549,6 +549,35 @@ export function Progresso() {
             conter dados do perfil e deve ser compartilhado apenas pela família.
           </p>
         </div>
+        <section
+          aria-label="Resumo do pacote local"
+          className="grid gap-2 rounded-2xl border-2 border-[var(--cor-borda)] bg-[var(--cor-fundo)] p-4 sm:grid-cols-3"
+        >
+          <div>
+            <p className="text-xs font-medium uppercase text-[var(--cor-texto-suave)]">
+              Tentativas
+            </p>
+            <p className="mt-1 text-xl font-semibold text-[var(--cor-texto)]">
+              {tentativas.length}
+            </p>
+          </div>
+          <div>
+            <p className="text-xs font-medium uppercase text-[var(--cor-texto-suave)]">
+              Observacoes
+            </p>
+            <p className="mt-1 text-xl font-semibold text-[var(--cor-texto)]">
+              {observacoesSessao.length}
+            </p>
+          </div>
+          <div>
+            <p className="text-xs font-medium uppercase text-[var(--cor-texto-suave)]">
+              Proximo passo
+            </p>
+            <p className="mt-1 text-sm font-semibold leading-6 text-[var(--cor-texto)]">
+              {relatorio.proximaAtividade?.alvo.rotulo ?? 'Revisar e manter'}
+            </p>
+          </div>
+        </section>
         <div className="flex flex-wrap gap-3">
           <Botao type="button" variante="secundario" onClick={aoExportarDados}>
             Baixar dados do perfil
