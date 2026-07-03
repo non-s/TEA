@@ -1,11 +1,12 @@
-import { lazy, Suspense } from 'react'
-import { HashRouter, Route, Routes } from 'react-router-dom'
+import { lazy, Suspense, useEffect, useState } from 'react'
+import { HashRouter, Route, Routes, useLocation } from 'react-router-dom'
 import { PreferenciasProvider } from './contexts/PreferenciasContext'
 import { AuthProvider } from './contexts/AuthContext'
 import { PerfilAtivoProvider } from './contexts/PerfilAtivoContext'
 import { RequireAuth } from './routes/RequireAuth'
 import { RequirePerfilAtivo } from './routes/RequirePerfilAtivo'
 import { Home } from './routes/Home'
+import { LimiteErro } from './components/ui/LimiteErro'
 
 const Login = lazy(() =>
   import('./routes/responsavel/Login').then((m) => ({ default: m.Login })),
@@ -13,6 +14,21 @@ const Login = lazy(() =>
 const Cadastro = lazy(() =>
   import('./routes/responsavel/Cadastro').then((m) => ({
     default: m.Cadastro,
+  })),
+)
+const Demo = lazy(() =>
+  import('./routes/Demo').then((m) => ({
+    default: m.Demo,
+  })),
+)
+const Privacidade = lazy(() =>
+  import('./routes/Privacidade').then((m) => ({
+    default: m.Privacidade,
+  })),
+)
+const NaoEncontrada = lazy(() =>
+  import('./routes/NaoEncontrada').then((m) => ({
+    default: m.NaoEncontrada,
   })),
 )
 const SelecaoPerfil = lazy(() =>
@@ -52,73 +68,123 @@ function CarregandoPagina() {
   )
 }
 
+function tituloDaRota(pathname: string): string {
+  if (pathname === '/') return 'TEA — Alfabetização para crianças autistas'
+  if (pathname === '/entrar') return 'Entrar — TEA'
+  if (pathname === '/cadastro') return 'Cadastro — TEA'
+  if (pathname === '/demo') return 'Demonstração — TEA'
+  if (pathname === '/privacidade') return 'Privacidade — TEA'
+  if (pathname === '/responsavel/perfis') return 'Perfis — TEA'
+  if (pathname === '/responsavel/perfis/gerenciar') {
+    return 'Gerenciar perfis — TEA'
+  }
+  if (pathname === '/responsavel/configuracoes') return 'Configurações — TEA'
+  if (pathname.startsWith('/responsavel/progresso/')) return 'Progresso — TEA'
+  if (pathname === '/crianca/trilha') return 'Trilha — TEA'
+  if (pathname.startsWith('/crianca/atividade/')) return 'Atividade — TEA'
+  return 'Página não encontrada — TEA'
+}
+
+function RotasApp() {
+  const location = useLocation()
+  const chaveReset = `${location.pathname}${location.search}${location.hash}`
+  const [anuncioRota, setAnuncioRota] = useState(() =>
+    tituloDaRota(location.pathname).replace(' — TEA', ''),
+  )
+
+  useEffect(() => {
+    const titulo = tituloDaRota(location.pathname)
+    document.title = titulo
+    setAnuncioRota(titulo.replace(' — TEA', ''))
+  }, [location.pathname])
+
+  return (
+    <>
+      <a className="skip-link" href="#conteudo-principal">
+        Pular para o conteúdo
+      </a>
+      <output aria-atomic="true" aria-live="polite" className="sr-only">
+        {anuncioRota}
+      </output>
+      <div id="conteudo-principal" tabIndex={-1}>
+        <LimiteErro chaveReset={chaveReset}>
+          <Suspense fallback={<CarregandoPagina />}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/entrar" element={<Login />} />
+              <Route path="/cadastro" element={<Cadastro />} />
+              <Route path="/demo" element={<Demo />} />
+              <Route path="/privacidade" element={<Privacidade />} />
+
+              <Route
+                path="/responsavel/perfis"
+                element={
+                  <RequireAuth>
+                    <SelecaoPerfil />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/responsavel/perfis/gerenciar"
+                element={
+                  <RequireAuth>
+                    <GerenciarPerfis />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/responsavel/configuracoes"
+                element={
+                  <RequireAuth>
+                    <Configuracoes />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/responsavel/progresso/:perfilId"
+                element={
+                  <RequireAuth>
+                    <Progresso />
+                  </RequireAuth>
+                }
+              />
+
+              <Route
+                path="/crianca/trilha"
+                element={
+                  <RequireAuth>
+                    <RequirePerfilAtivo>
+                      <Trilha />
+                    </RequirePerfilAtivo>
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/crianca/atividade/:atividadeId"
+                element={
+                  <RequireAuth>
+                    <RequirePerfilAtivo>
+                      <Atividade />
+                    </RequirePerfilAtivo>
+                  </RequireAuth>
+                }
+              />
+              <Route path="*" element={<NaoEncontrada />} />
+            </Routes>
+          </Suspense>
+        </LimiteErro>
+      </div>
+    </>
+  )
+}
+
 function App() {
   return (
     <PreferenciasProvider>
       <AuthProvider>
         <PerfilAtivoProvider>
           <HashRouter>
-            <Suspense fallback={<CarregandoPagina />}>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/entrar" element={<Login />} />
-                <Route path="/cadastro" element={<Cadastro />} />
-
-                <Route
-                  path="/responsavel/perfis"
-                  element={
-                    <RequireAuth>
-                      <SelecaoPerfil />
-                    </RequireAuth>
-                  }
-                />
-                <Route
-                  path="/responsavel/perfis/gerenciar"
-                  element={
-                    <RequireAuth>
-                      <GerenciarPerfis />
-                    </RequireAuth>
-                  }
-                />
-                <Route
-                  path="/responsavel/configuracoes"
-                  element={
-                    <RequireAuth>
-                      <Configuracoes />
-                    </RequireAuth>
-                  }
-                />
-                <Route
-                  path="/responsavel/progresso/:perfilId"
-                  element={
-                    <RequireAuth>
-                      <Progresso />
-                    </RequireAuth>
-                  }
-                />
-
-                <Route
-                  path="/crianca/trilha"
-                  element={
-                    <RequireAuth>
-                      <RequirePerfilAtivo>
-                        <Trilha />
-                      </RequirePerfilAtivo>
-                    </RequireAuth>
-                  }
-                />
-                <Route
-                  path="/crianca/atividade/:atividadeId"
-                  element={
-                    <RequireAuth>
-                      <RequirePerfilAtivo>
-                        <Atividade />
-                      </RequirePerfilAtivo>
-                    </RequireAuth>
-                  }
-                />
-              </Routes>
-            </Suspense>
+            <RotasApp />
           </HashRouter>
         </PerfilAtivoProvider>
       </AuthProvider>

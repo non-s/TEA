@@ -1,9 +1,20 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { entrar, redefinirSenha } from '../../firebase/auth'
+import {
+  LIMITE_EMAIL_RESPONSAVEL,
+  entrar,
+  redefinirSenha,
+} from '../../firebase/auth'
 import { Logo } from '../../components/ui/Logo'
 import { Cartao } from '../../components/ui/Cartao'
 import { Botao } from '../../components/ui/Botao'
+import {
+  consultarBloqueioLogin,
+  limparFalhasLogin,
+  mensagemBloqueioLogin,
+  registrarBloqueioServidorLogin,
+  registrarFalhaLogin,
+} from '../../utils/limiteLogin'
 
 const mensagensErro: Record<string, string> = {
   'auth/invalid-credential': 'E-mail ou senha incorretos.',
@@ -30,17 +41,61 @@ export function Login() {
   const [erro, setErro] = useState<string | null>(null)
   const [mensagem, setMensagem] = useState<string | null>(null)
   const [enviando, setEnviando] = useState(false)
+  const [bloqueioLogin, setBloqueioLogin] = useState(() =>
+    consultarBloqueioLogin(''),
+  )
+  const erroVisivel =
+    erro ?? (bloqueioLogin.ativo ? mensagemBloqueioLogin(bloqueioLogin) : null)
+
+  useEffect(() => {
+    setBloqueioLogin(consultarBloqueioLogin(email))
+  }, [email])
+
+  useEffect(() => {
+    if (!bloqueioLogin.ativo) return
+
+    const timeout = window.setTimeout(() => {
+      setBloqueioLogin(consultarBloqueioLogin(email))
+    }, bloqueioLogin.segundosRestantes * 1000)
+
+    return () => window.clearTimeout(timeout)
+  }, [bloqueioLogin, email])
 
   async function aoSubmeter(evento: FormEvent) {
     evento.preventDefault()
     setErro(null)
     setMensagem(null)
+    const bloqueioAtual = consultarBloqueioLogin(email)
+    if (bloqueioAtual.ativo) {
+      setErro(mensagemBloqueioLogin(bloqueioAtual))
+      return
+    }
+
     setEnviando(true)
     try {
       await entrar(email, senha)
+      limparFalhasLogin(email)
+      setBloqueioLogin({ ativo: false, segundosRestantes: 0 })
       navigate('/responsavel/perfis')
     } catch (erroCapturado) {
-      setErro(mensagemDoErro(erroCapturado))
+      const codigo = (erroCapturado as { code?: string })?.code
+      if (codigo === 'auth/too-many-requests') {
+        const bloqueio = registrarBloqueioServidorLogin(email)
+        setBloqueioLogin(bloqueio)
+        setErro(
+          `${mensagemDoErro(erroCapturado)} ${mensagemBloqueioLogin(bloqueio)}`,
+        )
+      } else if (codigo === 'auth/invalid-credential') {
+        const bloqueio = registrarFalhaLogin(email)
+        setBloqueioLogin(bloqueio)
+        setErro(
+          bloqueio.ativo
+            ? mensagemBloqueioLogin(bloqueio)
+            : mensagemDoErro(erroCapturado),
+        )
+      } else {
+        setErro(mensagemDoErro(erroCapturado))
+      }
     } finally {
       setEnviando(false)
     }
@@ -49,7 +104,7 @@ export function Login() {
   async function aoClicarEmEsqueciSenha() {
     setErro(null)
     setMensagem(null)
-    if (!email) {
+    if (!email.trim()) {
       setErro('Digite seu e-mail acima para receber o link de redefinição.')
       return
     }
@@ -82,6 +137,7 @@ export function Login() {
               required
               autoComplete="email"
               value={email}
+              maxLength={LIMITE_EMAIL_RESPONSAVEL}
               onChange={(evento) => setEmail(evento.target.value)}
               className={classesCampo}
             />
@@ -101,12 +157,12 @@ export function Login() {
             />
           </label>
 
-          {erro && (
+          {erroVisivel && (
             <p
               role="alert"
               className="rounded-lg bg-[var(--cor-erro)]/10 px-3 py-2 text-sm text-[var(--cor-erro)]"
             >
-              {erro}
+              {erroVisivel}
             </p>
           )}
           {mensagem && (
@@ -115,7 +171,11 @@ export function Login() {
             </output>
           )}
 
-          <Botao type="submit" disabled={enviando} className="mt-2">
+          <Botao
+            type="submit"
+            disabled={enviando || bloqueioLogin.ativo}
+            className="mt-2"
+          >
             {enviando ? 'Entrando…' : 'Entrar'}
           </Botao>
 

@@ -2,7 +2,7 @@ export type VarianteBotao = 'primario' | 'secundario' | 'acento' | 'fantasma'
 export type TamanhoBotao = 'medio' | 'grande'
 
 const base =
-  'inline-flex items-center justify-center gap-2 rounded-full font-medium transition-transform motion-reduce:transition-none disabled:opacity-60 disabled:pointer-events-none active:scale-[0.97]'
+  'inline-flex min-h-[var(--min-alvo-controle)] items-center justify-center gap-2 rounded-full font-medium transition-transform motion-reduce:transition-none disabled:opacity-60 disabled:pointer-events-none active:scale-[0.99]'
 
 const porVariante: Record<VarianteBotao, string> = {
   primario:

@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes } from 'react'
+import { forwardRef, type ButtonHTMLAttributes } from 'react'
 import {
   classesBotao,
   type TamanhoBotao,
@@ -10,16 +10,15 @@ interface BotaoProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   tamanho?: TamanhoBotao
 }
 
-export function Botao({
-  variante = 'primario',
-  tamanho = 'grande',
-  className = '',
-  ...props
-}: BotaoProps) {
+export const Botao = forwardRef<HTMLButtonElement, BotaoProps>(function Botao(
+  { variante = 'primario', tamanho = 'grande', className = '', ...props },
+  ref,
+) {
   return (
     <button
+      ref={ref}
       className={classesBotao({ variante, tamanho, className })}
       {...props}
     />
   )
-}
+})

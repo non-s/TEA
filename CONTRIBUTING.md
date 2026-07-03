@@ -15,7 +15,7 @@ npm install
 npm run dev
 ```
 
-Para testar funcionalidades que dependem do Firebase (login, perfis, progresso), você vai precisar do seu próprio projeto Firebase de desenvolvimento (gratuito, plano Spark) — copie `.env.example` para `.env.local` e preencha com as credenciais do seu projeto. Veja `docs/ARQUITETURA.md` e `docs/SEGURANCA.md` para o modelo de dados e as regras que seu projeto precisa replicar.
+Para testar funcionalidades que dependem do Firebase (login, perfis, progresso), você vai precisar do seu próprio projeto Firebase de desenvolvimento (gratuito, plano Spark) — copie `.env.example` para `.env.local` e preencha com as credenciais do seu projeto. App Check é opcional em desenvolvimento; use `VITE_FIREBASE_APPCHECK_RECAPTCHA_SITE_KEY` só se você já registrou o app Web no Console do Firebase/App Check. Veja `docs/ARQUITETURA.md` e `docs/SEGURANCA.md` para o modelo de dados e as regras que seu projeto precisa replicar.
 
 Comandos úteis:
 

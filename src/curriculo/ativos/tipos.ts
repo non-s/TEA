@@ -5,6 +5,15 @@ export type LetraIconeId = `letra-${string}`
 
 export type IconeId = FormaIconeId | LetraIconeId
 
+export const formasIcone = [
+  'circulo',
+  'quadrado',
+  'triangulo',
+  'estrela',
+  'coracao',
+  'lua',
+] as const satisfies readonly FormaIconeId[]
+
 export const nomesIcones: Record<FormaIconeId, string> = {
   circulo: 'círculo',
   quadrado: 'quadrado',

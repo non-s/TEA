@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 import { usePerfilAtivo } from '../../contexts/PerfilAtivoContext'
+import { usePreferencias } from '../../contexts/PreferenciasContext'
 import { ouvirPerfis, type PerfilCrianca } from '../../firebase/perfis'
 import { Icone } from '../../curriculo/ativos/Icone'
 import type { FormaIconeId } from '../../curriculo/ativos/tipos'
@@ -12,22 +13,44 @@ import { sair } from '../../firebase/auth'
 
 export function SelecaoPerfil() {
   const { usuario } = useAuth()
-  const { selecionarPerfil } = usePerfilAtivo()
+  const { encerrarPerfil, selecionarPerfil } = usePerfilAtivo()
+  const { atualizarPreferencias } = usePreferencias()
   const navigate = useNavigate()
   const [perfis, setPerfis] = useState<PerfilCrianca[]>([])
   const [carregando, setCarregando] = useState(true)
+  const [erroCarregamento, setErroCarregamento] = useState<string | null>(null)
 
   useEffect(() => {
     if (!usuario) return
-    return ouvirPerfis(usuario.uid, (novosPerfis) => {
-      setPerfis(novosPerfis)
-      setCarregando(false)
-    })
+    return ouvirPerfis(
+      usuario.uid,
+      (novosPerfis) => {
+        setPerfis(novosPerfis)
+        setErroCarregamento(null)
+        setCarregando(false)
+      },
+      () => {
+        setErroCarregamento(
+          'Não foi possível carregar os perfis agora. Verifique a conexão e tente novamente.',
+        )
+        setCarregando(false)
+      },
+    )
   }, [usuario])
 
   function aoEscolherPerfil(perfil: PerfilCrianca) {
+    atualizarPreferencias(perfil.preferenciasSensoriais)
     selecionarPerfil(perfil)
     navigate('/crianca/trilha')
+  }
+
+  async function aoSair() {
+    encerrarPerfil()
+    try {
+      await sair()
+    } catch {
+      setErroCarregamento('Nao foi possivel sair agora. Tente novamente.')
+    }
   }
 
   return (
@@ -42,10 +65,27 @@ export function SelecaoPerfil() {
         <p className="text-[var(--cor-texto-suave)]">Carregando perfis…</p>
       )}
 
-      {!carregando && perfis.length === 0 && (
-        <p className="max-w-xs text-[var(--cor-texto-suave)]">
-          Você ainda não cadastrou nenhum perfil de criança.
+      {erroCarregamento && (
+        <p
+          role="alert"
+          className="max-w-sm rounded-lg bg-[var(--cor-erro)]/10 px-3 py-2 text-sm text-[var(--cor-erro)]"
+        >
+          {erroCarregamento}
         </p>
+      )}
+
+      {!carregando && !erroCarregamento && perfis.length === 0 && (
+        <div className="flex max-w-xs flex-col items-center gap-4">
+          <p className="text-[var(--cor-texto-suave)]">
+            Você ainda não cadastrou nenhum perfil de criança.
+          </p>
+          <Link
+            to="/responsavel/perfis/gerenciar"
+            className={classesBotao({ tamanho: 'medio' })}
+          >
+            Criar primeiro perfil
+          </Link>
+        </div>
       )}
 
       <ul className="flex flex-wrap justify-center gap-6">
@@ -60,7 +100,7 @@ export function SelecaoPerfil() {
               >
                 <span
                   style={{ background: cor.fundo, color: cor.texto }}
-                  className="flex h-28 w-28 items-center justify-center rounded-3xl shadow-[var(--sombra-cartao)] transition-transform motion-reduce:transition-none group-hover:scale-105 group-active:scale-95"
+                  className="flex min-h-[var(--min-alvo-atividade)] min-w-[var(--min-alvo-atividade)] items-center justify-center rounded-3xl shadow-[var(--sombra-cartao)] transition-transform motion-reduce:transition-none group-hover:scale-105 group-active:scale-95"
                 >
                   <Icone
                     iconeId={perfil.avatarId as FormaIconeId}
@@ -78,15 +118,17 @@ export function SelecaoPerfil() {
 
       <div className="flex flex-col items-center gap-3">
         <div className="flex flex-wrap justify-center gap-3">
-          <Link
-            to="/responsavel/perfis/gerenciar"
-            className={classesBotao({
-              variante: 'secundario',
-              tamanho: 'medio',
-            })}
-          >
-            Gerenciar perfis
-          </Link>
+          {perfis.length > 0 && (
+            <Link
+              to="/responsavel/perfis/gerenciar"
+              className={classesBotao({
+                variante: 'secundario',
+                tamanho: 'medio',
+              })}
+            >
+              Gerenciar perfis
+            </Link>
+          )}
           <Link
             to="/responsavel/configuracoes"
             className={classesBotao({
@@ -99,8 +141,10 @@ export function SelecaoPerfil() {
         </div>
         <button
           type="button"
-          onClick={() => sair()}
-          className="text-sm text-[var(--cor-texto-suave)] underline underline-offset-2"
+          onClick={() => {
+            void aoSair()
+          }}
+          className="inline-flex min-h-[var(--min-alvo-controle)] items-center text-sm text-[var(--cor-texto-suave)] underline underline-offset-2"
         >
           Sair da conta
         </button>
