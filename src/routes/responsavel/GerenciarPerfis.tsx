@@ -76,6 +76,13 @@ export function GerenciarPerfis() {
   const [enviando, setEnviando] = useState(false)
   const [erro, setErro] = useState<string | null>(null)
   const [erroCarregamento, setErroCarregamento] = useState<string | null>(null)
+  const [salvandoInteresseId, setSalvandoInteresseId] = useState<string | null>(
+    null,
+  )
+  const [mensagemInteresse, setMensagemInteresse] = useState<{
+    tipo: 'sucesso' | 'erro'
+    texto: string
+  } | null>(null)
   const [perfilParaRemover, setPerfilParaRemover] =
     useState<PerfilCrianca | null>(null)
   const [confirmacaoRemocao, setConfirmacaoRemocao] = useState('')
@@ -220,12 +227,28 @@ export function GerenciarPerfis() {
     proximoInteresseId: InteresseEspecialId,
   ) {
     if (!usuario) return
-    await atualizarInteressePerfil(usuario.uid, perfilId, proximoInteresseId)
-    if (perfilAtivo?.id === perfilId) {
-      selecionarPerfil({
-        ...perfilAtivo,
-        interesseEspecialId: proximoInteresseId,
+    setSalvandoInteresseId(perfilId)
+    setMensagemInteresse(null)
+
+    try {
+      await atualizarInteressePerfil(usuario.uid, perfilId, proximoInteresseId)
+      if (perfilAtivo?.id === perfilId) {
+        selecionarPerfil({
+          ...perfilAtivo,
+          interesseEspecialId: proximoInteresseId,
+        })
+      }
+      setMensagemInteresse({
+        tipo: 'sucesso',
+        texto: 'Interesse salvo.',
       })
+    } catch {
+      setMensagemInteresse({
+        tipo: 'erro',
+        texto: 'Nao foi possivel salvar o interesse agora.',
+      })
+    } finally {
+      setSalvandoInteresseId(null)
     }
   }
 
@@ -256,6 +279,21 @@ export function GerenciarPerfis() {
             className="rounded-lg bg-[var(--cor-erro)]/10 px-3 py-2 text-sm text-[var(--cor-erro)]"
           >
             {erroCarregamento}
+          </p>
+        )}
+
+        {mensagemInteresse?.tipo === 'sucesso' && (
+          <output className="rounded-lg bg-[var(--cor-primaria-clara)] px-3 py-2 text-sm text-[var(--cor-primaria-escura)]">
+            {mensagemInteresse.texto}
+          </output>
+        )}
+
+        {mensagemInteresse?.tipo === 'erro' && (
+          <p
+            role="alert"
+            className="rounded-lg bg-[var(--cor-erro)]/10 px-3 py-2 text-sm text-[var(--cor-erro)]"
+          >
+            {mensagemInteresse.texto}
           </p>
         )}
 
@@ -315,6 +353,7 @@ export function GerenciarPerfis() {
                         id={`interesse-${perfil.id}`}
                         value={perfil.interesseEspecialId}
                         aria-describedby={`interesse-${perfil.id}-descricao`}
+                        disabled={salvandoInteresseId === perfil.id}
                         onChange={(evento) =>
                           aoAlterarInteresse(
                             perfil.id,

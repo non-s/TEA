@@ -191,6 +191,58 @@ describe('GerenciarPerfis', () => {
     )
   })
 
+  it('salva interesse do perfil ativo com retorno para o responsavel', async () => {
+    const usuario = userEvent.setup()
+    mocks.atualizarInteressePerfil.mockResolvedValueOnce(undefined)
+
+    render(
+      <MemoryRouter>
+        <GerenciarPerfis />
+      </MemoryRouter>,
+    )
+
+    await usuario.selectOptions(
+      await screen.findByLabelText('Interesse da criança'),
+      'musica',
+    )
+
+    await waitFor(() => {
+      expect(mocks.atualizarInteressePerfil).toHaveBeenCalledWith(
+        'responsavel-1',
+        'perfil-1',
+        'musica',
+      )
+    })
+    expect(mocks.selecionarPerfil).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: 'perfil-1',
+        interesseEspecialId: 'musica',
+      }),
+    )
+    expect(screen.getByRole('status')).toHaveTextContent('Interesse salvo.')
+  })
+
+  it('avisa quando nao consegue salvar interesse do perfil', async () => {
+    const usuario = userEvent.setup()
+    mocks.atualizarInteressePerfil.mockRejectedValueOnce(new Error('offline'))
+
+    render(
+      <MemoryRouter>
+        <GerenciarPerfis />
+      </MemoryRouter>,
+    )
+
+    await usuario.selectOptions(
+      await screen.findByLabelText('Interesse da criança'),
+      'musica',
+    )
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'Nao foi possivel salvar o interesse agora.',
+    )
+    expect(mocks.selecionarPerfil).not.toHaveBeenCalled()
+  })
+
   it('nao cria perfil quando o nome tem apenas espacos', async () => {
     const usuario = userEvent.setup()
 
