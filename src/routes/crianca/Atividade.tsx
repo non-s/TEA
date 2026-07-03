@@ -426,6 +426,8 @@ export function Atividade() {
     useState<string[]>([])
   const [sinalComunicarPronto, setSinalComunicarPronto] = useState(0)
   const [sinalPedirAjuda, setSinalPedirAjuda] = useState(0)
+  const [mensagemRegistroComunicacao, setMensagemRegistroComunicacao] =
+    useState<string | null>(null)
   const [tentativasAnteriores, setTentativasAnteriores] = useState<Tentativa[]>(
     [],
   )
@@ -476,6 +478,7 @@ export function Atividade() {
     setSessaoEncerrada(false)
     setSinalComunicarPronto(0)
     setSinalPedirAjuda(0)
+    setMensagemRegistroComunicacao(null)
   }, [atividade?.id])
 
   if (!atividade) {
@@ -552,12 +555,17 @@ export function Atividade() {
 
     const tipo = mensagem.id === 'pausa' ? 'regulacao' : 'comunicacao'
     const texto = `Comunicou "${mensagem.rotulo}": ${mensagem.fala}`
+    setMensagemRegistroComunicacao(null)
     void registrarObservacaoSessao(
       usuario.uid,
       perfilAtivo.id,
       texto,
       tipo,
-    ).catch(() => undefined)
+    ).catch(() => {
+      setMensagemRegistroComunicacao(
+        'A comunicacao foi respeitada, mas o registro nao salvou agora.',
+      )
+    })
   }
 
   if (atividadeConcluida) {
@@ -600,6 +608,12 @@ export function Atividade() {
         </button>
 
         <div className="flex flex-1 flex-col items-center justify-center">
+          {mensagemRegistroComunicacao && (
+            <output className="mb-4 max-w-md rounded-2xl bg-[var(--cor-primaria-clara)] px-4 py-3 text-center text-sm leading-6 text-[var(--cor-primaria-escura)]">
+              {mensagemRegistroComunicacao}
+            </output>
+          )}
+
           {erroHistorico && (
             <p
               role="alert"

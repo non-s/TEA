@@ -458,6 +458,26 @@ describe('Atividade', () => {
     )
   })
 
+  it('avisa quando a comunicacao foi respeitada mas nao registrada', async () => {
+    mocks.registrarObservacaoSessao.mockRejectedValueOnce(new Error('offline'))
+    const usuario = userEvent.setup()
+    renderizarAtividade('m0-n1-a1')
+
+    await usuario.click(screen.getByRole('button', { name: 'Começar' }))
+    await usuario.click(
+      screen.getByRole('button', { name: 'Ajuda. Preciso de ajuda.' }),
+    )
+
+    expect(
+      await screen.findByText(
+        'A comunicacao foi respeitada, mas o registro nao salvou agora.',
+      ),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: 'círculo. Escolha esta' }),
+    ).toBeInTheDocument()
+  })
+
   it('aumenta a ajuda visual quando a crianca comunica que nao sabe', async () => {
     mocks.tentativas = [
       {
