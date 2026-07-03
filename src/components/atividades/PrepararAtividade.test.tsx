@@ -10,6 +10,7 @@ function renderizarPreparacao(apoioPreferencial?: 'visual' | 'pausa') {
       <PrepararAtividade
         instrucao="Toque na figura igual"
         apoioPreferencial={apoioPreferencial}
+        apoioMediador={<p>Aceite olhar, gesto, toque ou CAA.</p>}
       >
         <p>Atividade iniciada</p>
       </PrepararAtividade>
@@ -26,6 +27,9 @@ describe('PrepararAtividade', () => {
     expect(screen.getByText('Continuar')).toBeInTheDocument()
     expect(
       screen.getByText('Olhe para o modelo. A resposta pode ser tocada.'),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText('Aceite olhar, gesto, toque ou CAA.'),
     ).toBeInTheDocument()
   })
 

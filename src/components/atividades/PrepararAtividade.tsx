@@ -11,6 +11,7 @@ import { RoteiroVisualAtividade } from './RoteiroVisualAtividade'
 interface PrepararAtividadeProps {
   instrucao: string
   alvo?: ReactNode
+  apoioMediador?: ReactNode
   rotuloAtividade?: string
   apoioPreferencial?: ApoioPreferencial
   regulacaoPreferencial?: RegulacaoPreferencial
@@ -20,6 +21,7 @@ interface PrepararAtividadeProps {
 export function PrepararAtividade({
   instrucao,
   alvo,
+  apoioMediador,
   rotuloAtividade,
   apoioPreferencial,
   regulacaoPreferencial,
@@ -89,6 +91,8 @@ export function PrepararAtividade({
       <p className="text-sm leading-6 text-[var(--cor-texto-suave)]">
         {apoio.lembretePreparacao}
       </p>
+
+      {apoioMediador}
 
       <div className="flex flex-wrap justify-center gap-3">
         <OuvirInstrucao texto={instrucao} />

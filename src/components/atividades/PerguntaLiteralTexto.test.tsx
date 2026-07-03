@@ -81,6 +81,13 @@ describe('PerguntaLiteralTexto', () => {
         'Leia o texto. Depois responda: O que apareceu primeiro? A mala. A bala.',
       ),
     ).toBeInTheDocument()
+    expect(
+      screen.getByRole('region', { name: 'Leitura compartilhada' }),
+    ).toHaveTextContent('Olhar, gesto, toque, vocalizacao ou CAA contam.')
+    expect(
+      screen.getByRole('region', { name: 'Leitura compartilhada' }),
+    ).toHaveTextContent('O que apareceu primeiro?')
+
     await usuario.click(screen.getByRole('button', { name: 'Começar' }))
 
     expect(screen.getAllByText('A MALA. A BALA.').length).toBeGreaterThan(0)

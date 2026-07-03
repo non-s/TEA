@@ -20,6 +20,7 @@ import { AvisoRegistroTentativa } from './AvisoRegistroTentativa'
 import { PrepararAtividade } from './PrepararAtividade'
 import { PausaSugerida } from './PausaSugerida'
 import { OpcoesResposta } from './OpcoesResposta'
+import { ApoioLeituraCompartilhada } from './ApoioLeituraCompartilhada'
 
 interface CompreensaoFraseProps {
   atividade: Atividade
@@ -101,6 +102,9 @@ export function CompreensaoFrase({
       rotuloAtividade={atividade.alvo.rotulo}
       apoioPreferencial={apoioPreferencial}
       regulacaoPreferencial={regulacaoPreferencial}
+      apoioMediador={
+        <ApoioLeituraCompartilhada convite="Mostre a palavra que combina com a frase." />
+      }
     >
       <div className="flex flex-col items-center gap-8">
         <p

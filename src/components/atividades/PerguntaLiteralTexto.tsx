@@ -20,6 +20,7 @@ import { AvisoRegistroTentativa } from './AvisoRegistroTentativa'
 import { PrepararAtividade } from './PrepararAtividade'
 import { PausaSugerida } from './PausaSugerida'
 import { OpcoesResposta } from './OpcoesResposta'
+import { ApoioLeituraCompartilhada } from './ApoioLeituraCompartilhada'
 
 interface PerguntaLiteralTextoProps {
   atividade: Atividade
@@ -105,6 +106,7 @@ export function PerguntaLiteralTexto({
       rotuloAtividade={atividade.alvo.rotulo}
       apoioPreferencial={apoioPreferencial}
       regulacaoPreferencial={regulacaoPreferencial}
+      apoioMediador={<ApoioLeituraCompartilhada convite={pergunta} />}
     >
       <div className="flex flex-col items-center gap-8">
         <section

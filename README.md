@@ -39,6 +39,7 @@ A fundamentação pedagógica completa, com referências científicas, está em 
 - Navegação por teclado/leitor de tela com link "Pular para o conteúdo", título de página atualizado por rota e anúncio discreto da tela atual.
 - A trilha também sugere revisões leves de atividades já dominadas quando ficam alguns dias sem prática, apoiando manutenção sem bloquear avanço.
 - Cada atividade mantém um roteiro visual curto ("Agora", "Depois" e "Pausa") antes e durante a tarefa, com a pausa descrita conforme a regulação preferida do perfil, reforçando previsibilidade sem depender só de instrução verbal.
+- Atividades de frase/texto acrescentam apoio de leitura compartilhada na preparação, lembrando o mediador de esperar resposta por olhar, gesto, toque, vocalização ou CAA antes da escolha.
 - As atividades sugerem pausas em intervalos configuráveis por perfil, com convite, acordo visual de retorno ("primeiro/depois"), passos adaptados à regulação preferida (pausa, ambiente calmo, movimento ou alternância) e, quando registrado, plano individual com sinais de pausa, apoios que ajudam e pontos a evitar; depois de prática longa oferecem uma tela previsível de encerramento por agora, sem bloquear a criança nem desfazer progresso.
 - Leitura em voz alta (Web Speech API, pt-BR), sempre opcional, nunca automática sem interação, e cancelada quando o som é desligado ou a tela muda.
 - Ajustes por perfil: som, animação, alto contraste, tamanho de fonte e alvos maiores para toque/uso mediado.

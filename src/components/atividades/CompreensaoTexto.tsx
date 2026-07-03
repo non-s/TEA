@@ -20,6 +20,7 @@ import { AvisoRegistroTentativa } from './AvisoRegistroTentativa'
 import { PrepararAtividade } from './PrepararAtividade'
 import { PausaSugerida } from './PausaSugerida'
 import { OpcoesResposta } from './OpcoesResposta'
+import { ApoioLeituraCompartilhada } from './ApoioLeituraCompartilhada'
 
 interface CompreensaoTextoProps {
   atividade: Atividade
@@ -101,6 +102,9 @@ export function CompreensaoTexto({
       rotuloAtividade={atividade.alvo.rotulo}
       apoioPreferencial={apoioPreferencial}
       regulacaoPreferencial={regulacaoPreferencial}
+      apoioMediador={
+        <ApoioLeituraCompartilhada convite="Mostre uma palavra que apareceu no texto." />
+      }
     >
       <div className="flex flex-col items-center gap-8">
         <p
