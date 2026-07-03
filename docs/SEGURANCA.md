@@ -65,7 +65,7 @@ Essa exclusão acontece diretamente na conta autenticada do responsável, usando
 
 ## Exclusão de conta
 
-Na tela de configurações, o responsável também pode apagar a conta inteira. Esse fluxo exige senha atual e confirmação textual `APAGAR CONTA`, reautentica o usuário no Firebase Auth, remove todos os perfis com suas subcoleções de tentativas/observações, apaga o documento `responsaveis/{uid}` e por último exclui o usuário do Auth.
+Na tela de configurações, o responsável também pode apagar a conta inteira. Esse fluxo exige senha atual e confirmação textual `APAGAR CONTA`, reautentica o usuário no Firebase Auth, remove todos os perfis com suas subcoleções de tentativas/observações, apaga o documento `responsaveis/{uid}` e por último exclui o usuário do Auth. Quando existe um perfil ativo, a mesma tela mostra um atalho direto para a exportação local antes da confirmação destrutiva.
 
 As regras permitem apagar o documento raiz apenas pelo próprio responsável autenticado. A exclusão de conta não tenta apagar arquivos locais que a família já baixou nem cópias IndexedDB/cache do navegador; por isso a interface continua recomendando exportar o que precisar guardar e limpar dados do site em dispositivo compartilhado.
 

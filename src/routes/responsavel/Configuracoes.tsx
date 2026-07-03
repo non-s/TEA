@@ -171,6 +171,20 @@ export function Configuracoes() {
           </p>
         </div>
 
+        {perfilAtivo ? (
+          <Link
+            to={`/responsavel/progresso/${perfilAtivo.id}`}
+            className="w-fit text-sm font-medium text-[var(--cor-primaria)] underline underline-offset-2"
+          >
+            Baixar copia do perfil antes de apagar
+          </Link>
+        ) : (
+          <p className="text-sm leading-6 text-[var(--cor-texto-suave)]">
+            Selecione um perfil de criança para baixar uma cópia local antes de
+            apagar a conta.
+          </p>
+        )}
+
         <label className="flex flex-col gap-1.5">
           <span className="text-sm font-medium text-[var(--cor-texto)]">
             Senha da conta

@@ -115,6 +115,12 @@ describe('Configuracoes', () => {
     const usuario = userEvent.setup()
     renderizarConfiguracoes()
 
+    expect(
+      screen.getByRole('link', {
+        name: 'Baixar copia do perfil antes de apagar',
+      }),
+    ).toHaveAttribute('href', '/responsavel/progresso/perfil-1')
+
     const botao = screen.getByRole('button', {
       name: 'Apagar conta e dados',
     })
