@@ -89,6 +89,12 @@ const textoApoioPreferencial: Record<
   pausa: 'Pausas combinadas',
 }
 
+type FiltroObservacoes = TipoObservacaoSessao | 'todas'
+
+const tiposObservacaoOrdenados = Object.keys(
+  textoTipoObservacaoSessao,
+) as TipoObservacaoSessao[]
+
 function textoApoioMedio(mediaNivelDica: number): string {
   if (mediaNivelDica < 1) return 'alto'
   if (mediaNivelDica < 1.8) return 'moderado'
@@ -107,6 +113,8 @@ export function Progresso() {
   const [novaObservacao, setNovaObservacao] = useState('')
   const [tipoNovaObservacao, setTipoNovaObservacao] =
     useState<TipoObservacaoSessao>('outro')
+  const [filtroObservacoes, setFiltroObservacoes] =
+    useState<FiltroObservacoes>('todas')
   const [planoIndividual, setPlanoIndividual] = useState<PlanoIndividual>(
     planoIndividualPadrao,
   )
@@ -204,6 +212,31 @@ export function Progresso() {
     [perfilApoio, planoIndividual, relatorio.proximaAtividade],
   )
   const erroCarregamento = erroPerfil ?? erroTentativas ?? erroObservacoes
+  const contagemObservacoesPorTipo = useMemo(() => {
+    return observacoesSessao.reduce<Record<TipoObservacaoSessao, number>>(
+      (contagem, observacao) => {
+        const tipo = observacao.tipo ?? 'outro'
+        contagem[tipo] += 1
+        return contagem
+      },
+      {
+        comunicacao: 0,
+        regulacao: 0,
+        acesso: 0,
+        generalizacao: 0,
+        outro: 0,
+      },
+    )
+  }, [observacoesSessao])
+  const observacoesFiltradas = useMemo(
+    () =>
+      filtroObservacoes === 'todas'
+        ? observacoesSessao
+        : observacoesSessao.filter(
+            (observacao) => (observacao.tipo ?? 'outro') === filtroObservacoes,
+          ),
+    [filtroObservacoes, observacoesSessao],
+  )
 
   async function aoSalvarPlano() {
     if (!usuario || !perfilId) return
@@ -1048,21 +1081,74 @@ export function Progresso() {
         </div>
 
         {observacoesSessao.length > 0 && (
-          <ul className="divide-y divide-[var(--cor-borda)] rounded-2xl border-2 border-[var(--cor-borda)]">
-            {observacoesSessao.slice(0, 5).map((observacao) => (
-              <li key={observacao.id ?? observacao.timestamp} className="p-4">
-                <p className="mb-1 text-xs font-medium uppercase text-[var(--cor-texto-suave)]">
-                  {textoTipoObservacaoSessao[observacao.tipo ?? 'outro']}
-                </p>
-                <p className="text-sm leading-6 text-[var(--cor-texto)]">
-                  {observacao.texto}
-                </p>
-                <p className="mt-1 text-xs text-[var(--cor-texto-suave)]">
-                  {formatarDataHora(observacao.timestamp)}
-                </p>
-              </li>
-            ))}
-          </ul>
+          <section
+            aria-label="Resumo das observacoes de sessao"
+            className="grid gap-4"
+          >
+            <ul className="grid grid-cols-2 gap-2 sm:grid-cols-5">
+              {tiposObservacaoOrdenados.map((tipo) => (
+                <li
+                  key={tipo}
+                  className="rounded-2xl border-2 border-[var(--cor-borda)] bg-[var(--cor-fundo)] px-3 py-2 text-center"
+                >
+                  <span className="block text-xs font-medium text-[var(--cor-texto-suave)]">
+                    {textoTipoObservacaoSessao[tipo]}
+                  </span>
+                  <strong className="text-lg text-[var(--cor-texto)]">
+                    {contagemObservacoesPorTipo[tipo]}
+                  </strong>
+                </li>
+              ))}
+            </ul>
+
+            <label className="flex flex-col gap-1.5">
+              <span className="text-sm font-medium text-[var(--cor-texto)]">
+                Filtrar observacoes
+              </span>
+              <select
+                value={filtroObservacoes}
+                onChange={(evento) =>
+                  setFiltroObservacoes(evento.target.value as FiltroObservacoes)
+                }
+                className="rounded-xl border-2 border-[var(--cor-borda)] bg-[var(--cor-fundo-alt)] px-4 py-2.5 text-[var(--cor-texto)]"
+              >
+                <option value="todas">
+                  Todas ({observacoesSessao.length})
+                </option>
+                {tiposObservacaoOrdenados.map((tipo) => (
+                  <option key={tipo} value={tipo}>
+                    {textoTipoObservacaoSessao[tipo]} (
+                    {contagemObservacoesPorTipo[tipo]})
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            {observacoesFiltradas.length > 0 ? (
+              <ul className="divide-y divide-[var(--cor-borda)] rounded-2xl border-2 border-[var(--cor-borda)]">
+                {observacoesFiltradas.slice(0, 5).map((observacao) => (
+                  <li
+                    key={observacao.id ?? observacao.timestamp}
+                    className="p-4"
+                  >
+                    <p className="mb-1 text-xs font-medium uppercase text-[var(--cor-texto-suave)]">
+                      {textoTipoObservacaoSessao[observacao.tipo ?? 'outro']}
+                    </p>
+                    <p className="text-sm leading-6 text-[var(--cor-texto)]">
+                      {observacao.texto}
+                    </p>
+                    <p className="mt-1 text-xs text-[var(--cor-texto-suave)]">
+                      {formatarDataHora(observacao.timestamp)}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="rounded-2xl border-2 border-[var(--cor-borda)] bg-[var(--cor-fundo)] px-4 py-3 text-sm text-[var(--cor-texto-suave)]">
+                Nenhuma observacao nesta categoria.
+              </p>
+            )}
+          </section>
         )}
       </Cartao>
 

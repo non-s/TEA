@@ -190,7 +190,7 @@ A tela também gera arquivos locais para equipe e generalização. O relatório 
 
 Nas últimas tentativas, a interface usa rótulos humanos da atividade e "Tentou" em vez de "Errou", preservando informação útil para o adulto sem reforçar uma leitura punitiva do erro.
 
-O responsável também pode registrar observações de sessão em texto curto, categorizando cada nota como comunicação, regulação, acesso, generalização ou geral. Essa categoria leve ajuda equipe e família a separar "o que a criança comunicou", "o que regulou", "como acessou" e "onde a habilidade apareceu fora da tela" sem criar score comportamental. O histórico ajuda a perceber padrões de mediação ao longo do tempo sem transformar a criança em uma soma de erros ou velocidade de resposta.
+O responsável também pode registrar observações de sessão em texto curto, categorizando cada nota como comunicação, regulação, acesso, generalização ou geral. A tela resume quantas observações existem por categoria e permite filtrar o histórico recente, ajudando equipe e família a separar "o que a criança comunicou", "o que regulou", "como acessou" e "onde a habilidade apareceu fora da tela" sem criar score comportamental. O histórico ajuda a perceber padrões de mediação ao longo do tempo sem transformar a criança em uma soma de erros ou velocidade de resposta.
 
 ### Plano individual e observação do mediador
 

@@ -88,6 +88,12 @@ const mocks = vi.hoisted(() => ({
       texto: 'pediu pausa antes de cansar',
       timestamp: 1710000000000,
     },
+    {
+      id: 'obs-2',
+      tipo: 'comunicacao',
+      texto: 'apontou ajuda antes da tentativa',
+      timestamp: 1710000100000,
+    },
   ],
 }))
 
@@ -321,6 +327,49 @@ describe('Progresso', () => {
         .getAllByRole('status')
         .some((status) => status.textContent === 'Observacao registrada.'),
     ).toBe(true)
+  })
+
+  it('resume e filtra observacoes por categoria', async () => {
+    const usuario = userEvent.setup()
+    renderizarProgresso()
+
+    expect(
+      await screen.findByRole('region', {
+        name: 'Resumo das observacoes de sessao',
+      }),
+    ).toBeInTheDocument()
+    expect(screen.getByText('pediu pausa antes de cansar')).toBeInTheDocument()
+    expect(
+      screen.getByText('apontou ajuda antes da tentativa'),
+    ).toBeInTheDocument()
+    expect(screen.getByLabelText('Filtrar observacoes')).toHaveValue('todas')
+    expect(
+      screen.getByRole('option', { name: 'Comunicacao (1)' }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('option', { name: 'Regulacao (1)' }),
+    ).toBeInTheDocument()
+
+    await usuario.selectOptions(
+      screen.getByLabelText('Filtrar observacoes'),
+      'comunicacao',
+    )
+
+    expect(
+      screen.getByText('apontou ajuda antes da tentativa'),
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByText('pediu pausa antes de cansar'),
+    ).not.toBeInTheDocument()
+
+    await usuario.selectOptions(
+      screen.getByLabelText('Filtrar observacoes'),
+      'acesso',
+    )
+
+    expect(
+      screen.getByText('Nenhuma observacao nesta categoria.'),
+    ).toBeInTheDocument()
   })
 
   it('mantem o perfil ativo sincronizado ao salvar perfil de apoio', async () => {
