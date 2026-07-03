@@ -79,6 +79,12 @@ describe('OpcoesResposta', () => {
       'aria-keyshortcuts',
       '2',
     )
+    expect(
+      screen.getByRole('button', { name: 'A' }).querySelector('[aria-hidden]'),
+    ).toHaveTextContent('1')
+    expect(
+      screen.getByRole('button', { name: 'B' }).querySelector('[aria-hidden]'),
+    ).toHaveTextContent('2')
 
     await usuario.keyboard('2')
 

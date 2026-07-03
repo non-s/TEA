@@ -24,7 +24,7 @@ A fundamentação pedagógica completa, com referências científicas, está em 
 - Suporte opcional a Firebase App Check com reCAPTCHA v3, para adicionar uma camada contra abuso automatizado do backend público quando o ambiente de produção tiver chave e enforcement configurados no Console do Firebase.
 - Cooldown local após falhas repetidas de login, reduzindo tentativas em sequência e mensagens frustrantes antes do próprio Firebase aplicar limites.
 - Perfil funcional de apoio na criação e no progresso: comunicação preferida, forma de acesso à tela, estratégia de regulação, plano curto de regulação, observação curta e cartões de comunicação personalizáveis com símbolo visual estável e motivo complementar por interesse da criança; "Pausa", "Ajuda", "Não sei" e "Pronto" têm consequências funcionais na sessão.
-- Modo mouse/teclado: quando esse acesso é escolhido, as opções de resposta também aceitam teclas numéricas (`1`, `2`, `3`...), sem exigir precisão de toque na tela.
+- Modo mouse/teclado: quando esse acesso é escolhido, as opções de resposta mostram e aceitam teclas numéricas (`1`, `2`, `3`...), sem exigir precisão de toque na tela.
 - Modo de toque com confirmação: o primeiro toque apenas seleciona a opção e a resposta só é registrada depois de "Confirmar", reduzindo erro por toque acidental ou baixa precisão motora.
 - Modo de toque com apoio do mediador: o toque ou sinal observado também fica pendente até o adulto confirmar com a criança, evitando registrar dificuldade de acesso como erro pedagógico.
 - Modo de resposta mediada: quando o perfil indica escolha por olhar/gesto, a atividade mostra uma opção por vez com controles para o mediador avançar/escolher; setas e Enter/Espaço também funcionam para teclado ou acionador.

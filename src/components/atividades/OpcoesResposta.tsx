@@ -51,6 +51,17 @@ function SeloModelagem() {
   )
 }
 
+function SeloAtalhoTeclado({ indice }: { indice: number }) {
+  return (
+    <span
+      aria-hidden="true"
+      className="absolute left-2 top-2 flex h-8 w-8 items-center justify-center rounded-full border-2 border-[var(--cor-borda)] bg-[var(--cor-fundo)] text-sm font-semibold text-[var(--cor-texto-suave)]"
+    >
+      {indice + 1}
+    </span>
+  )
+}
+
 export function OpcoesResposta({
   opcoes,
   respostaId,
@@ -192,14 +203,15 @@ export function OpcoesResposta({
                   animacoes,
                   destacado: emDestaqueVisual && ehResposta,
                   className: `${classNameOpcao} ${
-                    mostrarModelo ? 'flex-col gap-2 text-center' : ''
-                  } ${
+                    acessoPorTeclado ? 'relative' : ''
+                  } ${mostrarModelo ? 'flex-col gap-2 text-center' : ''} ${
                     selecionada
                       ? 'ring-3 ring-[var(--cor-acento)] ring-offset-2'
                       : ''
                   }`,
                 })}
               >
+                {acessoPorTeclado && <SeloAtalhoTeclado indice={indice} />}
                 {renderOpcao(opcao)}
                 {mostrarModelo && <SeloModelagem />}
               </button>
