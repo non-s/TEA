@@ -145,11 +145,22 @@ describe('GerenciarPerfis', () => {
     ).toBeInTheDocument()
     const botaoCancelar = screen.getByRole('button', { name: 'Cancelar' })
     const campoConfirmacao = screen.getByLabelText('Digite Lia para confirmar')
+    const linkExportacao = screen.getByRole('link', {
+      name: 'Baixar copia deste perfil antes de apagar',
+    })
+    expect(linkExportacao).toHaveAttribute(
+      'href',
+      '/responsavel/progresso/perfil-1',
+    )
     await waitFor(() => {
       expect(botaoCancelar).toHaveFocus()
     })
     await usuario.tab()
+    expect(linkExportacao).toHaveFocus()
+    await usuario.tab()
     expect(campoConfirmacao).toHaveFocus()
+    await usuario.tab({ shift: true })
+    expect(linkExportacao).toHaveFocus()
     await usuario.tab({ shift: true })
     expect(botaoCancelar).toHaveFocus()
     expect(screen.getByRole('button', { name: 'Apagar dados' })).toBeDisabled()

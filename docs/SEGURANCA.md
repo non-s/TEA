@@ -61,7 +61,7 @@ Esse ajuste é deliberadamente local e opt-in: não é sincronizado entre dispos
 
 Na tela de gerenciamento de perfis, o responsável pode apagar um perfil depois de digitar o nome/apelido da criança para confirmar. A ação remove o documento do perfil e também limpa as subcoleções `tentativas` e `observacoesSessao` em lotes antes de apagar o perfil principal.
 
-Essa exclusão acontece diretamente na conta autenticada do responsável, usando as mesmas regras de isolamento por `request.auth.uid == responsavelId`. As subcoleções de tentativas e observações são removidas em lotes antes do documento do perfil, e a exclusão do perfil principal é permitida apenas para o próprio responsável. A interface recomenda exportar uma cópia local antes da remoção quando a família precisar guardar histórico.
+Essa exclusão acontece diretamente na conta autenticada do responsável, usando as mesmas regras de isolamento por `request.auth.uid == responsavelId`. As subcoleções de tentativas e observações são removidas em lotes antes do documento do perfil, e a exclusão do perfil principal é permitida apenas para o próprio responsável. O diálogo de remoção oferece um atalho para a exportação local antes da confirmação quando a família precisar guardar histórico.
 
 ## Exclusão de conta
 

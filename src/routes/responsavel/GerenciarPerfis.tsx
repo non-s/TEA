@@ -555,6 +555,13 @@ export function GerenciarPerfis() {
               </p>
             </div>
 
+            <Link
+              to={`/responsavel/progresso/${perfilParaRemover.id}`}
+              className="w-fit text-sm font-medium text-[var(--cor-primaria)] underline underline-offset-2"
+            >
+              Baixar copia deste perfil antes de apagar
+            </Link>
+
             <label className="flex flex-col gap-2 text-sm font-medium text-[var(--cor-texto)]">
               Digite {perfilParaRemover.nome} para confirmar
               <input
