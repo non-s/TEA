@@ -1,5 +1,6 @@
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -7,15 +8,15 @@ import {
   type ReactNode,
 } from 'react'
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion'
+import {
+  normalizarPreferenciasSensoriais,
+  preferenciasSensoriaisPadrao,
+  type PreferenciasSensoriais,
+  type TamanhoFonte,
+} from '../curriculo/preferenciasSensoriais'
 
-export type TamanhoFonte = 'normal' | 'grande' | 'extra-grande'
-
-export interface Preferencias {
-  som: boolean
-  animacoes: boolean
-  altoContraste: boolean
-  tamanhoFonte: TamanhoFonte
-}
+export type Preferencias = PreferenciasSensoriais
+export type { TamanhoFonte }
 
 const CHAVE_LOCAL = 'tea:preferencias'
 
@@ -47,13 +48,11 @@ export function PreferenciasProvider({ children }: { children: ReactNode }) {
 
   const [preferencias, setPreferencias] = useState<Preferencias>(() => {
     const salvas = lerPreferenciasSalvas()
-    return {
-      som: true,
+    const padraoInicial = {
+      ...preferenciasSensoriaisPadrao,
       animacoes: !prefereMovimentoReduzido,
-      altoContraste: false,
-      tamanhoFonte: 'normal',
-      ...salvas,
     }
+    return normalizarPreferenciasSensoriais(salvas ?? {}, padraoInicial)
   })
 
   useEffect(() => {
@@ -61,19 +60,25 @@ export function PreferenciasProvider({ children }: { children: ReactNode }) {
 
     const raiz = document.documentElement
     raiz.dataset.altoContraste = String(preferencias.altoContraste)
+    raiz.dataset.alvosMaiores = String(preferencias.alvosMaiores)
     raiz.style.setProperty(
       '--escala-fonte',
       String(escalasFonte[preferencias.tamanhoFonte]),
     )
   }, [preferencias])
 
-  function atualizarPreferencias(alteracoes: Partial<Preferencias>) {
-    setPreferencias((atual) => ({ ...atual, ...alteracoes }))
-  }
+  const atualizarPreferencias = useCallback(
+    (alteracoes: Partial<Preferencias>) => {
+      setPreferencias((atual) =>
+        normalizarPreferenciasSensoriais({ ...atual, ...alteracoes }, atual),
+      )
+    },
+    [],
+  )
 
   const valor = useMemo(
     () => ({ preferencias, atualizarPreferencias }),
-    [preferencias],
+    [atualizarPreferencias, preferencias],
   )
 
   return (

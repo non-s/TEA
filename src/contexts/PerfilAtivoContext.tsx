@@ -1,7 +1,43 @@
-import { createContext, useContext, useState, type ReactNode } from 'react'
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from 'react'
 import type { PerfilCrianca } from '../firebase/perfis'
+import { useAuth } from './AuthContext'
 
-const CHAVE_SESSAO = 'tea:perfilAtivoId'
+const CHAVE_SESSAO = 'tea:perfilAtivo'
+
+interface PerfilAtivoSalvo {
+  uidResponsavel: string | null
+  perfil: PerfilCrianca
+}
+
+function lerPerfilSalvo(): PerfilAtivoSalvo | null {
+  const bruto = sessionStorage.getItem(CHAVE_SESSAO)
+  if (!bruto) return null
+  try {
+    const dados = JSON.parse(bruto) as Partial<PerfilAtivoSalvo>
+    if (dados.perfil && 'id' in dados.perfil) {
+      return {
+        uidResponsavel:
+          typeof dados.uidResponsavel === 'string'
+            ? dados.uidResponsavel
+            : null,
+        perfil: dados.perfil as PerfilCrianca,
+      }
+    }
+    sessionStorage.removeItem(CHAVE_SESSAO)
+    return null
+  } catch {
+    sessionStorage.removeItem(CHAVE_SESSAO)
+    return null
+  }
+}
 
 interface PerfilAtivoContextValor {
   perfilAtivo: PerfilCrianca | null
@@ -12,22 +48,63 @@ interface PerfilAtivoContextValor {
 const PerfilAtivoContext = createContext<PerfilAtivoContextValor | null>(null)
 
 export function PerfilAtivoProvider({ children }: { children: ReactNode }) {
-  const [perfilAtivo, setPerfilAtivo] = useState<PerfilCrianca | null>(null)
+  const { carregando, usuario } = useAuth()
+  const perfilSalvo = useMemo(() => lerPerfilSalvo(), [])
+  const [perfilAtivo, setPerfilAtivo] = useState<PerfilCrianca | null>(
+    () => perfilSalvo?.perfil ?? null,
+  )
+  const [uidResponsavelPerfilAtivo, setUidResponsavelPerfilAtivo] = useState<
+    string | null
+  >(() => perfilSalvo?.uidResponsavel ?? null)
 
-  function selecionarPerfil(perfil: PerfilCrianca) {
-    setPerfilAtivo(perfil)
-    sessionStorage.setItem(CHAVE_SESSAO, perfil.id)
-  }
-
-  function encerrarPerfil() {
+  const encerrarPerfil = useCallback(() => {
     setPerfilAtivo(null)
+    setUidResponsavelPerfilAtivo(null)
     sessionStorage.removeItem(CHAVE_SESSAO)
-  }
+  }, [])
+
+  const selecionarPerfil = useCallback(
+    (perfil: PerfilCrianca) => {
+      const uidResponsavel = usuario?.uid ?? null
+      setPerfilAtivo(perfil)
+      setUidResponsavelPerfilAtivo(uidResponsavel)
+      sessionStorage.setItem(
+        CHAVE_SESSAO,
+        JSON.stringify({ uidResponsavel, perfil }),
+      )
+    },
+    [usuario],
+  )
+
+  useEffect(() => {
+    if (!carregando && !usuario) {
+      encerrarPerfil()
+      return
+    }
+
+    if (
+      !carregando &&
+      usuario &&
+      perfilAtivo &&
+      uidResponsavelPerfilAtivo !== usuario.uid
+    ) {
+      encerrarPerfil()
+    }
+  }, [
+    carregando,
+    encerrarPerfil,
+    perfilAtivo,
+    uidResponsavelPerfilAtivo,
+    usuario,
+  ])
+
+  const valor = useMemo(
+    () => ({ perfilAtivo, selecionarPerfil, encerrarPerfil }),
+    [encerrarPerfil, perfilAtivo, selecionarPerfil],
+  )
 
   return (
-    <PerfilAtivoContext.Provider
-      value={{ perfilAtivo, selecionarPerfil, encerrarPerfil }}
-    >
+    <PerfilAtivoContext.Provider value={valor}>
       {children}
     </PerfilAtivoContext.Provider>
   )

@@ -6,7 +6,7 @@ interface InterruptorProps {
 
 export function Interruptor({ rotulo, marcado, aoAlterar }: InterruptorProps) {
   return (
-    <label className="flex cursor-pointer items-center justify-between gap-3 py-1">
+    <label className="flex min-h-[var(--min-alvo-controle)] cursor-pointer items-center justify-between gap-3 py-1">
       <span className="text-[var(--cor-texto)]">{rotulo}</span>
       <span className="relative inline-flex">
         <input

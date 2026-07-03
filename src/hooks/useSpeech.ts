@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import { usePreferencias } from '../contexts/PreferenciasContext'
 
 function verificarDisponibilidade(): boolean {
@@ -7,6 +7,18 @@ function verificarDisponibilidade(): boolean {
 
 export function useSpeech() {
   const { preferencias } = usePreferencias()
+
+  useEffect(() => {
+    if (!verificarDisponibilidade()) return
+
+    if (!preferencias.som) {
+      window.speechSynthesis.cancel()
+    }
+
+    return () => {
+      window.speechSynthesis.cancel()
+    }
+  }, [preferencias.som])
 
   const falar = useCallback(
     (texto: string) => {

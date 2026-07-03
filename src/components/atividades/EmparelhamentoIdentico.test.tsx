@@ -27,8 +27,28 @@ const atividade: Atividade = {
   criteriosDominio: { acertosConsecutivosNecessarios: 1, janelaTentativas: 10 },
 }
 
+const tentativasParaNivelIndependente = [
+  {
+    atividadeId: atividade.id,
+    moduloId: atividade.moduloId,
+    timestamp: 1,
+    resultado: 'correto' as const,
+    nivelDicaUsado: 1,
+    tempoRespostaMs: 1000,
+  },
+  {
+    atividadeId: atividade.id,
+    moduloId: atividade.moduloId,
+    timestamp: 2,
+    resultado: 'correto' as const,
+    nivelDicaUsado: 1,
+    tempoRespostaMs: 1000,
+  },
+]
+
 describe('EmparelhamentoIdentico', () => {
-  it('mostra as opções de resposta e o alvo', () => {
+  it('mostra as opções de resposta e o alvo', async () => {
+    const usuario = userEvent.setup()
     renderComProvider(
       <EmparelhamentoIdentico
         atividade={atividade}
@@ -39,9 +59,16 @@ describe('EmparelhamentoIdentico', () => {
     )
 
     expect(
+      screen.getByText('Toque na figura igual a esta: círculo'),
+    ).toBeInTheDocument()
+    await usuario.click(screen.getByRole('button', { name: 'Começar' }))
+
+    expect(
       screen.getByText('Toque na figura igual a esta:'),
     ).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'círculo' })).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: 'círculo. Escolha esta' }),
+    ).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'quadrado' })).toBeInTheDocument()
   })
 
@@ -55,9 +82,11 @@ describe('EmparelhamentoIdentico', () => {
         aoDominar={aoDominar}
         uidResponsavel="uid-teste"
         perfilId="perfil-teste"
+        tentativasAnteriores={tentativasParaNivelIndependente}
       />,
     )
 
+    await usuario.click(screen.getByRole('button', { name: 'Começar' }))
     await usuario.click(screen.getByRole('button', { name: 'círculo' }))
     await vi.advanceTimersByTimeAsync(800)
 

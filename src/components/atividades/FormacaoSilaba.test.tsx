@@ -44,8 +44,28 @@ const atividade: Atividade = {
   criteriosDominio: { acertosConsecutivosNecessarios: 1, janelaTentativas: 10 },
 }
 
+const tentativasParaNivelIndependente = [
+  {
+    atividadeId: atividade.id,
+    moduloId: atividade.moduloId,
+    timestamp: 1,
+    resultado: 'correto' as const,
+    nivelDicaUsado: 1,
+    tempoRespostaMs: 1000,
+  },
+  {
+    atividadeId: atividade.id,
+    moduloId: atividade.moduloId,
+    timestamp: 2,
+    resultado: 'correto' as const,
+    nivelDicaUsado: 1,
+    tempoRespostaMs: 1000,
+  },
+]
+
 describe('FormacaoSilaba', () => {
-  it('mostra a instrução com a palavra de apoio e as opções', () => {
+  it('mostra a instrução com a palavra de apoio e as opções', async () => {
+    const usuario = userEvent.setup()
     renderComProvider(
       <FormacaoSilaba
         atividade={atividade}
@@ -56,7 +76,11 @@ describe('FormacaoSilaba', () => {
     )
 
     expect(screen.getByText('Toque na sílaba MA, de mamãe')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'MA' })).toBeInTheDocument()
+    await usuario.click(screen.getByRole('button', { name: 'Começar' }))
+
+    expect(
+      screen.getByRole('button', { name: 'MA. Escolha esta' }),
+    ).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'PA' })).toBeInTheDocument()
   })
 
@@ -70,9 +94,11 @@ describe('FormacaoSilaba', () => {
         aoDominar={aoDominar}
         uidResponsavel="uid-teste"
         perfilId="perfil-teste"
+        tentativasAnteriores={tentativasParaNivelIndependente}
       />,
     )
 
+    await usuario.click(screen.getByRole('button', { name: 'Começar' }))
     await usuario.click(screen.getByRole('button', { name: 'MA' }))
     await vi.advanceTimersByTimeAsync(800)
 

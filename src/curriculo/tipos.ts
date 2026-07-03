@@ -4,6 +4,13 @@ export type TipoAtividade =
   | 'nomeacao-receptiva'
   | 'nomeacao-expressiva'
   | 'formacao-silaba'
+  | 'formacao-palavra'
+  | 'leitura-frase'
+  | 'compreensao-frase'
+  | 'compreensao-texto'
+  | 'pergunta-literal-texto'
+  | 'pergunta-presenca-texto'
+  | 'pergunta-inferencia-texto'
 
 export interface NivelDica {
   ordem: number
@@ -25,6 +32,8 @@ export interface Atividade {
   nivelDificuldade: number
   /** O estímulo mostrado/falado como amostra ou instrução. */
   alvo: Estimulo
+  pergunta?: string
+  respostaDeveAparecerNoTexto?: boolean
   /**
    * O estímulo que deve ser tocado entre as opções. Igual a `alvo` em
    * emparelhamento idêntico; diferente em emparelhamento por categoria

@@ -27,8 +27,28 @@ const atividade: Atividade = {
   criteriosDominio: { acertosConsecutivosNecessarios: 1, janelaTentativas: 10 },
 }
 
+const tentativasParaNivelIndependente = [
+  {
+    atividadeId: atividade.id,
+    moduloId: atividade.moduloId,
+    timestamp: 1,
+    resultado: 'correto' as const,
+    nivelDicaUsado: 1,
+    tempoRespostaMs: 1000,
+  },
+  {
+    atividadeId: atividade.id,
+    moduloId: atividade.moduloId,
+    timestamp: 2,
+    resultado: 'correto' as const,
+    nivelDicaUsado: 1,
+    tempoRespostaMs: 1000,
+  },
+]
+
 describe('NomeacaoExpressiva', () => {
-  it('mostra a letra e as opções de nome', () => {
+  it('mostra a letra e as opções de nome', async () => {
+    const usuario = userEvent.setup()
     renderComProvider(
       <NomeacaoExpressiva
         atividade={atividade}
@@ -39,7 +59,11 @@ describe('NomeacaoExpressiva', () => {
     )
 
     expect(screen.getByText('Qual é o nome desta letra?')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'eme' })).toBeInTheDocument()
+    await usuario.click(screen.getByRole('button', { name: 'Começar' }))
+
+    expect(
+      screen.getByRole('button', { name: 'eme. Escolha esta' }),
+    ).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'pê' })).toBeInTheDocument()
   })
 
@@ -53,9 +77,11 @@ describe('NomeacaoExpressiva', () => {
         aoDominar={aoDominar}
         uidResponsavel="uid-teste"
         perfilId="perfil-teste"
+        tentativasAnteriores={tentativasParaNivelIndependente}
       />,
     )
 
+    await usuario.click(screen.getByRole('button', { name: 'Começar' }))
     await usuario.click(screen.getByRole('button', { name: 'eme' }))
     await vi.advanceTimersByTimeAsync(800)
 

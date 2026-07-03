@@ -7,6 +7,11 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   base: '/TEA/',
   plugins: [react(), tailwindcss()],
+  build: {
+    // O maior chunk esperado e lazy é o vendor do Firestore. Mantemos o
+    // orçamento abaixo de 600 kB para ainda sinalizar crescimento real.
+    chunkSizeWarningLimit: 600,
+  },
   test: {
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],

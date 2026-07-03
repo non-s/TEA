@@ -1,0 +1,21 @@
+{
+  "name": "TEA - Alfabetizacao para criancas autistas",
+  "short_name": "TEA",
+  "description": "Plataforma open source de alfabetizacao para criancas autistas, com apoio visual, comunicacao funcional e ajustes sensoriais.",
+  "lang": "pt-BR",
+  "start_url": "/TEA/#/",
+  "scope": "/TEA/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f7f5f2",
+  "theme_color": "#5b7f9e",
+  "categories": ["education"],
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

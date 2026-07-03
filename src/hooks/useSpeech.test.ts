@@ -55,4 +55,41 @@ describe('useSpeech', () => {
 
     expect(falarMock).not.toHaveBeenCalled()
   })
+
+  it('cancela fala em andamento quando o som e desligado', () => {
+    const { result } = renderHook(
+      () => {
+        const speech = useSpeech()
+        const { atualizarPreferencias } = usePreferencias()
+        return { speech, atualizarPreferencias }
+      },
+      { wrapper: PreferenciasProvider },
+    )
+
+    act(() => {
+      result.current.speech.falar('Ola')
+    })
+    cancelarMock.mockClear()
+
+    act(() => {
+      result.current.atualizarPreferencias({ som: false })
+    })
+
+    expect(cancelarMock).toHaveBeenCalled()
+  })
+
+  it('cancela fala ao desmontar o componente que iniciou a voz', () => {
+    const { result, unmount } = renderHook(() => useSpeech(), {
+      wrapper: PreferenciasProvider,
+    })
+
+    act(() => {
+      result.current.falar('Ola')
+    })
+    cancelarMock.mockClear()
+
+    unmount()
+
+    expect(cancelarMock).toHaveBeenCalledOnce()
+  })
 })

@@ -1,7 +1,15 @@
-import { renderHook, act } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
-import { useTentativa } from './useTentativa'
+import { act, renderHook, waitFor } from '@testing-library/react'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { Atividade } from '../curriculo/tipos'
+import { useTentativa } from './useTentativa'
+
+const mocks = vi.hoisted(() => ({
+  registrarTentativa: vi.fn(),
+}))
+
+vi.mock('../firebase/progresso', () => ({
+  registrarTentativa: mocks.registrarTentativa,
+}))
 
 const atividade: Atividade = {
   id: 'teste-a1',
@@ -20,19 +28,24 @@ const atividade: Atividade = {
 }
 
 describe('useTentativa', () => {
-  it('marca a atividade como dominada após acertos consecutivos suficientes no nível independente', () => {
+  beforeEach(() => {
+    mocks.registrarTentativa.mockReset()
+    mocks.registrarTentativa.mockResolvedValue(undefined)
+  })
+
+  it('comeca com suporte total e so domina apos fading ate o nivel independente', () => {
     const { result } = renderHook(() =>
       useTentativa(atividade, 'uid-teste', 'perfil-teste'),
     )
 
-    expect(result.current.nivelDicaAtual).toBe(2)
+    expect(result.current.nivelDicaAtual).toBe(0)
 
-    act(() => {
-      result.current.responder('alvo')
-    })
-    act(() => {
-      result.current.responder('alvo')
-    })
+    for (let tentativa = 0; tentativa < 6; tentativa += 1) {
+      act(() => {
+        result.current.responder('alvo')
+      })
+    }
+
     let ultimoResultado
     act(() => {
       ultimoResultado = result.current.responder('alvo')
@@ -41,10 +54,31 @@ describe('useTentativa', () => {
     expect(ultimoResultado).toEqual({ correto: true, dominada: true })
   })
 
-  it('reduz o nível de dica (mais suporte) após uma resposta incorreta', () => {
+  it('aumenta o apoio apos uma resposta incorreta no nivel independente', () => {
     const { result } = renderHook(() =>
-      useTentativa(atividade, 'uid-teste', 'perfil-teste'),
+      useTentativa(atividade, 'uid-teste', 'perfil-teste', {
+        tentativasAnteriores: [
+          {
+            atividadeId: atividade.id,
+            moduloId: atividade.moduloId,
+            timestamp: 1,
+            resultado: 'correto',
+            nivelDicaUsado: 1,
+            tempoRespostaMs: 1000,
+          },
+          {
+            atividadeId: atividade.id,
+            moduloId: atividade.moduloId,
+            timestamp: 2,
+            resultado: 'correto',
+            nivelDicaUsado: 1,
+            tempoRespostaMs: 1000,
+          },
+        ],
+      }),
     )
+
+    expect(result.current.nivelDicaAtual).toBe(2)
 
     act(() => {
       result.current.responder('distrator')
@@ -53,19 +87,230 @@ describe('useTentativa', () => {
     expect(result.current.nivelDicaAtual).toBe(1)
   })
 
-  it('não marca como dominada enquanto ainda está recebendo dica', () => {
+  it('aumenta o apoio quando a crianca pede ajuda sem registrar erro', () => {
+    const { result, rerender } = renderHook(
+      ({ sinalPedirAjuda }: { sinalPedirAjuda: number }) =>
+        useTentativa(atividade, 'uid-teste', 'perfil-teste', {
+          sinalPedirAjuda,
+          tentativasAnteriores: [
+            {
+              atividadeId: atividade.id,
+              moduloId: atividade.moduloId,
+              timestamp: 1,
+              resultado: 'correto',
+              nivelDicaUsado: 1,
+              tempoRespostaMs: 1000,
+            },
+            {
+              atividadeId: atividade.id,
+              moduloId: atividade.moduloId,
+              timestamp: 2,
+              resultado: 'correto',
+              nivelDicaUsado: 1,
+              tempoRespostaMs: 1000,
+            },
+          ],
+        }),
+      { initialProps: { sinalPedirAjuda: 0 } },
+    )
+
+    expect(result.current.nivelDicaAtual).toBe(2)
+    expect(result.current.tentativasSessao).toBe(0)
+
+    act(() => {
+      rerender({ sinalPedirAjuda: 1 })
+    })
+
+    expect(result.current.nivelDicaAtual).toBe(0)
+    expect(result.current.tentativasSessao).toBe(0)
+  })
+
+  it('nao marca como dominada enquanto ainda esta recebendo dica', () => {
     const { result } = renderHook(() =>
       useTentativa(atividade, 'uid-teste', 'perfil-teste'),
     )
 
-    act(() => {
-      result.current.responder('distrator')
-    })
     let resultado
     act(() => {
       resultado = result.current.responder('alvo')
     })
 
     expect(resultado).toEqual({ correto: true, dominada: false })
+  })
+
+  it('permite registrar tentativa local sem usar o backend padrao', async () => {
+    const registrarTentativaLocal = vi.fn()
+    const { result } = renderHook(() =>
+      useTentativa(atividade, 'uid-teste', 'perfil-teste', {
+        registrarTentativa: registrarTentativaLocal,
+      }),
+    )
+
+    act(() => {
+      result.current.responder('alvo')
+    })
+
+    await waitFor(() => {
+      expect(registrarTentativaLocal).toHaveBeenCalledWith(
+        expect.objectContaining({
+          atividadeId: atividade.id,
+          resultado: 'correto',
+        }),
+      )
+    })
+    expect(mocks.registrarTentativa).not.toHaveBeenCalled()
+  })
+
+  it('sugere pausa em intervalos configurados sem bloquear resposta', () => {
+    const { result } = renderHook(() =>
+      useTentativa(atividade, 'uid-teste', 'perfil-teste', {
+        limiteTentativasAntesPausa: 2,
+      }),
+    )
+
+    act(() => {
+      result.current.responder('alvo')
+    })
+    expect(result.current.sugestaoPausa).toBe(false)
+
+    act(() => {
+      result.current.responder('alvo')
+    })
+    expect(result.current.tentativasSessao).toBe(2)
+    expect(result.current.sugestaoPausa).toBe(true)
+
+    act(() => {
+      result.current.dispensarSugestaoPausa()
+    })
+    expect(result.current.sugestaoPausa).toBe(false)
+  })
+
+  it('dispensa sugestao de pausa quando a crianca comunica prontidao', () => {
+    const { result, rerender } = renderHook(
+      ({ sinalComunicarPronto }: { sinalComunicarPronto: number }) =>
+        useTentativa(atividade, 'uid-teste', 'perfil-teste', {
+          limiteTentativasAntesPausa: 2,
+          sinalComunicarPronto,
+        }),
+      { initialProps: { sinalComunicarPronto: 0 } },
+    )
+
+    act(() => {
+      result.current.responder('alvo')
+    })
+    act(() => {
+      result.current.responder('alvo')
+    })
+    expect(result.current.tentativasSessao).toBe(2)
+    expect(result.current.sugestaoPausa).toBe(true)
+
+    act(() => {
+      rerender({ sinalComunicarPronto: 1 })
+    })
+
+    expect(result.current.tentativasSessao).toBe(2)
+    expect(result.current.sugestaoPausa).toBe(false)
+    expect(result.current.sugestaoEncerrarSessao).toBe(false)
+  })
+
+  it('sugere encerrar por agora depois de alguns intervalos de pausa', () => {
+    const { result } = renderHook(() =>
+      useTentativa(atividade, 'uid-teste', 'perfil-teste', {
+        limiteTentativasAntesPausa: 2,
+      }),
+    )
+
+    for (let tentativa = 0; tentativa < 6; tentativa += 1) {
+      act(() => {
+        result.current.responder('alvo')
+      })
+    }
+
+    expect(result.current.tentativasSessao).toBe(6)
+    expect(result.current.sugestaoPausa).toBe(false)
+    expect(result.current.sugestaoEncerrarSessao).toBe(true)
+
+    act(() => {
+      result.current.dispensarSugestaoEncerrarSessao()
+    })
+    expect(result.current.sugestaoEncerrarSessao).toBe(false)
+  })
+
+  it('continua sequencia independente registrada antes de sair da atividade', () => {
+    const { result } = renderHook(() =>
+      useTentativa(atividade, 'uid-teste', 'perfil-teste', {
+        tentativasAnteriores: [
+          {
+            atividadeId: atividade.id,
+            moduloId: atividade.moduloId,
+            timestamp: 1,
+            resultado: 'correto',
+            nivelDicaUsado: 2,
+            tempoRespostaMs: 1000,
+          },
+          {
+            atividadeId: atividade.id,
+            moduloId: atividade.moduloId,
+            timestamp: 2,
+            resultado: 'correto',
+            nivelDicaUsado: 2,
+            tempoRespostaMs: 1000,
+          },
+        ],
+      }),
+    )
+
+    let ultimoResultado
+    act(() => {
+      ultimoResultado = result.current.responder('alvo')
+    })
+
+    expect(ultimoResultado).toEqual({ correto: true, dominada: true })
+  })
+
+  it('avisa quando nao consegue salvar a tentativa sem bloquear a resposta', async () => {
+    mocks.registrarTentativa.mockRejectedValueOnce(new Error('offline'))
+    const { result } = renderHook(() =>
+      useTentativa(atividade, 'uid-teste', 'perfil-teste'),
+    )
+
+    let resposta
+    act(() => {
+      resposta = result.current.responder('alvo')
+    })
+
+    expect(resposta).toEqual({ correto: true, dominada: false })
+    expect(result.current.tentativasSessao).toBe(1)
+    await waitFor(() => {
+      expect(result.current.erroRegistroTentativa).toContain(
+        'ainda não foi salva',
+      )
+    })
+  })
+
+  it('limpa aviso de registro quando uma tentativa seguinte salva', async () => {
+    mocks.registrarTentativa
+      .mockRejectedValueOnce(new Error('offline'))
+      .mockResolvedValueOnce(undefined)
+    const { result } = renderHook(() =>
+      useTentativa(atividade, 'uid-teste', 'perfil-teste'),
+    )
+
+    act(() => {
+      result.current.responder('alvo')
+    })
+    await waitFor(() => {
+      expect(result.current.erroRegistroTentativa).toContain(
+        'ainda não foi salva',
+      )
+    })
+
+    act(() => {
+      result.current.responder('alvo')
+    })
+
+    await waitFor(() => {
+      expect(result.current.erroRegistroTentativa).toBeNull()
+    })
   })
 })
