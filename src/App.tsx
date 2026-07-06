@@ -7,6 +7,7 @@ import { RequireAuth } from './routes/RequireAuth'
 import { RequirePerfilAtivo } from './routes/RequirePerfilAtivo'
 import { Home } from './routes/Home'
 import { LimiteErro } from './components/ui/LimiteErro'
+import { AvisoConexao } from './components/ui/AvisoConexao'
 
 const Login = lazy(() =>
   import('./routes/responsavel/Login').then((m) => ({ default: m.Login })),
@@ -54,6 +55,9 @@ const Progresso = lazy(() =>
 const Trilha = lazy(() =>
   import('./routes/crianca/Trilha').then((m) => ({ default: m.Trilha })),
 )
+const Jardim = lazy(() =>
+  import('./routes/crianca/Jardim').then((m) => ({ default: m.Jardim })),
+)
 const Atividade = lazy(() =>
   import('./routes/crianca/Atividade').then((m) => ({
     default: m.Atividade,
@@ -81,6 +85,7 @@ function tituloDaRota(pathname: string): string {
   if (pathname === '/responsavel/configuracoes') return 'Configurações — TEA'
   if (pathname.startsWith('/responsavel/progresso/')) return 'Progresso — TEA'
   if (pathname === '/crianca/trilha') return 'Trilha — TEA'
+  if (pathname === '/crianca/jardim') return 'Meu jardim — TEA'
   if (pathname.startsWith('/crianca/atividade/')) return 'Atividade — TEA'
   return 'Página não encontrada — TEA'
 }
@@ -169,11 +174,22 @@ function RotasApp() {
                   </RequireAuth>
                 }
               />
+              <Route
+                path="/crianca/jardim"
+                element={
+                  <RequireAuth>
+                    <RequirePerfilAtivo>
+                      <Jardim />
+                    </RequirePerfilAtivo>
+                  </RequireAuth>
+                }
+              />
               <Route path="*" element={<NaoEncontrada />} />
             </Routes>
           </Suspense>
         </LimiteErro>
       </div>
+      <AvisoConexao />
     </>
   )
 }

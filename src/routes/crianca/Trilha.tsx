@@ -10,28 +10,12 @@ import { ouvirPerfil } from '../../firebase/perfis'
 import { ouvirTentativas } from '../../firebase/progresso'
 import { Icone } from '../../curriculo/ativos/Icone'
 import type { IconeId } from '../../curriculo/ativos/tipos'
+import { acentosPorModulo } from '../../curriculo/coresModulo'
 import type { Atividade, Tentativa } from '../../curriculo/tipos'
 import { useAuth } from '../../contexts/AuthContext'
 import { usePerfilAtivo } from '../../contexts/PerfilAtivoContext'
 import { usePreferencias } from '../../contexts/PreferenciasContext'
 import { useFocoPreso } from '../../hooks/useFocoPreso'
-
-const acentosPorModulo: Record<string, { fundo: string; texto: string }> = {
-  m0: {
-    fundo: 'var(--cor-primaria-clara)',
-    texto: 'var(--cor-primaria-escura)',
-  },
-  m1: { fundo: 'var(--cor-acento-clara)', texto: 'var(--cor-acento-escura)' },
-  m2: { fundo: 'var(--cor-sucesso-clara)', texto: 'var(--cor-sucesso)' },
-  m3: { fundo: 'var(--cor-conquista-clara)', texto: 'var(--cor-conquista)' },
-  m4: { fundo: '#e3ddf0', texto: '#5f4e96' },
-  m5: { fundo: '#d8ece9', texto: '#2f6f68' },
-  m6: { fundo: '#f0e4d6', texto: '#7a5737' },
-  m7: { fundo: '#e1e9d5', texto: '#566f2d' },
-  m8: { fundo: '#dbe4f4', texto: '#3d5f9c' },
-  m9: { fundo: '#f2dede', texto: '#8a4a4a' },
-  m10: { fundo: '#e6def0', texto: '#654b83' },
-}
 
 interface CartaoAtividadeTrilhaProps {
   atividade: Atividade
@@ -204,13 +188,21 @@ export function Trilha() {
         <h1 className="text-3xl font-semibold text-[var(--cor-texto)]">
           Olá, {perfilAtivo?.nome}
         </h1>
-        <button
-          type="button"
-          onClick={() => setConfirmandoAreaResponsavel(true)}
-          className="inline-flex min-h-[var(--min-alvo-controle)] items-center text-sm text-[var(--cor-texto-suave)] underline underline-offset-2"
-        >
-          Área do responsável
-        </button>
+        <div className="flex items-center gap-4">
+          <Link
+            to="/crianca/jardim"
+            className="inline-flex min-h-[var(--min-alvo-controle)] items-center text-sm text-[var(--cor-primaria-escura)] underline underline-offset-2"
+          >
+            Meu jardim
+          </Link>
+          <button
+            type="button"
+            onClick={() => setConfirmandoAreaResponsavel(true)}
+            className="inline-flex min-h-[var(--min-alvo-controle)] items-center text-sm text-[var(--cor-texto-suave)] underline underline-offset-2"
+          >
+            Área do responsável
+          </button>
+        </div>
       </div>
 
       {erroCarregamento && (
