@@ -50,7 +50,7 @@ Agora a criança escolhe/produz o nome da letra mostrada, e não apenas a locali
 
 ### Módulo 3-T — Traçado de Letras
 
-Em paralelo ao Módulo 3 (mesmo pré-requisito, sem depender um do outro), a trilha oferece uma atividade grafomotora: a criança traça a letra sobre um guia pontilhado, com o dedo ou o mouse. Isso responde a uma limitação real das atividades anteriores — todas usam reconhecimento/seleção, nenhuma pratica o movimento de escrever a letra, que é uma habilidade separada e necessária para alfabetização funcional.
+Em paralelo ao Módulo 3 (mesmo pré-requisito, sem depender um do outro), a trilha oferece uma atividade grafomotora: a criança traça a letra sobre um guia pontilhado, com o dedo ou o mouse. Isso responde a uma limitação real das atividades anteriores — todas usam reconhecimento/seleção, nenhuma pratica o movimento de escrever a letra, que é uma habilidade separada e necessária para alfabetização funcional. A revisão de Verma & Lahiri (2022, _Review Journal of Autism and Developmental Disorders_) descreve dificuldades de escrita à mão como um achado consistente em autismo (nos componentes espacial, temporal e cinestésico do movimento) e cataloga abordagens de intervenção convencionais e assistidas por tecnologia — o traçado guiado desta plataforma é uma versão minimalista e gratuita dessa categoria, não uma intervenção clínica de terapia ocupacional.
 
 A avaliação do traçado (`src/curriculo/tracadoLetras.ts`) é deliberadamente tolerante: mede se o traçado ficou perto do guia (precisão) e se percorreu o guia inteiro (cobertura), sem comparar contra uma fonte real nem exigir caligrafia. Não é uma ferramenta de avaliação motora clínica — é uma prática de exposição ao movimento, com o mesmo esquema de dica/critério de domínio das outras atividades.
 
@@ -249,5 +249,6 @@ O apoio preferencial também altera a experiência da criança: a tela de prepar
 - Australian Education Research Organisation. _Spacing and retrieval practice guide._ [edresearch.edu.au](https://www.edresearch.edu.au/guides-resources/practice-guides/spacing-and-retrieval-practice-guide-full-publication)
 - Ledford, J. R., Lane, J. D., Elam, K. L., & Wolery, M. _Beyond intervention into daily life: A systematic review of generalization and maintenance outcomes._ [PMC](https://pmc.ncbi.nlm.nih.gov/articles/PMC7187421/)
 - Autistic Self Advocacy Network (ASAN) — posicionamento público sobre intervenções e neurodiversidade. [autisticadvocacy.org](https://autisticadvocacy.org/)
+- Verma, P., & Lahiri, U. (2022). _Deficits in Handwriting of Individuals with Autism: a Review on Identification and Intervention Approaches._ Review Journal of Autism and Developmental Disorders, 9, 70–90. [springer.com](https://link.springer.com/article/10.1007/s40489-020-00234-7)
 
 > Este documento é vivo: se uma fonte estiver desatualizada, mal interpretada, ou se você (especialmente se for uma pessoa autista, terapeuta ou pesquisador) discordar de alguma escolha pedagógica, abra uma issue ou PR. Mudanças em `src/curriculo/` idealmente passam por revisão de alguém com formação em educação especial ou terapia — ver [`CONTRIBUTING.md`](../CONTRIBUTING.md).
