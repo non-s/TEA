@@ -111,6 +111,21 @@ describe('Jardim', () => {
     ).toBeVisible()
   })
 
+  it('mostra o canteiro brotando quando só parte do módulo foi dominada', () => {
+    const modulo0 = trilhaV1.modulos[0]
+    mocks.perfilFirestore = {
+      id: 'perfil-1',
+      nome: 'Lia',
+      atividadesDominadas: [modulo0.atividades[0].id],
+    }
+
+    renderizar()
+
+    expect(
+      screen.getByLabelText(`${modulo0.titulo}: Crescendo`),
+    ).toBeInTheDocument()
+  })
+
   it('mostra erro e mantém o jardim quando a leitura do perfil falha', () => {
     mocks.erroAoOuvirPerfil = true
     renderizar()

@@ -84,6 +84,34 @@ describe('TracadoLetra', () => {
     ).toBeDisabled()
   })
 
+  it('nao quebra ao desenhar antes do SVG ter layout (retangulo com tamanho zero)', async () => {
+    // jsdom nao calcula layout real: getBoundingClientRect() sem mock
+    // retorna width/height zero, o mesmo cenario de um pointerdown disparado
+    // antes do primeiro paint no navegador real.
+    const usuario = userEvent.setup()
+    renderComProvider(
+      <TracadoLetra
+        atividade={atividade}
+        aoDominar={vi.fn()}
+        uidResponsavel="uid-teste"
+        perfilId="perfil-teste"
+      />,
+    )
+
+    await usuario.click(screen.getByRole('button', { name: 'Começar' }))
+    const area = screen.getByRole('img', {
+      name: 'Área para traçar a letra I',
+    })
+    tracarNaArea(area, [
+      [50, 10],
+      [50, 90],
+    ])
+
+    expect(
+      screen.getByRole('button', { name: 'Verificar traçado' }),
+    ).toBeEnabled()
+  })
+
   it('aprova um traçado fiel ao guia e chama aoDominar', async () => {
     vi.useFakeTimers({ shouldAdvanceTime: true })
     vi.spyOn(SVGSVGElement.prototype, 'getBoundingClientRect').mockReturnValue({
