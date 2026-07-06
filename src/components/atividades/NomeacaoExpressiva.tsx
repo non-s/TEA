@@ -176,10 +176,7 @@ export function NomeacaoExpressiva({
         )}
 
         {vozHabilitada && (
-          <div
-            className="flex flex-col items-center gap-2"
-            aria-live="polite"
-          >
+          <div className="flex flex-col items-center gap-2" aria-live="polite">
             <Botao
               type="button"
               variante="secundario"
