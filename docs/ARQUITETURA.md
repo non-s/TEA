@@ -7,7 +7,7 @@ Registro curto das decisões técnicas do projeto, no estilo ADR (Architecture D
 | Camada           | Escolha                                           | Por quê                                                                                                                                      |
 | ---------------- | ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
 | Build/dev server | [Vite](https://vite.dev/)                         | Rápido, configuração mínima, build estático simples de hospedar no GitHub Pages.                                                             |
-| UI               | React 18 + TypeScript                             | Ecossistema grande, tipagem reduz bugs num projeto que cresce por contribuições externas.                                                    |
+| UI               | React 19 + TypeScript                             | Ecossistema grande, tipagem reduz bugs num projeto que cresce por contribuições externas.                                                    |
 | Estilo           | Tailwind CSS                                      | Consistência de espaçamento/cor via tokens (`src/index.css`) sem precisar de um design system separado.                                      |
 | Roteamento       | `react-router-dom` com `HashRouter`               | GitHub Pages não suporta rewrites de servidor — `HashRouter` evita 404 ao recarregar uma rota profunda, sem precisar do hack de `404.html`.  |
 | Backend          | Firebase (Auth + Firestore), plano gratuito Spark | Exigência do projeto: zero custo. Ver `docs/SEGURANCA.md` para o modelo de dados.                                                            |
@@ -76,7 +76,9 @@ src/
 ├── curriculo/          # conteúdo pedagógico versionado + ícones
 ├── firebase/           # toda a integração com Firebase (auth, perfis, progresso)
 ├── contexts/           # estado global via React Context (auth, perfil ativo, preferências)
-├── hooks/               # lógica reutilizável (useTentativa, useSpeech, ...)
+├── hooks/               # lógica reutilizável (useTentativa, useSpeech, useReconhecimentoFala, ...)
+├── pwa/                 # registro do service worker e estado de atualização do PWA
+├── preferenciasDispositivo.ts  # preferências locais por dispositivo (nunca sincronizadas com o Firestore)
 └── test/                # setup global de testes (mocks do SDK do Firebase)
 ```
 
@@ -94,7 +96,27 @@ Isso importa porque muitas famílias que mais precisam desta plataforma têm con
 
 O `vite.config.ts` mantém `chunkSizeWarningLimit` em 600 kB porque o maior chunk esperado é justamente o vendor lazy do Firestore; abaixo disso o aviso padrão de 500 kB virava ruído mesmo sem afetar a primeira visita. Esse limite ainda funciona como orçamento: crescimento real do Firestore, do entry público ou de outro vendor acima de 600 kB volta a aparecer no build.
 
-O manifest em `public/site.webmanifest` permite instalar/fixar o app em celular ou tablet com nome, ícone e cor próprios, mas deliberadamente não registra service worker. A decisão mantém a instalação visual separada de cache de dados: o app shell pode ser aberto como experiência instalada, enquanto dados infantis persistentes continuam sob a escolha explícita de cache offline dentro das configurações.
+O manifest em `public/site.webmanifest` permite instalar/fixar o app em celular ou tablet com nome, ícone e cor próprios. Um service worker (`vite-plugin-pwa`, modo `generateSW`, ver `vite.config.ts`) faz precache do app shell (HTML/JS/CSS/SVG/fontes), permitindo abrir o app sem conexão e atualizar sozinho quando uma nova versão é publicada — `src/pwa/registrarServiceWorker.ts` registra isso fora do ambiente de teste (`import.meta.env.MODE === 'test'`), e `src/components/ui/AvisoConexao.tsx` mostra um aviso calmo de offline/atualização, nunca automático demais (sem recarregar sozinho). Essa decisão mantém a instalação/offline do **código** do app separada do cache de **dados**: dados infantis persistentes continuam sob a escolha explícita de cache offline do Firestore dentro das configurações (`src/firebase/db.ts`), não do service worker.
+
+`src/hooks/useConexao.ts` expõe `useEstaOffline` (baseado nos eventos `online`/`offline` do navegador) e `useAtualizacaoPWADisponivel` (observando `src/pwa/estadoAtualizacaoPWA.ts`, um pub-sub simples separado do módulo que importa o virtual module `virtual:pwa-register` — separação deliberada para que testes de componente não precisem resolver esse módulo virtual só para observar o estado de atualização).
+
+## Jardim de Conquistas: derivado, não persistido
+
+`src/curriculo/jardim.ts` (`calcularJardim`) deriva o estágio de cada canteiro (semente/brotando/floresceu) a partir de `trilhaV1.modulos` e do `Set` de atividades dominadas do perfil — não existe nenhum campo novo no Firestore para o jardim. Isso significa que o jardim nunca pode ficar dessincronizado do progresso real: não há dois lugares para o mesmo dado divergir. `src/routes/crianca/Jardim.tsx` reaproveita `acentosPorModulo` (extraído para `src/curriculo/coresModulo.ts`, compartilhado com `Trilha.tsx`) para manter a mesma identidade visual de cor por módulo nas duas telas.
+
+## Traçado de Letras: geometria em vez de canvas/OCR
+
+`src/curriculo/tracadoLetras.ts` representa o guia de cada letra como polilinhas num espaço de coordenadas 0-100 (mesmo viewBox dos ícones em `curriculo/ativos/Icone.tsx`), e a avaliação (`avaliarTracado`) usa distância ponto-a-segmento — geometria pura, sem `<canvas>`, sem rasterização de pixel e sem nenhuma dependência de OCR/ML. A escolha evita duas armadilhas: (1) o stub de `HTMLCanvasElement.getContext` em `src/test/setup.ts` só existe para o `axe-core` não quebrar ao inspecionar canvas, não para suportar desenho real — testar lógica de traçado baseada em canvas exigiria mockar `getImageData` de um jeito que nunca reflete o desenho real; (2) manter tudo em SVG (guia pontilhado + traço do usuário, ambos `<polyline>`) reaproveita o mesmo padrão de ícones do resto do app. A avaliação em si é uma função pura testável com arrays de `{x, y}`, sem DOM.
+
+O componente (`src/components/atividades/TracadoLetra.tsx`) só avalia quando a criança clica "Verificar traçado" — nunca automaticamente enquanto ela desenha, consistente com "nada acontece sem uma ação explícita" no resto da trilha. O resultado aprovado/reprovado é traduzido para uma chamada de `responder()` do `useTentativa` igual às demais atividades (usando `atividade.resposta.id` quando aprovado, um id sentinela quando não), reaproveitando de graça o esmaecimento de dica e o critério de domínio já existentes em vez de duplicar essa lógica para um tipo de resposta contínua.
+
+## Resposta por voz: preferência de dispositivo, não de perfil
+
+A opção de responder por fala é uma preferência do **dispositivo** (`src/preferenciasDispositivo.ts`, localStorage, nunca sincronizada com o Firestore), não do perfil da criança (`preferenciasSensoriais`). A decisão foi deliberada: a capacidade depende de hardware de microfone e da API do navegador, não de quem é a criança — o mesmo perfil pode ser usado em um tablet com microfone funcionando e num Chromebook de escola sem microfone configurado. Colocar isso em `preferenciasSensoriais` exigiria adicionar um campo novo às regras do Firestore (`preferenciasValidas()` em `firestore.rules`, com `hasOnly`/`hasAll` estritos) só para uma capacidade que nunca deveria seguir a criança entre dispositivos.
+
+`src/hooks/useReconhecimentoFala.ts` expõe um callback (`aoResultado`) chamado a cada transcrição, em vez de só um valor de estado para o consumidor observar via `useEffect`. Isso evita um problema real de dependências de efeito: um `useEffect` que reage a `transcricao` precisaria excluir deliberadamente a atividade/callback das dependências (para não reprocessar a mesma transcrição a cada re-render por motivo não relacionado), e essa exclusão intencional gera aviso de lint sem solução limpa de supressão neste projeto (`oxlint` não aceitou o comentário de desabilitação nesse caso específico). O padrão de callback com "latest ref" interno resolve isso na raiz — quem usa o hook não precisa memoizar nada.
+
+A comparação da fala transcrita com a resposta esperada (`src/curriculo/reconhecimentoFala.ts`) exige correspondência de palavra completa (frase inteira ou uma palavra isolada da transcrição), nunca substring livre — um alvo curto como a vogal "i" apareceria dentro de quase qualquer frase transcrita.
 
 ## Débitos técnicos conhecidos (não escondidos, documentados)
 

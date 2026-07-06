@@ -46,7 +46,15 @@ Depois de emparelhamento idêntico, o próximo passo é generalização: reconhe
 
 ### Módulo 3 — Nomeação Expressiva de Letras
 
-Agora a criança escolhe/produz o nome da letra mostrada, e não apenas a localiza. Como esta plataforma não faz reconhecimento de fala (custoso, impreciso e fora do escopo gratuito do projeto), "expressiva" aqui significa a criança compor a resposta ativamente — escolhendo a letra correspondente ao nome falado _e_ ouvido/lido simultaneamente, com o suporte de voz sempre disponível como modelo, sem depender de fala funcional para participar.
+Agora a criança escolhe/produz o nome da letra mostrada, e não apenas a localiza. A via principal continua sendo escolher a letra correspondente ao nome falado/ouvido entre poucas opções — acessível a crianças não-verbais, minimamente verbais ou com fala emergente. Quando o dispositivo suporta e a família ativa em Configurações, a criança pode também **falar** o nome da letra em vez de tocar (ver "Resposta por voz, opcional e nunca exclusiva" abaixo); a via por toque nunca é removida nem escondida quando a fala está disponível.
+
+### Módulo 3-T — Traçado de Letras
+
+Em paralelo ao Módulo 3 (mesmo pré-requisito, sem depender um do outro), a trilha oferece uma atividade grafomotora: a criança traça a letra sobre um guia pontilhado, com o dedo ou o mouse. Isso responde a uma limitação real das atividades anteriores — todas usam reconhecimento/seleção, nenhuma pratica o movimento de escrever a letra, que é uma habilidade separada e necessária para alfabetização funcional.
+
+A avaliação do traçado (`src/curriculo/tracadoLetras.ts`) é deliberadamente tolerante: mede se o traçado ficou perto do guia (precisão) e se percorreu o guia inteiro (cobertura), sem comparar contra uma fonte real nem exigir caligrafia. Não é uma ferramenta de avaliação motora clínica — é uma prática de exposição ao movimento, com o mesmo esquema de dica/critério de domínio das outras atividades.
+
+Esse módulo é deliberadamente **não bloqueante**: ele não é pré-requisito de Formação de Sílabas, e Formação de Sílabas não exige tê-lo completado. A decisão é de inclusão de acesso — o toque em uma tela e o traçado motor fino são habilidades diferentes, e uma criança cujo perfil de acesso não favorece coordenação motora fina (por exemplo, quem usa escolha mediada ou acionador) não deveria ficar bloqueada de avançar na leitura por não conseguir/preferir traçar.
 
 ### Módulo 4 — Consciência Fonológica e Formação de Sílabas
 
@@ -176,6 +184,18 @@ Quando o perfil indica toque com confirmação, o primeiro toque apenas marca a 
 
 Quando o perfil indica toque com apoio do mediador, a lógica também deixa a resposta pendente, mas o texto da confirmação explicita que há apoio adulto. Assim, um olhar, gesto, aproximação de mão ou toque assistido pode ser conferido com a criança antes de virar tentativa registrada. Isso evita que o sistema transforme mediação de acesso em erro pedagógico e mantém a trilha compatível com crianças que precisam de co-regulação ou assistência física leve para responder.
 
+### Resposta por voz, opcional e nunca exclusiva
+
+O reconhecimento de fala do navegador (Web Speech API) permite que a Nomeação Expressiva também aceite a resposta falada, além da seleção por toque. Essa capacidade é ativada em duas camadas independentes, ambas fora do controle da atividade em si: o navegador precisa suportar a API (Firefox e outros não suportam — nesse caso a criança só vê a via por toque, sem erro nem aviso incômodo) e a família precisa ativar a opção explicitamente em Configurações, por dispositivo (não por criança), porque a capacidade depende de hardware de microfone, não de quem é a criança.
+
+A comparação da fala transcrita com a resposta esperada (`src/curriculo/reconhecimentoFala.ts`) exige palavra completa — nunca aceita a resposta certa por estar "contida" em qualquer frase, porque um alvo curto como a vogal "i" apareceria dentro de quase qualquer transcrição ("assim", "disse") e geraria falso positivo. Uma resposta que a criança fala mas o reconhecimento transcreve errado é tratada exatamente como um toque na opção errada: mais suporte na tentativa seguinte, nunca alarme.
+
+Essa via é aditiva, não uma segunda forma de avaliar a mesma habilidade com régua diferente: o critério de domínio, a dica com esmaecimento e o registro de tentativa são idênticos, venha a resposta de toque ou de fala. A decisão de nunca tornar a fala obrigatória segue o mesmo princípio do restante da trilha (item 1 de "Por que o foco é 100% TEA, 'não importando o grau'" acima) — nenhuma atividade pode depender de fala funcional para ser respondida.
+
+### Jardim de Conquistas: gamificação sem pontuação, ranking ou tempo
+
+Cada módulo da trilha corresponde a um canteiro num jardim visual acessível pela criança (`/crianca/jardim`), que muda de estágio (semente → brotando → floresceu) conforme as atividades daquele módulo são dominadas. Deliberadamente **não existe** pontuação numérica, ranking entre crianças, cronômetro ou celebração ruidosa/automática — a tela é uma forma concreta e visual de mostrar progresso acumulado, coerente com o princípio de reforço positivo sem competição ou pressão de velocidade já estabelecido para o resto da trilha (ver "Reforço positivo imediato, nunca punição" acima).
+
 ### Personalização por interesse da criança
 
 Perfis de criança podem indicar um interesse inicial (neutro, animais, veículos, casa, música, comida, brincar ou natureza). No Módulo 4, essa escolha adapta as palavras de apoio das sílabas CV com A/E/I/O/U quando existe uma alternativa adequada (por exemplo, "MA, de macaco" no tema animais, "MU, de música" no tema música ou "PU, de pudim" no tema comida), mantendo a mesma sílaba, os mesmos IDs de resposta e o mesmo critério de domínio. O mesmo interesse também pode aparecer como motivo visual complementar nos cartões de comunicação, preservando os símbolos funcionais de CAA. A tela do responsável mostra descrição e exemplos antes da escolha, para deixar claro o efeito pedagógico do tema.
@@ -204,7 +224,6 @@ O apoio preferencial também altera a experiência da criança: a tela de prepar
 
 ## O que fica fora do escopo do v1 (documentado para não virar débito técnico silencioso)
 
-- Reconhecimento de fala (fora do orçamento gratuito e impreciso demais para confiar em uma criança pequena).
 - Compreensão textual aberta, novas famílias silábicas e expansão lexical mais ampla — planejadas para depois que Módulos 0–11 estiverem validados com uso real.
 - Personalização visual profunda por interesse especial da criança (ex. trocar conjuntos inteiros de ícones por trens/dinossauros/personagens favoritos) — a v1 já adapta palavras de apoio por tema e usa um motivo visual complementar no painel de comunicação, mas ainda não oferece biblioteca visual completa por interesse.
 - Compartilhamento de progresso com terapeutas externos (fora da conta do responsável) — exigiria um sistema de convite/permissão que não existe no v1.

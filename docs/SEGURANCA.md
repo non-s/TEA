@@ -51,11 +51,21 @@ Na tela de progresso, o responsável pode baixar um arquivo JSON com os dados j�
 
 Na mesma tela, o responsável também pode baixar arquivos locais para conversar com terapeutas, professores ou cuidadores: um relatório em Markdown para equipe, um plano de generalização fora da tela e cartões imprimíveis em HTML. Esses arquivos são resumos locais, não convites de acesso: a família escolhe se, quando e com quem compartilhar.
 
-## Cache offline opcional
+## Cache offline: app (sempre) vs. dados (opt-in)
+
+Um service worker guarda em cache o **código** do app (HTML/JS/CSS/ícones) para abrir sem conexão e instalar como app — isso é sempre ativo, mesmo antes de qualquer login, porque não envolve nenhum dado pessoal, só os arquivos públicos do site (ver `docs/ARQUITETURA.md`). Esse cache é atualizado automaticamente quando uma nova versão é publicada, com um aviso visível na tela para a família recarregar quando quiser.
+
+Isso é deliberadamente separado do cache de **dados** do Firestore (perfil, progresso, tentativas), que continua opt-in por dispositivo, descrito abaixo. Desativar/limpar um não afeta o outro.
 
 Por padrão, o Firestore usa cache em memória nesta aplicação. Na tela de configurações, o responsável pode ativar cache offline persistente apenas para aquele navegador/dispositivo. Quando ativado, o SDK do Firebase pode manter dados de perfil e progresso no armazenamento local do navegador para carregar a aplicação e sincronizar tentativas quando a conexão voltar.
 
 Esse ajuste é deliberadamente local e opt-in: não é sincronizado entre dispositivos, não ativa compartilhamento com terceiros e deve ser usado apenas em dispositivo confiável. Desativar o ajuste impede o uso de cache persistente nos próximos carregamentos, mas não promete apagar imediatamente uma cópia IndexedDB já criada pelo SDK do Firebase durante a sessão atual; em computador compartilhado, a recomendação é deixar desativado e limpar os dados do site pelo navegador depois do uso.
+
+## Resposta por voz e dados de áudio
+
+Quando a família ativa "Resposta por voz" nas configurações (opt-in por dispositivo, desligado por padrão — ver `docs/ARQUITETURA.md`), a Nomeação Expressiva passa a aceitar fala como via alternativa ao toque. Ao tocar em "Falar a resposta", o navegador aciona sua própria API de reconhecimento de fala (Web Speech API); em navegadores baseados em Chromium isso envia o áudio captado para um serviço de reconhecimento de fala do próprio navegador/fabricante (fora da infraestrutura desta plataforma) para ser transcrito em texto. O TEA nunca recebe, armazena ou processa o áudio em si — só o texto já transcrito, comparado localmente contra a resposta esperada da atividade (`src/curriculo/reconhecimentoFala.ts`) e descartado após a comparação (não é salvo no Firestore; só o resultado certo/errado da tentativa é registrado, exatamente como uma resposta por toque).
+
+Essa é uma escolha explícita: a plataforma não teria como oferecer reconhecimento de fala próprio dentro do orçamento zero-custo do projeto, então reaproveita o que o navegador já oferece nativamente, sendo transparente sobre a consequência (áudio sai do dispositivo para transcrição) em vez de esconder isso atrás de um botão sem explicação. A opção nunca é ativada automaticamente, é sempre alternativa ao toque (nunca obrigatória) e é uma preferência do navegador/dispositivo, não do perfil da criança — não é sincronizada com o Firestore.
 
 ## Exclusão de perfil
 

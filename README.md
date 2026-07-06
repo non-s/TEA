@@ -20,7 +20,7 @@ A fundamentação pedagógica completa, com referências científicas, está em 
 - Criar conta com consentimento explícito do responsável para uso dos dados mínimos, e criar um ou mais perfis de criança (sem senha para a criança — ela só escolhe seu avatar).
 - Resumo público de privacidade dentro do app, explicando quais dados são guardados, quais não são pedidos, para que servem, como exportar/apagar e quando evitar cache offline.
 - Demonstração pública com etapas visual, sílaba e texto, além de toque direto, confirmação, escolha mediada e interesse da criança, sem conta, sem salvar dados pessoais nem tentativas, para a família experimentar antes de decidir criar cadastro.
-- Manifest de instalação para celular/tablet, com nome, ícone e cor do app, sem service worker ou cache automático de dados infantis.
+- Instalável em celular/tablet e funciona offline: manifest com nome/ícone/cor do app e service worker que guarda o código do app (não os dados da família) para abrir sem conexão; um aviso calmo aparece quando fica offline ou quando há uma versão nova para atualizar. O cache dos dados do Firestore continua sendo opt-in separado (ver abaixo).
 - Suporte opcional a Firebase App Check com reCAPTCHA v3, para adicionar uma camada contra abuso automatizado do backend público quando o ambiente de produção tiver chave e enforcement configurados no Console do Firebase.
 - Cooldown local após falhas repetidas de login, reduzindo tentativas em sequência e mensagens frustrantes antes do próprio Firebase aplicar limites.
 - Perfil funcional de apoio na criação e no progresso: comunicação preferida, forma de acesso à tela, estratégia de regulação, plano curto de regulação, observação curta e cartões de comunicação personalizáveis com símbolo visual estável e motivo complementar por interesse da criança; "Pausa", "Ajuda", "Não sei" e "Pronto" têm consequências funcionais na sessão.
@@ -28,7 +28,9 @@ A fundamentação pedagógica completa, com referências científicas, está em 
 - Modo de toque com confirmação: o primeiro toque apenas seleciona a opção e a resposta só é registrada depois de "Confirmar", reduzindo erro por toque acidental ou baixa precisão motora.
 - Modo de toque com apoio do mediador: o toque ou sinal observado também fica pendente até o adulto confirmar com a criança, evitando registrar dificuldade de acesso como erro pedagógico.
 - Modo de resposta mediada: quando o perfil indica escolha por olhar/gesto, a atividade mostra uma opção por vez com controles para o mediador avançar/escolher; setas e Enter/Espaço também funcionam para teclado ou acionador.
-- Trilha com **181 atividades em 12 módulos**: emparelhamento visual → maiúscula/minúscula → nomeação receptiva de letras → nomeação expressiva de letras → formação de sílabas CV com A/E/I/O/U e apoio de palavra familiar (ex: "MA, de mamãe", "MU, de música") → formação de palavras simples com duas sílabas conhecidas → leitura de frases curtas por seleção → compreensão literal de frase → compreensão literal de texto curto com duas frases → pergunta literal sobre texto curto → presença/ausência de palavra no texto → inferência guiada por seleção.
+- Trilha com **191 atividades em 13 módulos**: emparelhamento visual → maiúscula/minúscula → nomeação receptiva de letras → nomeação expressiva de letras (por toque ou por voz opcional) → traçado de letras num guia pontilhado (módulo paralelo, não bloqueia os seguintes) → formação de sílabas CV com A/E/I/O/U e apoio de palavra familiar (ex: "MA, de mamãe", "MU, de música") → formação de palavras simples com duas sílabas conhecidas → leitura de frases curtas por seleção → compreensão literal de frase → compreensão literal de texto curto com duas frases → pergunta literal sobre texto curto → presença/ausência de palavra no texto → inferência guiada por seleção.
+- Resposta por voz opcional na nomeação expressiva: quando o navegador suporta e a família ativa por dispositivo em Configurações, a criança pode falar o nome da letra em vez de tocar — a opção de toque nunca é removida.
+- Jardim de Conquistas: cada módulo da trilha vira um canteiro visual que floresce conforme a criança domina as atividades — sem pontuação, ranking ou cronômetro.
 - Cada atividade usa dica com esmaecimento progressivo e critério de domínio (8 acertos seguidos independente), reforço positivo imediato, nunca punição.
 - O estado pedagógico de uma atividade é retomado pelo histórico salvo, então uma pausa ou recarregamento não apaga acertos independentes recentes nem o nível de apoio necessário.
 - A trilha da criança destaca um botão "Continuar" para a próxima atividade disponível e mantém aberto apenas o módulo em foco/revisão; módulos concluídos ficam resumidos e podem ser abertos sob demanda, reduzindo escolha excessiva sem remover a navegação livre.
@@ -102,6 +104,10 @@ npm run format   # formata o código com Prettier
 - [x] Marco 15 — Perguntas de presença/ausência no texto com validação semântica
 - [x] Marco 16 — Sílabas CV com A/E/I/O/U e vocabulário silábico ampliado
 - [x] Marco 17 — Inferência guiada em textos curtos por seleção
+- [x] Marco 18 — PWA instalável e funcional offline (service worker + aviso de conexão)
+- [x] Marco 19 — Jardim de Conquistas (progresso visual por módulo, sem pontuação)
+- [x] Marco 20 — Traçado de Letras (prática grafomotora, módulo paralelo não bloqueante)
+- [x] Marco 21 — Resposta por voz opcional na nomeação expressiva
 
 Próximos passos ficam documentados como ideias em aberto — compreensão aberta, novas famílias silábicas, personalização visual profunda por interesse especial da criança, compartilhamento de progresso com terapeutas externos — não como promessas com prazo.
 
