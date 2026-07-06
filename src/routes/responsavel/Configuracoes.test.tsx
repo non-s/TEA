@@ -111,6 +111,44 @@ describe('Configuracoes', () => {
     )
   })
 
+  it('avisa que o navegador nao tem reconhecimento de fala quando indisponivel', () => {
+    renderizarConfiguracoes()
+
+    expect(
+      screen.getByText(/Este navegador não oferece reconhecimento de fala/),
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByLabelText('Permitir resposta por voz neste dispositivo'),
+    ).not.toBeInTheDocument()
+  })
+
+  it('permite ativar resposta por voz quando o navegador suporta', async () => {
+    vi.stubGlobal('SpeechRecognition', vi.fn())
+    const usuario = userEvent.setup()
+    renderizarConfiguracoes()
+
+    const interruptor = screen.getByLabelText(
+      'Permitir resposta por voz neste dispositivo',
+    )
+    expect(interruptor).not.toBeChecked()
+
+    await usuario.click(interruptor)
+
+    expect(localStorage.getItem('tea:resposta-por-voz')).toBe('true')
+    expect(screen.getByRole('status')).toHaveTextContent(
+      'Resposta por voz ativada.',
+    )
+
+    await usuario.click(interruptor)
+
+    expect(localStorage.getItem('tea:resposta-por-voz')).toBeNull()
+    expect(screen.getByRole('status')).toHaveTextContent(
+      'Resposta por voz desativada neste dispositivo.',
+    )
+
+    vi.unstubAllGlobals()
+  })
+
   it('exige senha e confirmacao textual antes de apagar a conta', async () => {
     const usuario = userEvent.setup()
     renderizarConfiguracoes()
