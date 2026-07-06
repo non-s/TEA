@@ -23,12 +23,12 @@ Na prática, isso significa:
 
 O TEA é um espectro amplo — da DSM-5, os "níveis de suporte" (1 a 3) descrevem necessidade de apoio, não capacidade cognitiva ou valor da pessoa, e a maioria das pessoas autistas não se encaixa perfeitamente em um nível fixo ao longo da vida. Por isso a trilha:
 
-1. **Não assume fala funcional.** Nenhuma atividade exige que a criança fale para responder — todas usam toque/seleção entre opções (compatível com CAA, apoio a crianças minimamente verbais).
+1. **Não assume fala funcional.** Nenhuma atividade exige que a criança fale para responder — todas usam toque/seleção entre opções (compatível com CAA, apoio a crianças minimamente verbais) como via principal. A Nomeação Expressiva aceita fala como via **adicional** quando o dispositivo suporta e a família ativa, mas nunca como substituta obrigatória do toque (ver "Resposta por voz, opcional e nunca exclusiva" abaixo).
 2. **Não assume leitura prévia.** O Módulo 0 começa em discriminação visual pura (formas, não letras), o pré-requisito mais básico possível antes de qualquer conteúdo acadêmico.
 3. **Oferece dica com esmaecimento em toda atividade** (ver abaixo), então uma criança que precisa de mais suporte visual recebe mais suporte, e uma que já domina o conceito avança rápido — o mesmo currículo serve necessidades de suporte muito diferentes.
 4. **É ajustável sensorial e motoramente**, já que hipo/hipersensibilidade sensorial, coordenação motora fina, precisão de toque e forma de mediação variam enormemente entre indivíduos autistas e não se correlacionam diretamente com "nível de suporte".
 
-## A sequência de habilidades (Módulos 0–10)
+## A sequência de habilidades (Módulos 0–11, mais o módulo paralelo 3-T)
 
 A ordem dos módulos segue uma cadeia de pré-requisitos bem estabelecida na literatura comportamental sobre discriminação de estímulos, unida ao consenso mais recente sobre alfabetização em TEA.
 
