@@ -197,12 +197,15 @@ export function TracadoLetra({
           />
         )}
 
+        {/* Escala com --min-alvo-atividade (maior quando "Alvos maiores" está
+            ligado): traçado é a atividade mais exigente motoramente do app,
+            então é a que mais se beneficia de mais espaço físico de desenho. */}
         <svg
           ref={svgRef}
           viewBox="0 0 100 100"
           role={'img' as const}
           aria-label={`Área para traçar a letra ${letra}`}
-          className="h-64 w-64 touch-none rounded-2xl border-2 border-[var(--cor-borda)] bg-[var(--cor-fundo-alt)] shadow-[var(--sombra-cartao)]"
+          className="h-[calc(var(--min-alvo-atividade)*3)] w-[calc(var(--min-alvo-atividade)*3)] touch-none rounded-2xl border-2 border-[var(--cor-borda)] bg-[var(--cor-fundo-alt)] shadow-[var(--sombra-cartao)]"
           onPointerDown={aoIniciarTraco}
           onPointerMove={aoMoverTraco}
           onPointerUp={aoTerminarTraco}
