@@ -29,6 +29,7 @@ import { usePerfilAtivo } from '../../contexts/PerfilAtivoContext'
 import { EmparelhamentoIdentico } from '../../components/atividades/EmparelhamentoIdentico'
 import { NomeacaoReceptiva } from '../../components/atividades/NomeacaoReceptiva'
 import { NomeacaoExpressiva } from '../../components/atividades/NomeacaoExpressiva'
+import { TracadoLetra } from '../../components/atividades/TracadoLetra'
 import { FormacaoSilaba } from '../../components/atividades/FormacaoSilaba'
 import { FormacaoPalavra } from '../../components/atividades/FormacaoPalavra'
 import { LeituraFrase } from '../../components/atividades/LeituraFrase'
@@ -666,6 +667,22 @@ export function Atividade() {
               perfilId={perfilAtivo!.id}
               apoioPreferencial={apoioPreferencial}
               acessoPreferencial={acessoPreferencial}
+              regulacaoPreferencial={regulacaoPreferencial}
+              limiteTentativasAntesPausa={limiteTentativasAntesPausa}
+              sinalComunicarPronto={sinalComunicarPronto}
+              sinalPedirAjuda={sinalPedirAjuda}
+              tentativasAnteriores={tentativasAnteriores}
+              aoEncerrarSessao={aoEncerrarSessao}
+              aoPedirPausa={() => setEmPausa(true)}
+            />
+          )}
+          {atividade.tipo === 'tracado-letra' && (
+            <TracadoLetra
+              atividade={atividade}
+              aoDominar={aoDominar}
+              uidResponsavel={usuario!.uid}
+              perfilId={perfilAtivo!.id}
+              apoioPreferencial={apoioPreferencial}
               regulacaoPreferencial={regulacaoPreferencial}
               limiteTentativasAntesPausa={limiteTentativasAntesPausa}
               sinalComunicarPronto={sinalComunicarPronto}

@@ -48,6 +48,8 @@ function objetivoForaDaTela(atividade: Atividade | null): string {
       return 'Escolher a letra correta quando outra pessoa nomeia a letra.'
     case 'nomeacao-expressiva':
       return 'Indicar o nome da letra mostrada por fala, gesto, olhar, toque ou CAA.'
+    case 'tracado-letra':
+      return 'Praticar o traçado da letra em superfícies variadas (areia, espuma, ar, papel), sem exigir preensão de lápis se ainda não for confortável.'
     case 'formacao-silaba':
       return 'Associar a sílaba-alvo a uma palavra familiar, mantendo apoio visual.'
     case 'formacao-palavra':
@@ -90,6 +92,12 @@ function materiaisSimples(atividade: Atividade | null): string[] {
         `Cartão ou letra móvel de "${atividade.alvo.rotulo}".`,
         '2 ou 3 letras de contraste visual simples.',
         'Prancha, gesto ou apontar para responder sem exigir fala.',
+      ]
+    case 'tracado-letra':
+      return [
+        `Letra "${atividade.alvo.rotulo}" grande, para copiar o traçado.`,
+        'Bandeja de areia, espuma de barbear ou giz — qualquer superfície tátil disponível.',
+        'Papel e lápis apenas se a criança já tiver preensão confortável.',
       ]
     case 'formacao-silaba':
       return [
@@ -165,6 +173,12 @@ function oportunidadesNaturais(atividade: Atividade | null): string[] {
         'Casa: encontrar a letra em livro, etiqueta, ímã ou cartão do alfabeto.',
         'Escola/terapia: apresentar a letra em outro tamanho ou fonte, mantendo poucas opções.',
         'Rotina diária: aceitar fala, apontar, olhar, CAA ou seleção mediada como resposta.',
+      ]
+    case 'tracado-letra':
+      return [
+        'Casa: traçar a letra no vapor do espelho, na areia do parque ou com o dedo no ar.',
+        'Escola/terapia: variar a superfície e o tamanho do traçado, sempre sem cobrar velocidade.',
+        'Rotina diária: aceitar qualquer ferramenta de traçado confortável para a criança, inclusive sem lápis.',
       ]
     case 'formacao-silaba':
     case 'formacao-palavra':

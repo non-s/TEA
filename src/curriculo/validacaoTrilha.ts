@@ -109,7 +109,12 @@ function validarAtividade(
   validarDicas(atividade, problemas)
   validarCriteriosDominio(atividade, problemas)
 
-  if (atividade.distratores.length === 0) {
+  // Traçado é um gesto contínuo avaliado por proximidade ao guia, não uma
+  // escolha entre opções — não existe "distrator" possível para esse tipo.
+  if (
+    atividade.tipo !== 'tracado-letra' &&
+    atividade.distratores.length === 0
+  ) {
     registrarProblema(problemas, {
       codigo: 'ATIVIDADE_SEM_DISTRATOR',
       moduloId: modulo.id,

@@ -53,6 +53,8 @@ function instrucaoMediador(atividade: Atividade | null): string {
       return `Diga "${atividade.alvo.audioTexto ?? atividade.alvo.rotulo}" e ofereça as letras para seleção.`
     case 'nomeacao-expressiva':
       return `Mostre a letra e aceite resposta por fala, gesto, olhar, toque, CAA ou escolha mediada.`
+    case 'tracado-letra':
+      return `Ofereça a letra "${atividade.alvo.rotulo}" para traçar com o dedo em areia, espuma ou papel — sem exigir caneta se isso não ajudar.`
     case 'formacao-silaba':
       return `Diga "${atividade.alvo.audioTexto ?? atividade.alvo.rotulo}" e ofereça sílabas para seleção.`
     case 'formacao-palavra':

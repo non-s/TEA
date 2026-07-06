@@ -13,6 +13,7 @@ export const acentosPorModulo: Record<string, AcentoModulo> = {
   m1: { fundo: 'var(--cor-acento-clara)', texto: 'var(--cor-acento-escura)' },
   m2: { fundo: 'var(--cor-sucesso-clara)', texto: 'var(--cor-sucesso)' },
   m3: { fundo: 'var(--cor-conquista-clara)', texto: 'var(--cor-conquista)' },
+  m3t: { fundo: '#f0dce8', texto: '#8a3d68' },
   m4: { fundo: '#e3ddf0', texto: '#5f4e96' },
   m5: { fundo: '#d8ece9', texto: '#2f6f68' },
   m6: { fundo: '#f0e4d6', texto: '#7a5737' },

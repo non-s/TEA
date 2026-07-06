@@ -3,6 +3,7 @@ export type TipoAtividade =
   | 'emparelhamento-categoria'
   | 'nomeacao-receptiva'
   | 'nomeacao-expressiva'
+  | 'tracado-letra'
   | 'formacao-silaba'
   | 'formacao-palavra'
   | 'leitura-frase'

@@ -291,6 +291,33 @@ const modulo3: Modulo = {
   ),
 }
 
+function atividadeTracadoLetra(letra: LetraNomeacao): Atividade {
+  const estimuloAlvo = estimuloLetra(
+    `letra-${letra.caractere}-tracado`,
+    letra.caractere,
+    letra.som,
+  )
+  return construirAtividade(
+    `m3t-${letra.caractere}`,
+    'm3t',
+    'tracado-letra',
+    1,
+    estimuloAlvo,
+    estimuloAlvo,
+    [],
+  )
+}
+
+const modulo3t: Modulo = {
+  id: 'm3t',
+  titulo: 'Traçado de Letras',
+  descricao:
+    'Trace a letra com o dedo ou o mouse sobre o guia pontilhado. Prática grafomotora — não bloqueia a Formação de Sílabas, que também desbloqueia direto após a Nomeação Expressiva.',
+  ordem: 3.5,
+  preRequisitoModuloId: 'm3',
+  atividades: letrasModulo2.map((letra) => atividadeTracadoLetra(letra)),
+}
+
 interface Silaba {
   caractere: string
   palavraApoio: string
@@ -1162,6 +1189,7 @@ export const trilhaV1: Trilha = {
     modulo1,
     modulo2,
     modulo3,
+    modulo3t,
     modulo4,
     modulo5,
     modulo6,

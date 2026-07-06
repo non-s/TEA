@@ -25,7 +25,7 @@ describe('validarTrilha', () => {
 
   it('detecta palavra formada por silaba ainda nao ensinada', () => {
     const trilha = clonarTrilha(trilhaV1)
-    const atividade = trilha.modulos[5].atividades[0]
+    const atividade = trilha.modulos[6].atividades[0]
     atividade.resposta.rotulo = 'CAMA'
     atividade.resposta.audioTexto = 'CA-MA, CAMA'
 
@@ -34,7 +34,7 @@ describe('validarTrilha', () => {
 
   it('detecta frase com palavra ainda nao ensinada', () => {
     const trilha = clonarTrilha(trilhaV1)
-    const atividade = trilha.modulos[6].atividades[0]
+    const atividade = trilha.modulos[7].atividades[0]
     atividade.resposta.rotulo = 'A CASA'
     atividade.resposta.audioTexto = 'A casa'
 
@@ -43,7 +43,7 @@ describe('validarTrilha', () => {
 
   it('detecta compreensao de frase com palavra-resposta ainda nao ensinada', () => {
     const trilha = clonarTrilha(trilhaV1)
-    const atividade = trilha.modulos[7].atividades[0]
+    const atividade = trilha.modulos[8].atividades[0]
     atividade.resposta.rotulo = 'CASA'
     atividade.resposta.audioTexto = 'CA-SA, CASA'
 
@@ -54,7 +54,7 @@ describe('validarTrilha', () => {
 
   it('detecta compreensao de texto com palavra ainda nao ensinada', () => {
     const trilha = clonarTrilha(trilhaV1)
-    const atividade = trilha.modulos[8].atividades[0]
+    const atividade = trilha.modulos[9].atividades[0]
     atividade.alvo.rotulo = 'A MALA. A CASA.'
 
     expect(codigosDaTrilha(trilha)).toContain('TEXTO_COM_PALAVRA_NAO_ENSINADA')
@@ -69,7 +69,7 @@ describe('validarTrilha', () => {
 
   it('detecta pergunta literal de texto incompleta ou fora do repertorio', () => {
     const trilha = clonarTrilha(trilhaV1)
-    const atividade = trilha.modulos[9].atividades[0]
+    const atividade = trilha.modulos[10].atividades[0]
     atividade.alvo.rotulo = 'A MALA. A CASA.'
     atividade.pergunta = ''
 
@@ -90,7 +90,7 @@ describe('validarTrilha', () => {
 
   it('detecta pergunta de presenca/ausencia ambigua ou fora do repertorio', () => {
     const trilha = clonarTrilha(trilhaV1)
-    const atividade = trilha.modulos[10].atividades[0]
+    const atividade = trilha.modulos[11].atividades[0]
     atividade.pergunta = ''
     atividade.respostaDeveAparecerNoTexto = undefined
     atividade.resposta.rotulo = 'CASA'
@@ -122,7 +122,7 @@ describe('validarTrilha', () => {
 
   it('detecta pergunta de inferencia incompleta ou fora do texto ancora', () => {
     const trilha = clonarTrilha(trilhaV1)
-    const atividade = trilha.modulos[11].atividades[0]
+    const atividade = trilha.modulos[12].atividades[0]
     atividade.alvo.rotulo = 'A MALA. A CASA.'
     atividade.pergunta = ''
     atividade.resposta.rotulo = 'CASA'

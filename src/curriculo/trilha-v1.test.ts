@@ -20,13 +20,13 @@ describe('trilhaV1', () => {
       (modulo) => modulo.id === 'm11',
     )
 
-    expect(trilhaV1.modulos).toHaveLength(12)
+    expect(trilhaV1.modulos).toHaveLength(13)
     expect(
       trilhaV1.modulos.reduce(
         (total, modulo) => total + modulo.atividades.length,
         0,
       ),
-    ).toBe(181)
+    ).toBe(191)
     expect(moduloSilabas?.atividades).toHaveLength(25)
     expect(moduloSilabas?.atividades).toContainEqual(
       expect.objectContaining({
