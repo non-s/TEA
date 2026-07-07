@@ -56,16 +56,14 @@ describe('AvisoEmailNaoVerificado', () => {
     const { container } = renderizar()
 
     expect(
-      screen.getByText('Confirme seu e-mail para proteger sua conta.'),
+      screen.getByText(/Confirme seu e-mail para proteger sua conta/),
     ).toBeInTheDocument()
 
     await usuario.click(screen.getByRole('button', { name: 'Reenviar e-mail' }))
 
     expect(mocks.reenviarVerificacaoEmail).toHaveBeenCalledWith(mocks.usuario)
     expect(
-      screen.getByText(
-        'E-mail de verificação reenviado. Confira sua caixa de entrada.',
-      ),
+      screen.getByText(/E-mail de verificação reenviado/),
     ).toBeInTheDocument()
 
     const results = await axe(container)

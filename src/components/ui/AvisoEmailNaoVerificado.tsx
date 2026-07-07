@@ -36,8 +36,8 @@ export function AvisoEmailNaoVerificado() {
       <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-[var(--cor-borda)] bg-[var(--cor-fundo-alt)] px-4 py-3 text-sm text-[var(--cor-texto)] shadow-[var(--sombra-cartao)]">
         <span>
           {enviado
-            ? 'E-mail de verificação reenviado. Confira sua caixa de entrada.'
-            : 'Confirme seu e-mail para proteger sua conta.'}
+            ? 'E-mail de verificação reenviado. Confira sua caixa de entrada (e o spam).'
+            : 'Confirme seu e-mail para proteger sua conta. Se não achar, confira o spam.'}
         </span>
         {!enviado && (
           <Botao
