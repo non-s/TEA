@@ -110,7 +110,9 @@ export function Login() {
     }
     try {
       await redefinirSenha(email)
-      setMensagem('Enviamos um link de redefinição de senha para o seu e-mail.')
+      setMensagem(
+        'Enviamos um link de redefinição de senha para o seu e-mail. Se não achar, confira o spam.',
+      )
     } catch (erroCapturado) {
       setErro(mensagemDoErro(erroCapturado))
     }
