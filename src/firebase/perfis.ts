@@ -1,5 +1,6 @@
 import {
   addDoc,
+  arrayRemove,
   arrayUnion,
   collection,
   deleteDoc,
@@ -32,6 +33,8 @@ export type { PreferenciasSensoriais, TamanhoFonte }
 
 export const LIMITE_NOME_PERFIL = 40
 const LIMITE_ATIVIDADES_DOMINADAS = 300
+export const LIMITE_COLABORADORES = 3
+export const LIMITE_EMAIL_COLABORADOR = 160
 
 export interface PlanoIndividual {
   metaAtual: string
@@ -48,6 +51,7 @@ export interface PerfilCrianca {
   preferenciasSensoriais: PreferenciasSensoriais
   planoIndividual: PlanoIndividual
   atividadesDominadas: string[]
+  colaboradoresEmail: string[]
 }
 
 export const LIMITE_META_ATUAL = 160
@@ -126,6 +130,26 @@ function limitarTexto(valor: unknown, limite: number): string {
   return typeof valor === 'string' ? valor.trim().slice(0, limite) : ''
 }
 
+export function emailColaboradorValido(email: string): boolean {
+  const normalizado = email.trim().toLowerCase()
+  return (
+    normalizado.length > 0 &&
+    normalizado.length <= LIMITE_EMAIL_COLABORADOR &&
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizado)
+  )
+}
+
+function normalizarColaboradoresEmail(valor: unknown): string[] {
+  if (!Array.isArray(valor)) return []
+
+  const emails = valor
+    .filter((email): email is string => typeof email === 'string')
+    .map((email) => email.trim().toLowerCase())
+    .filter(emailColaboradorValido)
+
+  return Array.from(new Set(emails)).slice(0, LIMITE_COLABORADORES)
+}
+
 function apoioPreferencialValido(
   valor: unknown,
 ): valor is PlanoIndividual['apoioPreferencial'] {
@@ -178,6 +202,7 @@ export function normalizarPerfilCrianca(
     atividadesDominadas: normalizarAtividadesDominadas(
       dados.atividadesDominadas,
     ),
+    colaboradoresEmail: normalizarColaboradoresEmail(dados.colaboradoresEmail),
   }
 }
 
@@ -243,8 +268,36 @@ export function criarPerfil(
     preferenciasSensoriais,
     planoIndividual,
     atividadesDominadas: [],
+    colaboradoresEmail: [],
     criadoEm: serverTimestamp(),
   })
+}
+
+export function adicionarColaborador(
+  uidResponsavel: string,
+  perfilId: string,
+  email: string,
+) {
+  const emailNormalizado = email.trim().toLowerCase()
+  if (!emailColaboradorValido(emailNormalizado)) {
+    return Promise.reject(new Error('E-mail de colaborador inválido.'))
+  }
+
+  return updateDoc(
+    doc(db, 'responsaveis', uidResponsavel, 'perfisCrianca', perfilId),
+    { colaboradoresEmail: arrayUnion(emailNormalizado) },
+  )
+}
+
+export function removerColaborador(
+  uidResponsavel: string,
+  perfilId: string,
+  email: string,
+) {
+  return updateDoc(
+    doc(db, 'responsaveis', uidResponsavel, 'perfisCrianca', perfilId),
+    { colaboradoresEmail: arrayRemove(email.trim().toLowerCase()) },
+  )
 }
 
 export function marcarAtividadeDominada(

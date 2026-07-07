@@ -1,15 +1,26 @@
 import {
   createUserWithEmailAndPassword,
+  sendEmailVerification,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signOut,
+  type User,
 } from 'firebase/auth'
 import { auth } from './config'
 
 export const LIMITE_NOME_RESPONSAVEL = 80
 export const LIMITE_EMAIL_RESPONSAVEL = 160
+export const LIMITE_SENHA_MINIMO = 8
 export const VERSAO_CONSENTIMENTO_PRIVACIDADE = 1
 export const ESCOPO_CONSENTIMENTO_PRIVACIDADE = 'uso-alfabetizacao-tea-v1'
+
+export function senhaFraca(senha: string): boolean {
+  return (
+    senha.length < LIMITE_SENHA_MINIMO ||
+    !/[a-zA-Z]/.test(senha) ||
+    !/[0-9]/.test(senha)
+  )
+}
 
 function erroAuth(codigo: string): Error & { code: string } {
   return Object.assign(new Error(codigo), { code: codigo })
@@ -51,6 +62,12 @@ export async function cadastrar(
     emailNormalizado,
     senha,
   )
+  try {
+    await sendEmailVerification(credencial.user)
+  } catch {
+    // Envio de verificação é best-effort: a família pode reenviar depois
+    // pelas configurações. Não bloqueia a criação da conta.
+  }
   const [{ doc, serverTimestamp, setDoc }, { db }] = await Promise.all([
     import('firebase/firestore'),
     import('./db'),
@@ -84,4 +101,8 @@ export function sair() {
 
 export function redefinirSenha(email: string) {
   return sendPasswordResetEmail(auth, normalizarEmail(email))
+}
+
+export function reenviarVerificacaoEmail(usuario: User) {
+  return sendEmailVerification(usuario)
 }

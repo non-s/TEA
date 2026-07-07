@@ -18,7 +18,9 @@ A fundamentação pedagógica completa, com referências científicas, está em 
 ## O que já dá para fazer na plataforma (v1)
 
 - Criar conta com consentimento explícito do responsável para uso dos dados mínimos, e criar um ou mais perfis de criança (sem senha para a criança — ela só escolhe seu avatar).
-- Resumo público de privacidade dentro do app, explicando quais dados são guardados, quais não são pedidos, para que servem, como exportar/apagar e quando evitar cache offline.
+- Resumo público de privacidade dentro do app, explicando quais dados são guardados, quais não são pedidos, para que servem, como exportar/apagar e quando evitar cache offline, com base legal explícita na LGPD (controlador, direitos do titular, transferência internacional). Termos de uso também públicos em `/termos`.
+- Verificação de e-mail automática no cadastro (com aviso para reenviar se necessário) e exigência de senha com letras e números; auditoria de dependências e análise estática (CodeQL) rodam automaticamente a cada mudança de código.
+- Compartilhamento opcional de um perfil com até 3 colaboradores (2º responsável ou terapeuta) por e-mail verificado, com acesso só de leitura + registro de observação de sessão — nunca edição do perfil ou dos dados da conta principal.
 - Demonstração pública com etapas visual, sílaba e texto, além de toque direto, confirmação, escolha mediada e interesse da criança, sem conta, sem salvar dados pessoais nem tentativas, para a família experimentar antes de decidir criar cadastro.
 - Instalável em celular/tablet e funciona offline: manifest com nome/ícone/cor do app e service worker que guarda o código do app (não os dados da família) para abrir sem conexão; um aviso calmo aparece quando fica offline ou quando há uma versão nova para atualizar. O cache dos dados do Firestore continua sendo opt-in separado (ver abaixo).
 - Suporte opcional a Firebase App Check com reCAPTCHA v3, para adicionar uma camada contra abuso automatizado do backend público quando o ambiente de produção tiver chave e enforcement configurados no Console do Firebase.
@@ -108,8 +110,9 @@ npm run format   # formata o código com Prettier
 - [x] Marco 19 — Jardim de Conquistas (progresso visual por módulo, sem pontuação)
 - [x] Marco 20 — Traçado de Letras (prática grafomotora, módulo paralelo não bloqueante)
 - [x] Marco 21 — Resposta por voz opcional na nomeação expressiva
+- [x] Marco 22 — Endurecimento de conta (verificação de e-mail, senha forte, auditoria automatizada em CI), política de privacidade com base legal LGPD, termos de uso e compartilhamento de perfil com um segundo responsável/terapeuta
 
-Próximos passos ficam documentados como ideias em aberto — compreensão aberta, novas famílias silábicas, personalização visual profunda por interesse especial da criança, compartilhamento de progresso com terapeutas externos — não como promessas com prazo.
+Próximos passos ficam documentados como ideias em aberto — compreensão aberta, novas famílias silábicas, personalização visual profunda por interesse especial da criança — não como promessas com prazo.
 
 ## Contribuindo
 

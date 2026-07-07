@@ -8,6 +8,7 @@ import { RequirePerfilAtivo } from './routes/RequirePerfilAtivo'
 import { Home } from './routes/Home'
 import { LimiteErro } from './components/ui/LimiteErro'
 import { AvisoConexao } from './components/ui/AvisoConexao'
+import { AvisoEmailNaoVerificado } from './components/ui/AvisoEmailNaoVerificado'
 
 const Login = lazy(() =>
   import('./routes/responsavel/Login').then((m) => ({ default: m.Login })),
@@ -25,6 +26,11 @@ const Demo = lazy(() =>
 const Privacidade = lazy(() =>
   import('./routes/Privacidade').then((m) => ({
     default: m.Privacidade,
+  })),
+)
+const Termos = lazy(() =>
+  import('./routes/Termos').then((m) => ({
+    default: m.Termos,
   })),
 )
 const NaoEncontrada = lazy(() =>
@@ -58,6 +64,11 @@ const Trilha = lazy(() =>
 const Jardim = lazy(() =>
   import('./routes/crianca/Jardim').then((m) => ({ default: m.Jardim })),
 )
+const ColaboradorPerfil = lazy(() =>
+  import('./routes/colaborador/ColaboradorPerfil').then((m) => ({
+    default: m.ColaboradorPerfil,
+  })),
+)
 const Atividade = lazy(() =>
   import('./routes/crianca/Atividade').then((m) => ({
     default: m.Atividade,
@@ -78,6 +89,7 @@ function tituloDaRota(pathname: string): string {
   if (pathname === '/cadastro') return 'Cadastro — TEA'
   if (pathname === '/demo') return 'Demonstração — TEA'
   if (pathname === '/privacidade') return 'Privacidade — TEA'
+  if (pathname === '/termos') return 'Termos de uso — TEA'
   if (pathname === '/responsavel/perfis') return 'Perfis — TEA'
   if (pathname === '/responsavel/perfis/gerenciar') {
     return 'Gerenciar perfis — TEA'
@@ -86,6 +98,7 @@ function tituloDaRota(pathname: string): string {
   if (pathname.startsWith('/responsavel/progresso/')) return 'Progresso — TEA'
   if (pathname === '/crianca/trilha') return 'Trilha — TEA'
   if (pathname === '/crianca/jardim') return 'Meu jardim — TEA'
+  if (pathname.startsWith('/colaborador/')) return 'Progresso — TEA'
   if (pathname.startsWith('/crianca/atividade/')) return 'Atividade — TEA'
   return 'Página não encontrada — TEA'
 }
@@ -120,6 +133,7 @@ function RotasApp() {
               <Route path="/cadastro" element={<Cadastro />} />
               <Route path="/demo" element={<Demo />} />
               <Route path="/privacidade" element={<Privacidade />} />
+              <Route path="/termos" element={<Termos />} />
 
               <Route
                 path="/responsavel/perfis"
@@ -184,11 +198,20 @@ function RotasApp() {
                   </RequireAuth>
                 }
               />
+              <Route
+                path="/colaborador/:uidResponsavel/:perfilId"
+                element={
+                  <RequireAuth>
+                    <ColaboradorPerfil />
+                  </RequireAuth>
+                }
+              />
               <Route path="*" element={<NaoEncontrada />} />
             </Routes>
           </Suspense>
         </LimiteErro>
       </div>
+      <AvisoEmailNaoVerificado />
       <AvisoConexao />
     </>
   )

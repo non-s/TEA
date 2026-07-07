@@ -46,6 +46,7 @@ const perfil: PerfilCrianca = {
     observacaoMediador: 'esperar resposta por olhar',
   },
   atividadesDominadas: ['m0-n1-a1'],
+  colaboradoresEmail: [],
 }
 
 function idsDominadasSemModulo(moduloId: string): string[] {

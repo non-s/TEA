@@ -12,7 +12,10 @@ const mocks = vi.hoisted(() => ({
 vi.mock('../../firebase/auth', () => ({
   LIMITE_EMAIL_RESPONSAVEL: 160,
   LIMITE_NOME_RESPONSAVEL: 80,
+  LIMITE_SENHA_MINIMO: 8,
   cadastrar: mocks.cadastrar,
+  senhaFraca: (senha: string) =>
+    senha.length < 8 || !/[a-zA-Z]/.test(senha) || !/[0-9]/.test(senha),
 }))
 
 vi.mock('react-router-dom', async () => {
@@ -99,5 +102,34 @@ describe('Cadastro', () => {
     expect(
       screen.getByRole('link', { name: 'resumo de privacidade' }),
     ).toHaveAttribute('href', '/privacidade')
+  })
+
+  it('mostra o link para os termos de uso antes do envio', () => {
+    renderCadastro()
+
+    expect(screen.getByRole('link', { name: 'termos de uso' })).toHaveAttribute(
+      'href',
+      '/termos',
+    )
+  })
+
+  it('rejeita senha fraca antes de chamar cadastrar', async () => {
+    const usuario = userEvent.setup()
+    renderCadastro()
+
+    await usuario.type(screen.getByLabelText('Seu nome'), 'Ana')
+    await usuario.type(screen.getByLabelText('E-mail'), 'familia@example.com')
+    await usuario.type(screen.getByLabelText('Senha'), 'somente-letras')
+    await usuario.click(
+      screen.getByRole('checkbox', {
+        name: /Sou responsável pela criança e autorizo o TEA/i,
+      }),
+    )
+    await usuario.click(screen.getByRole('button', { name: 'Criar conta' }))
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'letras e números',
+    )
+    expect(mocks.cadastrar).not.toHaveBeenCalled()
   })
 })

@@ -104,6 +104,13 @@ export function Home() {
         </Link>
         {' · '}
         <Link
+          to="/termos"
+          className="font-medium text-[var(--cor-primaria)] underline underline-offset-2"
+        >
+          Termos de uso
+        </Link>
+        {' · '}
+        <Link
           to="/demo"
           className="font-medium text-[var(--cor-primaria)] underline underline-offset-2"
         >

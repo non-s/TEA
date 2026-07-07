@@ -15,6 +15,8 @@ const mocks = vi.hoisted(() => ({
   navigate: vi.fn(),
   perfilAtivo: { id: 'perfil-1' },
   removerPerfil: vi.fn(),
+  adicionarColaborador: vi.fn(),
+  removerColaborador: vi.fn(),
   selecionarPerfil: vi.fn(),
   semPerfis: false,
   usuario: { uid: 'responsavel-1' },
@@ -43,7 +45,12 @@ vi.mock('../../contexts/PreferenciasContext', () => ({
 vi.mock('../../firebase/perfis', () => ({
   atualizarInteressePerfil: mocks.atualizarInteressePerfil,
   criarPerfil: mocks.criarPerfil,
+  adicionarColaborador: mocks.adicionarColaborador,
+  removerColaborador: mocks.removerColaborador,
   LIMITE_NOME_PERFIL: 40,
+  LIMITE_COLABORADORES: 3,
+  emailColaboradorValido: (email: string) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim().toLowerCase()),
   planoIndividualPadrao: {
     metaAtual: '',
     apoioPreferencial: 'visual',
@@ -103,6 +110,7 @@ vi.mock('../../firebase/perfis', () => ({
           observacaoMediador: '',
         },
         atividadesDominadas: [],
+        colaboradoresEmail: [],
       },
     ])
 

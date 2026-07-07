@@ -183,6 +183,37 @@ match /responsaveis/{responsavelId} {
     return atividadesDominadas is list && atividadesDominadas.size() <= 300;
   }
 
+  // E-mail de colaborador (segundo responsável/terapeuta): validação de
+  // formato simples, tamanho igual ao limite de e-mail do responsável.
+  // Compartilhamento é só leitura + registrar observação de sessão (ver
+  // colaboradorAutorizado abaixo) — nunca editar perfil, criar tentativa,
+  // apagar dados ou ver o documento raiz do responsável.
+  function colaboradorEmailValido(email) {
+    return email is string && email.size() > 0 && email.size() <= 160 &&
+      email.matches('.*@.*');
+  }
+
+  function colaboradoresEmailValidos(lista) {
+    return lista is list && lista.size() <= 3 &&
+      (lista.size() < 1 || colaboradorEmailValido(lista[0])) &&
+      (lista.size() < 2 || colaboradorEmailValido(lista[1])) &&
+      (lista.size() < 3 || colaboradorEmailValido(lista[2]));
+  }
+
+  // Um colaborador só é reconhecido se o e-mail do próprio token de auth
+  // (não um valor arbitrário) estiver na lista do perfil E esse e-mail já
+  // foi verificado — sem isso, alguém poderia se cadastrar com o e-mail de
+  // outra pessoa (sem provar posse da caixa de entrada) e ganhar acesso
+  // antes do dono legítimo verificar a própria conta.
+  function colaboradorAutorizado(dadosPerfil) {
+    return signedIn() &&
+      request.auth.token.email != null &&
+      request.auth.token.email_verified == true &&
+      'colaboradoresEmail' in dadosPerfil &&
+      dadosPerfil.colaboradoresEmail is list &&
+      request.auth.token.email in dadosPerfil.colaboradoresEmail;
+  }
+
   function perfilCriancaValido(dados) {
     return dados.keys().hasOnly([
         'nome',
@@ -192,6 +223,7 @@ match /responsaveis/{responsavelId} {
         'preferenciasSensoriais',
         'planoIndividual',
         'atividadesDominadas',
+        'colaboradoresEmail',
         'criadoEm',
       ]) &&
       dados.keys().hasAll([
@@ -226,6 +258,8 @@ match /responsaveis/{responsavelId} {
       preferenciasValidas(dados.preferenciasSensoriais) &&
       planoIndividualValido(dados.planoIndividual) &&
       atividadesDominadasValidas(dados.atividadesDominadas) &&
+      (!('colaboradoresEmail' in dados) ||
+        colaboradoresEmailValidos(dados.colaboradoresEmail)) &&
       criadoEmValido(dados);
   }
 
@@ -280,13 +314,28 @@ match /responsaveis/{responsavelId} {
   allow delete: if donoResponsavel();
 
   match /perfisCrianca/{perfilId} {
-    allow read: if donoResponsavel();
+    allow read: if donoResponsavel() || colaboradorAutorizado(resource.data);
+    // Só o dono edita o perfil (inclui adicionar/remover colaborador) — um
+    // colaborador nunca pode alterar a própria lista de acesso ou a de
+    // ninguém, nem apagar o perfil.
     allow create, update: if donoResponsavel() &&
       perfilCriancaValido(request.resource.data);
     allow delete: if donoResponsavel();
 
+    function perfilPai() {
+      return get(
+        /databases/$(database)/documents/responsaveis/$(responsavelId)/perfisCrianca/$(perfilId)
+      ).data;
+    }
+
+    function colaboradorAutorizadoNoPerfil() {
+      return colaboradorAutorizado(perfilPai());
+    }
+
     match /tentativas/{tentativaId} {
-      allow read: if donoResponsavel();
+      allow read: if donoResponsavel() || colaboradorAutorizadoNoPerfil();
+      // Só o dono registra tentativa: um colaborador acompanha à distância,
+      // não "joga" pela conta de outra família.
       allow create: if donoResponsavel() &&
         tentativaValida(request.resource.data);
       allow update: if false;
@@ -294,8 +343,8 @@ match /responsaveis/{responsavelId} {
     }
 
     match /observacoesSessao/{observacaoId} {
-      allow read: if donoResponsavel();
-      allow create: if donoResponsavel() &&
+      allow read: if donoResponsavel() || colaboradorAutorizadoNoPerfil();
+      allow create: if (donoResponsavel() || colaboradorAutorizadoNoPerfil()) &&
         observacaoValida(request.resource.data);
       allow update: if false;
       allow delete: if donoResponsavel();

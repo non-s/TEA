@@ -140,6 +140,87 @@ export function Privacidade() {
         </p>
       </section>
 
+      <section
+        aria-labelledby="lgpd"
+        className="border-t border-[var(--cor-borda)] pt-6"
+      >
+        <h2 id="lgpd" className="text-xl font-semibold text-[var(--cor-texto)]">
+          Base legal (LGPD)
+        </h2>
+        <div className="mt-4 flex flex-col gap-4 text-base leading-7 text-[var(--cor-texto-suave)]">
+          <p>
+            <strong className="text-[var(--cor-texto)]">Controlador:</strong> o
+            mantenedor do TEA, identificado no repositório público do projeto (
+            <a
+              href="https://github.com/non-s/TEA"
+              className="font-medium text-[var(--cor-primaria)] underline underline-offset-2"
+            >
+              github.com/non-s/TEA
+            </a>
+            ), é quem decide as finalidades e meios de tratamento dos dados
+            desta plataforma.
+          </p>
+          <p>
+            <strong className="text-[var(--cor-texto)]">
+              Base legal e dados de criança:
+            </strong>{' '}
+            o tratamento se apoia no consentimento do responsável legal (art.
+            7º, I da Lei 13.709/2018). Como envolve dados de criança, esse
+            consentimento é coletado de forma específica e em destaque, com
+            versão e data registradas (art. 14, §1º), no aceite obrigatório do
+            cadastro.
+          </p>
+          <p>
+            <strong className="text-[var(--cor-texto)]">
+              Direitos do titular (art. 18):
+            </strong>{' '}
+            confirmação e acesso aos dados (visíveis nas telas do app e no
+            arquivo de exportação), correção (editando perfil, preferências e
+            plano diretamente nas telas), eliminação (apagar perfil ou conta) e
+            portabilidade (exportação em JSON). A revogação do consentimento
+            hoje equivale a apagar a conta — ainda não existe um estado
+            intermediário de "manter conta sem consentimento ativo".
+          </p>
+          <p>
+            <strong className="text-[var(--cor-texto)]">
+              Compartilhamento com operadores:
+            </strong>{' '}
+            os dados ficam no Firebase (Google Cloud), operador técnico da
+            infraestrutura. Quando a família ativa "Resposta por voz", o áudio é
+            enviado ao serviço de reconhecimento de fala do próprio navegador
+            (fora desta infraestrutura) só para virar texto — ver detalhes
+            acima. Não há venda de dados nem compartilhamento para publicidade.
+          </p>
+          <p>
+            <strong className="text-[var(--cor-texto)]">
+              Transferência internacional:
+            </strong>{' '}
+            os dados ficam na região <code>southamerica-east1</code> (São Paulo)
+            do Google Cloud — não há transferência internacional de dados.
+          </p>
+          <p>
+            <strong className="text-[var(--cor-texto)]">
+              Exercer seus direitos:
+            </strong>{' '}
+            além das ações diretas no app (exportar/editar/apagar), dúvidas ou
+            pedidos podem ser enviados pelo perfil do GitHub do mantenedor (
+            <a
+              href="https://github.com/non-s"
+              className="font-medium text-[var(--cor-primaria)] underline underline-offset-2"
+            >
+              @non-s
+            </a>
+            ).
+          </p>
+          <p className="text-sm">
+            Este resumo busca refletir a LGPD, mas não substitui análise
+            jurídica formal. Instituições avaliando uso do TEA em contexto
+            profissional devem buscar revisão por advogado especializado em
+            proteção de dados.
+          </p>
+        </div>
+      </section>
+
       <div className="flex flex-wrap gap-3 border-t border-[var(--cor-borda)] pt-6">
         <Link to="/demo" className={classesBotao({ variante: 'secundario' })}>
           Experimentar sem conta
@@ -149,6 +230,9 @@ export function Privacidade() {
         </Link>
         <Link to="/entrar" className={classesBotao({ variante: 'secundario' })}>
           Entrar
+        </Link>
+        <Link to="/termos" className={classesBotao({ variante: 'secundario' })}>
+          Termos de uso
         </Link>
       </div>
     </main>

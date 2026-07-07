@@ -17,11 +17,29 @@ O TEA usa o projeto Firebase `non-s-firebase-20260621`, que também hospeda outr
 /responsaveis/{uid}/perfisCrianca/{perfilId}/observacoesSessao/{observacaoId}
 ```
 
-Cada responsável só consegue ler/escrever dentro do próprio `responsaveis/{uid}` — a regra central é `request.auth.uid == responsavelId` em todo o subárvore. As regras também validam o formato dos documentos antes de aceitar escrita: campos permitidos, consentimento de privacidade do responsável, enums de perfil funcional, tamanhos máximos de textos, plano curto de regulação, quatro cartões funcionais conhecidos, preferências booleanas, tipo de observação e estrutura de tentativa. O cliente repete essa validação nos normalizadores de domínio antes de renderizar ou salvar dados básicos do perfil, perfil funcional/plano individual, preferências sensoriais/motoras e tentativas: nome/apelido é cortado no limite aceito, avatar e interesse fora das listas voltam para padrões seguros, atividades dominadas inválidas são descartadas, booleanos inválidos não viram estado de UI, tamanho de fonte desconhecido volta para `normal`, tentativas corrompidas são ignoradas antes de afetar dica/domínio/relatórios, o plano de regulação limita cada texto a 140 caracteres e textos são cortados nos mesmos limites aceitos pelas regras. Isso reduz risco de payload arbitrário, dado infantil corrompido, cache legado quebrando a sessão ou observações longas demais dentro do próprio namespace da família. Não existe (ainda) nenhum mecanismo de compartilhamento entre contas (ex: um terapeuta externo acessando os dados de um paciente) — isso é uma limitação deliberada do v1, documentada em `docs/PEDAGOGIA.md`.
+Cada responsável só consegue ler/escrever dentro do próprio `responsaveis/{uid}` — a regra central é `request.auth.uid == responsavelId` em todo o subárvore, com uma exceção estreita e explícita para leitura por colaborador (ver seção dedicada abaixo). As regras também validam o formato dos documentos antes de aceitar escrita: campos permitidos, consentimento de privacidade do responsável, enums de perfil funcional, tamanhos máximos de textos, plano curto de regulação, quatro cartões funcionais conhecidos, preferências booleanas, tipo de observação, estrutura de tentativa e lista de e-mails de colaborador. O cliente repete essa validação nos normalizadores de domínio antes de renderizar ou salvar dados básicos do perfil, perfil funcional/plano individual, preferências sensoriais/motoras e tentativas: nome/apelido é cortado no limite aceito, avatar e interesse fora das listas voltam para padrões seguros, atividades dominadas inválidas são descartadas, booleanos inválidos não viram estado de UI, tamanho de fonte desconhecido volta para `normal`, tentativas corrompidas são ignoradas antes de afetar dica/domínio/relatórios, o plano de regulação limita cada texto a 140 caracteres e textos são cortados nos mesmos limites aceitos pelas regras. Isso reduz risco de payload arbitrário, dado infantil corrompido, cache legado quebrando a sessão ou observações longas demais dentro do próprio namespace da família.
 
 As regras de perfil assumem documentos criados ou atualizados pelo schema atual da aplicação. Se forem aplicadas sobre dados antigos de desenvolvimento, primeiro regrave/migre os perfis para incluir `perfilApoio`, `perfilApoio.planoRegulacao`, `preferenciasSensoriais`, `planoIndividual`, `atividadesDominadas` e os quatro cartões funcionais normalizados; caso contrário, updates parciais em documentos legados podem ser recusados corretamente por falta de formato completo.
 
 As coleções `tentativas` e `observacoesSessao` são históricas: as regras permitem `create` apenas quando o registro tem o formato esperado, bloqueiam `update` e permitem `delete` apenas pelo próprio responsável. Isso impede adulteração silenciosa de registros individuais, mas preserva o direito da família de apagar dados do perfil quando necessário.
+
+## Acesso de um segundo responsável (colaborador)
+
+Cada perfil de criança pode ter até 3 e-mails de colaborador em `colaboradoresEmail` (`src/firebase/perfis.ts#adicionarColaborador`/`removerColaborador`), adicionados manualmente pelo responsável dono da conta em "Gerenciar perfis". É pensado para um segundo responsável ou terapeuta acompanhar o progresso à distância, sem precisar da senha da conta principal.
+
+O que um colaborador pode fazer, e o que não pode:
+
+- **Pode**: ler o perfil, o progresso (tentativas) e as observações de sessão daquele perfil especificamente, e registrar uma nova observação de sessão.
+- **Não pode**: editar o perfil, adicionar/remover outros colaboradores, criar tentativas (como se estivesse "jogando" pela família), apagar qualquer dado, nem ver o documento raiz `responsaveis/{uid}` (nome/e-mail/consentimento do responsável dono).
+
+Como não há backend próprio (Cloud Functions exige o plano pago Blaze, fora do orçamento do projeto), não existe um fluxo de convite automatizado. O responsável compartilha manualmente um link (`/colaborador/{uidResponsavel}/{perfilId}`) com a pessoa, que precisa:
+
+1. Ter (ou criar) uma conta no TEA com o **mesmo e-mail** que o responsável cadastrou como colaborador.
+2. Verificar esse e-mail (clicar no link de verificação) — sem isso, as regras recusam o acesso. Essa exigência existe porque o Firebase Auth permite criar uma conta com qualquer e-mail sem provar posse da caixa de entrada; exigir `email_verified` evita que alguém se cadastre com o e-mail de outra pessoa para roubar o acesso antes do dono legítimo confirmar a própria conta.
+
+A validação de que o e-mail do token (`request.auth.token.email`) bate com um item da lista `colaboradoresEmail` do perfil acontece inteiramente nas Firestore Rules (`firestore.rules#colaboradorAutorizado`), não no cliente — um colaborador mal-intencionado não consegue contornar isso só editando o JavaScript da página.
+
+**Limitação conhecida**: esta funcionalidade não passou por testes automatizados de regras em emulador (o projeto não tem infraestrutura de emulator/rules-unit-testing configurada). A verificação foi manual, seguindo este roteiro antes de publicar qualquer atualização das regras no Console: (1) dono lê/edita o próprio perfil normalmente; (2) usuário autenticado sem e-mail na lista tenta ler o perfil e é recusado; (3) e-mail na lista mas conta não verificada é recusado; (4) e-mail na lista e verificado consegue ler perfil/tentativas/observações e criar uma observação; (5) esse mesmo colaborador tenta criar uma tentativa, editar o perfil ou ler `responsaveis/{uid}` diretamente e é recusado em todos os casos.
 
 ## Minimização de dados
 
@@ -79,9 +97,23 @@ Na tela de configurações, o responsável também pode apagar a conta inteira. 
 
 As regras permitem apagar o documento raiz apenas pelo próprio responsável autenticado. A exclusão de conta não tenta apagar arquivos locais que a família já baixou nem cópias IndexedDB/cache do navegador; por isso a interface continua recomendando exportar o que precisar guardar e limpar dados do site em dispositivo compartilhado.
 
+## Retenção de dados e backup
+
+O projeto usa o Cloud Firestore na região `southamerica-east1` (São Paulo) — confirmado no Console em julho de 2026. Isso significa que os dados da família **não saem do Brasil**, então não há transferência internacional a declarar para efeitos de LGPD.
+
+No plano gratuito Spark, o Firestore **não oferece recuperação pontual (PITR) nem backups programados** — esses recursos exigem upgrade para o plano pago Blaze, o que o projeto optou por não fazer (ver `docs/SEGURANCA.md#autenticação` sobre a mesma decisão em relação a MFA). Na prática, isso quer dizer:
+
+- Quando um perfil ou conta é apagado pela interface (ver seções acima), a remoção é imediata e não existe uma cópia de backup gerenciada pelo Firebase para recuperar depois.
+- Não há uma janela de retenção formal "os dados ficam guardados por X dias após a exclusão" — o dado excluído via `deleteDoc`/`deleteUser` deixa de existir no banco ativo assim que a operação é confirmada pelo Firestore.
+- A única cópia que pode sobreviver à exclusão é um arquivo já exportado manualmente pela família (ver "Exportação local" acima) ou uma cópia IndexedDB/cache local do navegador — nenhuma delas fica sob controle do mantenedor.
+
+Se o projeto algum dia adotar o plano Blaze, esta seção precisa ser atualizada para refletir a janela de retenção real dos backups configurados.
+
 ## Autenticação
 
 - O responsável usa Firebase Authentication (e-mail/senha). A criança **nunca digita senha** — ela só escolhe seu próprio avatar dentro da sessão já autenticada do responsável (`PerfilAtivoContext`), guardado em `sessionStorage` (não sobrevive a fechar o navegador).
+- Ao cadastrar, o cliente exige senha com pelo menos 8 caracteres, misturando letras e números (`src/routes/responsavel/Cadastro.tsx#senhaFraca`), reforçando o mínimo de 6 caracteres do próprio Firebase Auth. Essa validação é só no cliente; o limite autoritativo continua sendo o Firebase.
+- Ao cadastrar, o app envia automaticamente um e-mail de verificação (`sendEmailVerification`); enquanto o e-mail não é confirmado, um aviso discreto aparece nas telas do responsável com opção de reenviar (`AvisoEmailNaoVerificado`). A verificação não bloqueia o uso do app hoje, mas é um passo importante de higiene de conta e pré-requisito para o compartilhamento com um segundo responsável (ver seção "Acesso de um segundo responsável" abaixo).
 - Antes de chamar o Firebase Auth, o cliente normaliza e-mail para minúsculas, limita e-mail/nome do responsável aos mesmos tamanhos aceitos pelo documento `responsaveis/{uid}` e rejeita e-mail grande demais antes de criar a conta. Isso reduz risco de criar usuário no Auth e falhar logo depois ao gravar o documento do responsável no Firestore.
 - O perfil ativo da criança é salvo no `sessionStorage` junto com o UID do responsável autenticado. Ele é removido quando o responsável sai da conta, quando o Firebase informa que não há usuário autenticado, quando o UID salvo não bate com o usuário atual ou quando existe um formato legado sem responsável verificável. Isso evita que um dispositivo compartilhado mantenha contexto infantil antigo depois de logout, expiração de sessão ou troca de conta.
 - A tela de login aplica um cooldown local por navegador/e-mail depois de falhas repetidas (`src/utils/limiteLogin.ts`). O e-mail é normalizado e transformado em uma chave local derivada antes de ir para `localStorage`, evitando gravar o endereço em texto claro; isso não é criptografia nem proteção contra força bruta. A medida reduz tentativas em sequência, evita martelar a API pública e melhora a mensagem para a família; não substitui rate limiting real de servidor.
@@ -94,11 +126,24 @@ O cliente já inicializa Firebase App Check quando `VITE_FIREBASE_APPCHECK_RECAP
 
 Para produção, o app Web precisa ser registrado em Firebase Console > App Check, a chave pública reCAPTCHA v3 deve ser colocada no `.env.local`/segredo de build, e o enforcement deve ser ligado só depois de monitorar que navegadores legítimos estão recebendo tokens. App Check é uma camada adicional contra clientes não autorizados e abuso automatizado; ele não substitui Firebase Auth, Firestore Rules, consentimento explícito, minimização de dados ou revisão do modelo de acesso.
 
+## Verificação automatizada de segurança
+
+Como o projeto não tem orçamento para contratar uma auditoria de segurança humana independente, o que existe hoje é verificação automatizada, gratuita, rodando a cada mudança de código:
+
+- **`npm audit --audit-level=high`** no CI (`.github/workflows/ci.yml`) — quebra o build se uma dependência tiver vulnerabilidade conhecida de severidade alta ou crítica.
+- **Dependabot** (`.github/dependabot.yml`) — abre PR automático toda semana para atualizar dependências desatualizadas do npm e das GitHub Actions; alertas de vulnerabilidade e correções automáticas de segurança estão habilitados no repositório.
+- **CodeQL** (`.github/workflows/codeql.yml`) — análise estática (SAST) do código JavaScript/TypeScript a cada push/PR na `main` e semanalmente, usando o mecanismo gratuito do GitHub para repositórios públicos.
+- **Secret scanning** e **push protection** do GitHub já vêm habilitados no repositório, para pegar credenciais commitadas por engano antes mesmo do push.
+
+Isso pega uma classe real de problemas (dependências vulneráveis, segredos vazados, padrões inseguros conhecidos em código), mas **não substitui** uma auditoria ou pentest humano independente — nenhuma dessas ferramentas testa a lógica de negócio das Firestore Rules, engenharia social, ou vetores específicos da aplicação. Se você é uma instituição avaliando uso do TEA em escala, contratar uma auditoria humana continua sendo recomendado antes de tratar isso como suficiente.
+
 ## O que ainda não está implementado (limitações conhecidas)
 
 - **Enforcement do App Check**: o código cliente está pronto, mas o bloqueio efetivo precisa ser ativado e monitorado no Console do Firebase do ambiente real; não vem ligado por padrão para evitar bloquear famílias legítimas durante configuração.
 - **Rate limiting de servidor para login**: o cliente tem cooldown local para falhas repetidas, mas um atacante pode contornar JavaScript/localStorage; o limite autoritativo continua sendo o Firebase Auth.
 - **Logs de auditoria**: não há log de quem acessou o quê além do que o próprio Firebase Console oferece.
+- **Autenticação multifator (MFA/2FA)**: o Firebase só oferece MFA (SMS ou TOTP) no plano pago Identity Platform; o projeto roda no plano gratuito Spark compartilhado com outros apps do mantenedor, e a decisão consciente foi não assumir esse custo por ora. A conta continua protegida só por e-mail/senha.
+- **Auditoria de segurança humana independente**: nunca foi feita (nem pentest, nem bug bounty); ver seção acima sobre o que existe no lugar disso.
 
 ## Reportando uma vulnerabilidade
 

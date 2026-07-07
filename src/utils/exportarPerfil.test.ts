@@ -39,6 +39,7 @@ const perfil: PerfilCrianca = {
     observacaoMediador: 'volta melhor depois de respirar',
   },
   atividadesDominadas: ['m0-n1-a1'],
+  colaboradoresEmail: [],
 }
 
 describe('exportarPerfil', () => {

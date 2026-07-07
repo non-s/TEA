@@ -37,6 +37,7 @@ import { corDoAvatar } from '../../components/ui/coresAvatar'
 import { Cartao } from '../../components/ui/Cartao'
 import { Botao } from '../../components/ui/Botao'
 import { useFocoPreso } from '../../hooks/useFocoPreso'
+import { ColaboradoresPerfil } from './ColaboradoresPerfil'
 
 const avatares: FormaIconeId[] = [
   'circulo',
@@ -169,6 +170,7 @@ export function GerenciarPerfis() {
           preferenciasSensoriais,
           planoIndividual,
           atividadesDominadas: [],
+          colaboradoresEmail: [],
         }
 
         atualizarPreferencias(perfilCriado.preferenciasSensoriais)
@@ -376,6 +378,13 @@ export function GerenciarPerfis() {
                         {exemplosInteresseAtual}.
                       </span>
                     </div>
+
+                    {usuario && (
+                      <ColaboradoresPerfil
+                        uidResponsavel={usuario.uid}
+                        perfil={perfil}
+                      />
+                    )}
                   </Cartao>
                 </li>
               )

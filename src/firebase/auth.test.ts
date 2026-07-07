@@ -1,5 +1,6 @@
 import {
   createUserWithEmailAndPassword,
+  sendEmailVerification,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
 } from 'firebase/auth'
@@ -9,10 +10,13 @@ import {
   ESCOPO_CONSENTIMENTO_PRIVACIDADE,
   LIMITE_EMAIL_RESPONSAVEL,
   LIMITE_NOME_RESPONSAVEL,
+  LIMITE_SENHA_MINIMO,
   VERSAO_CONSENTIMENTO_PRIVACIDADE,
   cadastrar,
   entrar,
   redefinirSenha,
+  reenviarVerificacaoEmail,
+  senhaFraca,
 } from './auth'
 
 describe('auth firebase helpers', () => {
@@ -20,6 +24,7 @@ describe('auth firebase helpers', () => {
     vi.clearAllMocks()
     vi.mocked(doc).mockReturnValue('responsavel-ref' as never)
     vi.mocked(serverTimestamp).mockReturnValue('timestamp' as never)
+    vi.mocked(sendEmailVerification).mockResolvedValue(undefined)
   })
 
   it('normaliza email e nome ao cadastrar responsavel', async () => {
@@ -44,6 +49,36 @@ describe('auth firebase helpers', () => {
       },
       criadoEm: 'timestamp',
     })
+  })
+
+  it('envia e-mail de verificacao ao cadastrar responsavel', async () => {
+    vi.mocked(createUserWithEmailAndPassword).mockResolvedValue({
+      user: { uid: 'uid-1' },
+    } as never)
+
+    await cadastrar('familia@example.com', 'senha123', 'Ana', true)
+
+    expect(sendEmailVerification).toHaveBeenCalledWith({ uid: 'uid-1' })
+  })
+
+  it('nao bloqueia o cadastro quando o envio do e-mail de verificacao falha', async () => {
+    vi.mocked(createUserWithEmailAndPassword).mockResolvedValue({
+      user: { uid: 'uid-1' },
+    } as never)
+    vi.mocked(sendEmailVerification).mockRejectedValueOnce(new Error('offline'))
+
+    await expect(
+      cadastrar('familia@example.com', 'senha123', 'Ana', true),
+    ).resolves.toMatchObject({ uid: 'uid-1' })
+    expect(setDoc).toHaveBeenCalled()
+  })
+
+  it('reenvia e-mail de verificacao para o usuario informado', async () => {
+    const usuario = { uid: 'uid-1' }
+
+    await reenviarVerificacaoEmail(usuario as never)
+
+    expect(sendEmailVerification).toHaveBeenCalledWith(usuario)
   })
 
   it('rejeita cadastro sem consentimento antes de criar usuario no Auth', async () => {
@@ -112,5 +147,24 @@ describe('auth firebase helpers', () => {
       expect.anything(),
       'familia@example.com',
     )
+  })
+})
+
+describe('senhaFraca', () => {
+  it('rejeita senha curta demais mesmo com letras e numeros', () => {
+    expect(senhaFraca('a1'.repeat(3))).toBe(true)
+    expect('a1'.repeat(3).length).toBeLessThan(LIMITE_SENHA_MINIMO)
+  })
+
+  it('rejeita senha so com letras', () => {
+    expect(senhaFraca('somenteletras')).toBe(true)
+  })
+
+  it('rejeita senha so com numeros', () => {
+    expect(senhaFraca('12345678')).toBe(true)
+  })
+
+  it('aceita senha com letras, numeros e tamanho suficiente', () => {
+    expect(senhaFraca('senha123')).toBe(false)
   })
 })

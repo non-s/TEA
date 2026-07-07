@@ -35,6 +35,7 @@ const perfil: PerfilCrianca = {
     observacaoMediador: '',
   },
   atividadesDominadas: [],
+  colaboradoresEmail: [],
 }
 
 const mocks = vi.hoisted(() => ({

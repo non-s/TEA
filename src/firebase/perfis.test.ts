@@ -1,14 +1,18 @@
-import { addDoc, updateDoc } from 'firebase/firestore'
+import { addDoc, arrayRemove, arrayUnion, updateDoc } from 'firebase/firestore'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import {
+  LIMITE_COLABORADORES,
   LIMITE_META_ATUAL,
   LIMITE_NOME_PERFIL,
+  adicionarColaborador,
   atualizarPerfilApoioPerfil,
   atualizarInteressePerfil,
   atualizarPreferenciasPerfil,
   criarPerfil,
+  emailColaboradorValido,
   normalizarPerfilCrianca,
   normalizarPlanoIndividual,
+  removerColaborador,
   type PerfilCrianca,
 } from './perfis'
 import { LIMITE_OBSERVACAO_MEDIADOR } from '../curriculo/perfilApoio'
@@ -204,5 +208,94 @@ describe('criarPerfil', () => {
         interesseEspecialId: 'neutro',
       }),
     )
+  })
+
+  it('normaliza colaboradores ao ler perfil infantil: descarta invalidos, duplica e limita a 3', () => {
+    const perfil = normalizarPerfilCrianca('perfil-1', {
+      colaboradoresEmail: [
+        'Terapeuta@Exemplo.com',
+        'terapeuta@exemplo.com',
+        'segundo@exemplo.com',
+        'nao-e-email',
+        42,
+        'terceiro@exemplo.com',
+        'quarto@exemplo.com',
+      ],
+    })
+
+    expect(perfil.colaboradoresEmail).toEqual([
+      'terapeuta@exemplo.com',
+      'segundo@exemplo.com',
+      'terceiro@exemplo.com',
+    ])
+  })
+
+  it('normaliza perfil sem colaboradores para lista vazia', () => {
+    const perfil = normalizarPerfilCrianca('perfil-1', {})
+    expect(perfil.colaboradoresEmail).toEqual([])
+  })
+})
+
+describe('emailColaboradorValido', () => {
+  it('aceita e-mail com formato basico valido', () => {
+    expect(emailColaboradorValido('terapeuta@exemplo.com')).toBe(true)
+  })
+
+  it('rejeita string sem @ ou sem dominio', () => {
+    expect(emailColaboradorValido('nao-e-email')).toBe(false)
+    expect(emailColaboradorValido('sem-dominio@')).toBe(false)
+  })
+
+  it('rejeita e-mail acima do limite', () => {
+    const grande = `${'a'.repeat(160)}@exemplo.com`
+    expect(emailColaboradorValido(grande)).toBe(false)
+  })
+})
+
+describe('adicionarColaborador', () => {
+  afterEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('normaliza e-mail e usa arrayUnion ao adicionar colaborador', async () => {
+    await adicionarColaborador(
+      'responsavel-1',
+      'perfil-1',
+      '  Terapeuta@Exemplo.COM  ',
+    )
+
+    expect(arrayUnion).toHaveBeenCalledWith('terapeuta@exemplo.com')
+    expect(updateDoc).toHaveBeenCalled()
+  })
+
+  it('rejeita e-mail invalido antes de escrever no banco', async () => {
+    await expect(
+      adicionarColaborador('responsavel-1', 'perfil-1', 'nao-e-email'),
+    ).rejects.toThrow()
+
+    expect(updateDoc).not.toHaveBeenCalled()
+  })
+})
+
+describe('removerColaborador', () => {
+  afterEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('normaliza e-mail e usa arrayRemove ao remover colaborador', async () => {
+    await removerColaborador(
+      'responsavel-1',
+      'perfil-1',
+      '  Terapeuta@Exemplo.COM  ',
+    )
+
+    expect(arrayRemove).toHaveBeenCalledWith('terapeuta@exemplo.com')
+    expect(updateDoc).toHaveBeenCalled()
+  })
+})
+
+describe('LIMITE_COLABORADORES', () => {
+  it('e 3', () => {
+    expect(LIMITE_COLABORADORES).toBe(3)
   })
 })

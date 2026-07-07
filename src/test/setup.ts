@@ -74,6 +74,7 @@ vi.mock('firebase/auth', () => ({
   signInWithEmailAndPassword: vi.fn(),
   signOut: vi.fn(),
   sendPasswordResetEmail: vi.fn(),
+  sendEmailVerification: vi.fn(),
 }))
 
 vi.mock('firebase/app-check', () => ({
@@ -101,6 +102,7 @@ vi.mock('firebase/firestore', () => ({
   limit: vi.fn(),
   updateDoc: vi.fn(),
   arrayUnion: vi.fn(),
+  arrayRemove: vi.fn(),
   query: vi.fn(),
   orderBy: vi.fn(),
   writeBatch: vi.fn(),

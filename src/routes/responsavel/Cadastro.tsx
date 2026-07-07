@@ -3,7 +3,9 @@ import { Link, useNavigate } from 'react-router-dom'
 import {
   LIMITE_EMAIL_RESPONSAVEL,
   LIMITE_NOME_RESPONSAVEL,
+  LIMITE_SENHA_MINIMO,
   cadastrar,
+  senhaFraca,
 } from '../../firebase/auth'
 import { Logo } from '../../components/ui/Logo'
 import { Cartao } from '../../components/ui/Cartao'
@@ -47,6 +49,12 @@ export function Cadastro() {
     }
     if (!consentimentoPrivacidade) {
       setErro('Confirme o uso dos dados antes de criar a conta.')
+      return
+    }
+    if (senhaFraca(senha)) {
+      setErro(
+        `A senha precisa ter pelo menos ${LIMITE_SENHA_MINIMO} caracteres, com letras e números.`,
+      )
       return
     }
     setEnviando(true)
@@ -102,20 +110,29 @@ export function Cadastro() {
             />
           </label>
 
-          <label className="flex flex-col gap-1.5">
-            <span className="text-sm font-medium text-[var(--cor-texto)]">
-              Senha
+          <div className="flex flex-col gap-1.5">
+            <label className="flex flex-col gap-1.5">
+              <span className="text-sm font-medium text-[var(--cor-texto)]">
+                Senha
+              </span>
+              <input
+                type="password"
+                required
+                minLength={LIMITE_SENHA_MINIMO}
+                autoComplete="new-password"
+                value={senha}
+                onChange={(evento) => setSenha(evento.target.value)}
+                className={classesCampo}
+                aria-describedby="senha-requisitos"
+              />
+            </label>
+            <span
+              id="senha-requisitos"
+              className="text-xs text-[var(--cor-texto-suave)]"
+            >
+              Pelo menos {LIMITE_SENHA_MINIMO} caracteres, com letras e números.
             </span>
-            <input
-              type="password"
-              required
-              minLength={6}
-              autoComplete="new-password"
-              value={senha}
-              onChange={(evento) => setSenha(evento.target.value)}
-              className={classesCampo}
-            />
-          </label>
+          </div>
 
           <label className="flex items-start gap-3 rounded-2xl border-2 border-[var(--cor-borda)] bg-[var(--cor-fundo)] p-4 text-sm leading-6 text-[var(--cor-texto)]">
             <input
@@ -140,6 +157,13 @@ export function Cadastro() {
               className="font-medium text-[var(--cor-primaria)] underline underline-offset-2"
             >
               resumo de privacidade
+            </Link>{' '}
+            e os{' '}
+            <Link
+              to="/termos"
+              className="font-medium text-[var(--cor-primaria)] underline underline-offset-2"
+            >
+              termos de uso
             </Link>
             .
           </p>
