@@ -311,6 +311,9 @@ describe('GerenciarPerfis', () => {
       screen.getByLabelText('Nome ou apelido da criança'),
       '  Mia  ',
     )
+    await usuario.click(
+      screen.getByText('Personalizar interesse e apoio inicial'),
+    )
     await usuario.selectOptions(
       screen.getByLabelText('Como ela seleciona melhor'),
       'escolha-mediada',
@@ -345,6 +348,9 @@ describe('GerenciarPerfis', () => {
     await usuario.type(
       screen.getByLabelText('Nome ou apelido da criança'),
       'Mia',
+    )
+    await usuario.click(
+      screen.getByText('Personalizar interesse e apoio inicial'),
     )
     await usuario.selectOptions(
       screen.getByLabelText('Interesse inicial'),

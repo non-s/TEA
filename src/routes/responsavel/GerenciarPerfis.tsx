@@ -440,127 +440,148 @@ export function GerenciarPerfis() {
             </div>
           </fieldset>
 
-          <div className="flex flex-col gap-1.5">
-            <label
-              htmlFor="interesse-inicial"
-              className="text-sm font-medium text-[var(--cor-texto)]"
-            >
-              Interesse inicial
-            </label>
-            <select
-              id="interesse-inicial"
-              value={interesseEspecialId}
-              aria-describedby="interesse-inicial-descricao"
-              onChange={(evento) =>
-                setInteresseEspecialId(
-                  evento.target.value as InteresseEspecialId,
-                )
-              }
-              className="min-h-[var(--min-alvo-controle)] rounded-xl border-2 border-[var(--cor-borda)] bg-[var(--cor-fundo-alt)] px-4 py-2.5 text-[var(--cor-texto)]"
-            >
-              {interessesEspeciais.map((interesse) => (
-                <option key={interesse.id} value={interesse.id}>
-                  {interesse.nome}
-                </option>
-              ))}
-            </select>
-            <span
-              id="interesse-inicial-descricao"
-              className="text-sm text-[var(--cor-texto-suave)]"
-            >
-              {interesseSelecionado.descricao} Exemplos:{' '}
-              {exemplosInteresseSelecionado}.
-            </span>
-          </div>
-
-          <fieldset className="flex flex-col gap-3 border-0 p-0">
-            <legend className="text-sm font-medium text-[var(--cor-texto)]">
-              Apoio inicial
-            </legend>
-
-            <label className="flex flex-col gap-1.5">
+          <details className="group rounded-2xl border-2 border-[var(--cor-borda)] px-4 py-3 open:pb-4">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-2 [&::-webkit-details-marker]:hidden">
               <span className="text-sm font-medium text-[var(--cor-texto)]">
-                Comunicação que a criança já usa melhor
+                Personalizar interesse e apoio inicial
               </span>
-              <select
-                value={comunicacaoPreferencial}
-                onChange={(evento) =>
-                  setComunicacaoPreferencial(
-                    evento.target.value as ComunicacaoPreferencial,
-                  )
-                }
-                className="min-h-[var(--min-alvo-controle)] rounded-xl border-2 border-[var(--cor-borda)] bg-[var(--cor-fundo-alt)] px-4 py-2.5 text-[var(--cor-texto)]"
-              >
-                {Object.entries(textoComunicacaoPreferencial).map(
-                  ([valor, texto]) => (
-                    <option key={valor} value={valor}>
-                      {texto}
+              <span className="flex items-center gap-2 text-xs text-[var(--cor-texto-suave)]">
+                Opcional, dá pra ajustar depois
+                <span
+                  aria-hidden="true"
+                  className="transition-transform group-open:rotate-180"
+                >
+                  ⌄
+                </span>
+              </span>
+            </summary>
+
+            <div className="mt-4 flex flex-col gap-4">
+              <div className="flex flex-col gap-1.5">
+                <label
+                  htmlFor="interesse-inicial"
+                  className="text-sm font-medium text-[var(--cor-texto)]"
+                >
+                  Interesse inicial
+                </label>
+                <select
+                  id="interesse-inicial"
+                  value={interesseEspecialId}
+                  aria-describedby="interesse-inicial-descricao"
+                  onChange={(evento) =>
+                    setInteresseEspecialId(
+                      evento.target.value as InteresseEspecialId,
+                    )
+                  }
+                  className="min-h-[var(--min-alvo-controle)] rounded-xl border-2 border-[var(--cor-borda)] bg-[var(--cor-fundo-alt)] px-4 py-2.5 text-[var(--cor-texto)]"
+                >
+                  {interessesEspeciais.map((interesse) => (
+                    <option key={interesse.id} value={interesse.id}>
+                      {interesse.nome}
                     </option>
-                  ),
-                )}
-              </select>
-            </label>
+                  ))}
+                </select>
+                <span
+                  id="interesse-inicial-descricao"
+                  className="text-sm text-[var(--cor-texto-suave)]"
+                >
+                  {interesseSelecionado.descricao} Exemplos:{' '}
+                  {exemplosInteresseSelecionado}.
+                </span>
+              </div>
 
-            <label className="flex flex-col gap-1.5">
-              <span className="text-sm font-medium text-[var(--cor-texto)]">
-                Como ela seleciona melhor
-              </span>
-              <select
-                value={acessoPreferencial}
-                onChange={(evento) =>
-                  setAcessoPreferencial(
-                    evento.target.value as AcessoPreferencial,
-                  )
-                }
-                className="min-h-[var(--min-alvo-controle)] rounded-xl border-2 border-[var(--cor-borda)] bg-[var(--cor-fundo-alt)] px-4 py-2.5 text-[var(--cor-texto)]"
-              >
-                {Object.entries(textoAcessoPreferencial).map(
-                  ([valor, texto]) => (
-                    <option key={valor} value={valor}>
-                      {texto}
-                    </option>
-                  ),
-                )}
-              </select>
-            </label>
+              <fieldset className="flex flex-col gap-3 border-0 p-0">
+                <legend className="text-sm font-medium text-[var(--cor-texto)]">
+                  Apoio inicial
+                </legend>
 
-            <label className="flex flex-col gap-1.5">
-              <span className="text-sm font-medium text-[var(--cor-texto)]">
-                Para regular, costuma ajudar
-              </span>
-              <select
-                value={regulacaoPreferencial}
-                onChange={(evento) =>
-                  setRegulacaoPreferencial(
-                    evento.target.value as RegulacaoPreferencial,
-                  )
-                }
-                className="min-h-[var(--min-alvo-controle)] rounded-xl border-2 border-[var(--cor-borda)] bg-[var(--cor-fundo-alt)] px-4 py-2.5 text-[var(--cor-texto)]"
-              >
-                {Object.entries(textoRegulacaoPreferencial).map(
-                  ([valor, texto]) => (
-                    <option key={valor} value={valor}>
-                      {texto}
-                    </option>
-                  ),
-                )}
-              </select>
-            </label>
+                <label className="flex flex-col gap-1.5">
+                  <span className="text-sm font-medium text-[var(--cor-texto)]">
+                    Comunicação que a criança já usa melhor
+                  </span>
+                  <select
+                    value={comunicacaoPreferencial}
+                    onChange={(evento) =>
+                      setComunicacaoPreferencial(
+                        evento.target.value as ComunicacaoPreferencial,
+                      )
+                    }
+                    className="min-h-[var(--min-alvo-controle)] rounded-xl border-2 border-[var(--cor-borda)] bg-[var(--cor-fundo-alt)] px-4 py-2.5 text-[var(--cor-texto)]"
+                  >
+                    {Object.entries(textoComunicacaoPreferencial).map(
+                      ([valor, texto]) => (
+                        <option key={valor} value={valor}>
+                          {texto}
+                        </option>
+                      ),
+                    )}
+                  </select>
+                </label>
 
-            <label className="flex flex-col gap-1.5">
-              <span className="text-sm font-medium text-[var(--cor-texto)]">
-                Observação curta de acesso
-              </span>
-              <textarea
-                value={observacoesApoio}
-                onChange={(evento) => setObservacoesApoio(evento.target.value)}
-                rows={3}
-                maxLength={LIMITE_OBSERVACOES_PERFIL_APOIO}
-                placeholder="Ex: escolhe melhor quando o adulto espera e aponta uma opção por vez"
-                className="min-h-[var(--min-alvo-controle)] resize-none rounded-xl border-2 border-[var(--cor-borda)] bg-[var(--cor-fundo-alt)] px-4 py-2.5 text-[var(--cor-texto)]"
-              />
-            </label>
-          </fieldset>
+                <label className="flex flex-col gap-1.5">
+                  <span className="text-sm font-medium text-[var(--cor-texto)]">
+                    Como ela seleciona melhor
+                  </span>
+                  <select
+                    value={acessoPreferencial}
+                    onChange={(evento) =>
+                      setAcessoPreferencial(
+                        evento.target.value as AcessoPreferencial,
+                      )
+                    }
+                    className="min-h-[var(--min-alvo-controle)] rounded-xl border-2 border-[var(--cor-borda)] bg-[var(--cor-fundo-alt)] px-4 py-2.5 text-[var(--cor-texto)]"
+                  >
+                    {Object.entries(textoAcessoPreferencial).map(
+                      ([valor, texto]) => (
+                        <option key={valor} value={valor}>
+                          {texto}
+                        </option>
+                      ),
+                    )}
+                  </select>
+                </label>
+
+                <label className="flex flex-col gap-1.5">
+                  <span className="text-sm font-medium text-[var(--cor-texto)]">
+                    Para regular, costuma ajudar
+                  </span>
+                  <select
+                    value={regulacaoPreferencial}
+                    onChange={(evento) =>
+                      setRegulacaoPreferencial(
+                        evento.target.value as RegulacaoPreferencial,
+                      )
+                    }
+                    className="min-h-[var(--min-alvo-controle)] rounded-xl border-2 border-[var(--cor-borda)] bg-[var(--cor-fundo-alt)] px-4 py-2.5 text-[var(--cor-texto)]"
+                  >
+                    {Object.entries(textoRegulacaoPreferencial).map(
+                      ([valor, texto]) => (
+                        <option key={valor} value={valor}>
+                          {texto}
+                        </option>
+                      ),
+                    )}
+                  </select>
+                </label>
+
+                <label className="flex flex-col gap-1.5">
+                  <span className="text-sm font-medium text-[var(--cor-texto)]">
+                    Observação curta de acesso
+                  </span>
+                  <textarea
+                    value={observacoesApoio}
+                    onChange={(evento) =>
+                      setObservacoesApoio(evento.target.value)
+                    }
+                    rows={3}
+                    maxLength={LIMITE_OBSERVACOES_PERFIL_APOIO}
+                    placeholder="Ex: escolhe melhor quando o adulto espera e aponta uma opção por vez"
+                    className="min-h-[var(--min-alvo-controle)] resize-none rounded-xl border-2 border-[var(--cor-borda)] bg-[var(--cor-fundo-alt)] px-4 py-2.5 text-[var(--cor-texto)]"
+                  />
+                </label>
+              </fieldset>
+            </div>
+          </details>
 
           {erro && (
             <p role="alert" className="text-sm text-[var(--cor-erro)]">
