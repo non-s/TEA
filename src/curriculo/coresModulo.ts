@@ -5,23 +5,40 @@ export interface AcentoModulo {
 
 // Paleta por módulo, compartilhada entre a trilha e o jardim de conquistas
 // para que o mesmo módulo tenha sempre a mesma identidade visual.
-export const acentosPorModulo: Record<string, AcentoModulo> = {
-  m0: {
-    fundo: 'var(--cor-primaria-clara)',
-    texto: 'var(--cor-primaria-escura)',
-  },
-  m1: { fundo: 'var(--cor-acento-clara)', texto: 'var(--cor-acento-escura)' },
-  m2: { fundo: 'var(--cor-sucesso-clara)', texto: 'var(--cor-sucesso)' },
-  m3: { fundo: 'var(--cor-conquista-clara)', texto: 'var(--cor-conquista)' },
-  m3t: { fundo: '#f0dce8', texto: '#8a3d68' },
-  m4: { fundo: '#e3ddf0', texto: '#5f4e96' },
-  m5: { fundo: '#d8ece9', texto: '#2f6f68' },
-  m6: { fundo: '#f0e4d6', texto: '#7a5737' },
-  m7: { fundo: '#e1e9d5', texto: '#566f2d' },
-  m8: { fundo: '#dbe4f4', texto: '#3d5f9c' },
-  m9: { fundo: '#f2dede', texto: '#8a4a4a' },
-  m10: { fundo: '#e6def0', texto: '#654b83' },
-}
+// As 4 combinações semânticas disponíveis no tema (ver :root e
+// :root[data-alto-contraste='true'] em src/index.css). Módulos além da 4ª
+// repetem essas combinações em ciclo — preferimos repetição de cor a usar
+// hex fixos que ignorariam o modo de alto contraste.
+const combinacoesSemanticas: AcentoModulo[] = [
+  { fundo: 'var(--cor-primaria-clara)', texto: 'var(--cor-primaria-escura)' },
+  { fundo: 'var(--cor-acento-clara)', texto: 'var(--cor-acento-escura)' },
+  { fundo: 'var(--cor-sucesso-clara)', texto: 'var(--cor-sucesso)' },
+  { fundo: 'var(--cor-conquista-clara)', texto: 'var(--cor-conquista)' },
+]
+
+const ordemModulos = [
+  'm0',
+  'm1',
+  'm2',
+  'm3',
+  'm3t',
+  'm4',
+  'm5',
+  'm6',
+  'm7',
+  'm8',
+  'm9',
+  'm10',
+  'm11',
+]
+
+export const acentosPorModulo: Record<string, AcentoModulo> =
+  Object.fromEntries(
+    ordemModulos.map((moduloId, indice) => [
+      moduloId,
+      combinacoesSemanticas[indice % combinacoesSemanticas.length],
+    ]),
+  )
 
 export function acentoDoModulo(moduloId: string): AcentoModulo {
   return acentosPorModulo[moduloId] ?? acentosPorModulo.m0
