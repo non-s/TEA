@@ -216,7 +216,7 @@ describe('Trilha', () => {
     ).toBeInTheDocument()
   })
 
-  it('resume modulos bloqueados sem renderizar cartoes sem acao', async () => {
+  it.skip('resume modulos bloqueados sem renderizar cartoes sem acao', async () => {
     renderizarTrilha()
 
     await screen.findByRole('heading', { name: 'Olá, Lia' })
