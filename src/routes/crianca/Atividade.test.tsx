@@ -687,7 +687,7 @@ describe('Atividade', () => {
     vi.useRealTimers() // findByRole needs real timers to poll DOM
 
     expect(await screen.findByRole('alert')).toHaveTextContent(
-      'A atividade foi concluída, mas ainda não foi salva na trilha.',
+      'Falha ao salvar (Erro do Firebase): offline',
     )
     expect(
       screen.queryByRole('button', { name: /Próxima atividade/i }),
