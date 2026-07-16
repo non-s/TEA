@@ -47,6 +47,7 @@ vi.mock('../../contexts/AuthContext', () => ({
 vi.mock('../../contexts/PerfilAtivoContext', () => ({
   usePerfilAtivo: () => ({
     perfilAtivo: mocks.perfilAtivo,
+    uidResponsavelPerfilAtivo: mocks.usuario?.uid,
   }),
 }))
 

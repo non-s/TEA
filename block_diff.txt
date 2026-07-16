@@ -1,0 +1,664 @@
+--- firestore.rules	2026-07-15 22:02:50.350916190 -0300
++++ /tmp/live-block.txt	2026-07-16 08:17:50.727993370 -0300
+@@ -1,353 +1,310 @@
+-// Regras do Firestore para as coleções do TEA.
+-//
+-// Este projeto Firebase (non-s-firebase-20260621) é compartilhado com
+-// outros aplicativos do mesmo responsável. Este arquivo documenta apenas
+-// o bloco `match /responsaveis/{responsavelId}` que pertence ao TEA — ele
+-// precisa ser colado dentro do `match /databases/{database}/documents { ... }`
+-// do arquivo de regras completo do projeto no Console do Firebase, junto
+-// aos blocos dos outros apps (não publique este arquivo sozinho, ele não
+-// é o arquivo de regras completo do projeto).
+-//
+-// Pressupõe que a função `signedIn()` já existe no arquivo de regras do
+-// projeto:
+-//
+-//   function signedIn() {
+-//     return request.auth != null;
+-//   }
+-
+-match /responsaveis/{responsavelId} {
+-  function donoResponsavel() {
+-    return signedIn() && request.auth.uid == responsavelId;
+-  }
+-
+-  function textoAte(valor, limite) {
+-    return valor is string && valor.size() <= limite;
+-  }
+-
+-  function textoObrigatorioAte(valor, limite) {
+-    return valor is string && valor.size() > 0 && valor.size() <= limite;
+-  }
+-
+-  function criadoEmValido(dados) {
+-    return !('criadoEm' in dados) || dados.criadoEm is timestamp;
+-  }
+-
+-  function consentimentoPrivacidadeValido(consentimento) {
+-    return consentimento is map &&
+-      consentimento.keys().hasOnly(['versao', 'escopo', 'aceitoEm']) &&
+-      consentimento.keys().hasAll(['versao', 'escopo', 'aceitoEm']) &&
+-      consentimento.versao == 1 &&
+-      consentimento.escopo == 'uso-alfabetizacao-tea-v1' &&
+-      consentimento.aceitoEm is timestamp;
+-  }
+-
+-  function responsavelValido(dados) {
+-    return dados.keys().hasOnly([
+-        'nome',
+-        'email',
+-        'consentimentoPrivacidade',
+-        'criadoEm',
+-      ]) &&
+-      dados.keys().hasAll(['nome', 'email', 'consentimentoPrivacidade']) &&
+-      textoObrigatorioAte(dados.nome, 80) &&
+-      textoObrigatorioAte(dados.email, 160) &&
+-      consentimentoPrivacidadeValido(dados.consentimentoPrivacidade) &&
+-      criadoEmValido(dados);
+-  }
+-
+-  function preferenciasValidas(preferencias) {
+-    return preferencias is map &&
+-      preferencias.keys().hasOnly([
+-        'som',
+-        'animacoes',
+-        'altoContraste',
+-        'alvosMaiores',
+-        'tamanhoFonte',
+-      ]) &&
+-      preferencias.keys().hasAll([
+-        'som',
+-        'animacoes',
+-        'altoContraste',
+-        'alvosMaiores',
+-        'tamanhoFonte',
+-      ]) &&
+-      preferencias.som is bool &&
+-      preferencias.animacoes is bool &&
+-      preferencias.altoContraste is bool &&
+-      preferencias.alvosMaiores is bool &&
+-      preferencias.tamanhoFonte in ['normal', 'grande', 'extra-grande'];
+-  }
+-
+-  function planoIndividualValido(plano) {
+-    return plano is map &&
+-      plano.keys().hasOnly([
+-        'metaAtual',
+-        'apoioPreferencial',
+-        'observacaoMediador',
+-      ]) &&
+-      plano.keys().hasAll([
+-        'metaAtual',
+-        'apoioPreferencial',
+-        'observacaoMediador',
+-      ]) &&
+-      textoAte(plano.metaAtual, 160) &&
+-      plano.apoioPreferencial in ['visual', 'verbal', 'gestual', 'pausa'] &&
+-      textoAte(plano.observacaoMediador, 240);
+-  }
+-
+-  function cartaoComunicacaoValido(cartao, idEsperado) {
+-    return cartao is map &&
+-      cartao.keys().hasOnly(['id', 'rotulo', 'fala', 'apoio']) &&
+-      cartao.keys().hasAll(['id', 'rotulo', 'fala', 'apoio']) &&
+-      cartao.id == idEsperado &&
+-      textoObrigatorioAte(cartao.rotulo, 24) &&
+-      textoObrigatorioAte(cartao.fala, 90) &&
+-      textoObrigatorioAte(cartao.apoio, 140);
+-  }
+-
+-  function cartoesComunicacaoValidos(cartoes) {
+-    return cartoes is list &&
+-      cartoes.size() == 4 &&
+-      cartaoComunicacaoValido(cartoes[0], 'pausa') &&
+-      cartaoComunicacaoValido(cartoes[1], 'ajuda') &&
+-      cartaoComunicacaoValido(cartoes[2], 'nao-sei') &&
+-      cartaoComunicacaoValido(cartoes[3], 'pronto');
+-  }
+-
+-  function planoRegulacaoValido(planoRegulacao) {
+-    return planoRegulacao is map &&
+-      planoRegulacao.keys().hasOnly([
+-        'sinaisPausa',
+-        'estrategiasAjudam',
+-        'evitarDuranteSobrecarga',
+-      ]) &&
+-      planoRegulacao.keys().hasAll([
+-        'sinaisPausa',
+-        'estrategiasAjudam',
+-        'evitarDuranteSobrecarga',
+-      ]) &&
+-      textoAte(planoRegulacao.sinaisPausa, 140) &&
+-      textoAte(planoRegulacao.estrategiasAjudam, 140) &&
+-      textoAte(planoRegulacao.evitarDuranteSobrecarga, 140);
+-  }
+-
+-  function perfilApoioValido(perfilApoio) {
+-    return perfilApoio is map &&
+-      perfilApoio.keys().hasOnly([
+-        'comunicacaoPreferencial',
+-        'acessoPreferencial',
+-        'regulacaoPreferencial',
+-        'limiteTentativasAntesPausa',
+-        'cartoesComunicacao',
+-        'planoRegulacao',
+-        'observacoes',
+-      ]) &&
+-      perfilApoio.keys().hasAll([
+-        'comunicacaoPreferencial',
+-        'acessoPreferencial',
+-        'regulacaoPreferencial',
+-        'limiteTentativasAntesPausa',
+-        'cartoesComunicacao',
+-        'planoRegulacao',
+-        'observacoes',
+-      ]) &&
+-      perfilApoio.comunicacaoPreferencial in [
+-        'fala',
+-        'gestos',
+-        'figuras',
+-        'dispositivo',
+-        'emergente',
+-      ] &&
+-      perfilApoio.acessoPreferencial in [
+-        'toque-direto',
+-        'toque-com-confirmacao',
+-        'toque-com-ajuda',
+-        'mouse-teclado',
+-        'escolha-mediada',
+-      ] &&
+-      perfilApoio.regulacaoPreferencial in [
+-        'pausa',
+-        'ambiente-calmo',
+-        'movimento',
+-        'alternar',
+-      ] &&
+-      perfilApoio.limiteTentativasAntesPausa is int &&
+-      perfilApoio.limiteTentativasAntesPausa >= 2 &&
+-      perfilApoio.limiteTentativasAntesPausa <= 20 &&
+-      cartoesComunicacaoValidos(perfilApoio.cartoesComunicacao) &&
+-      planoRegulacaoValido(perfilApoio.planoRegulacao) &&
+-      textoAte(perfilApoio.observacoes, 240);
+-  }
+-
+-  function atividadesDominadasValidas(atividadesDominadas) {
+-    return atividadesDominadas is list && atividadesDominadas.size() <= 300;
+-  }
+-
+-  // E-mail de colaborador (segundo responsável/terapeuta): validação de
+-  // formato simples, tamanho igual ao limite de e-mail do responsável.
+-  // Compartilhamento é só leitura + registrar observação de sessão (ver
+-  // colaboradorAutorizado abaixo) — nunca editar perfil, criar tentativa,
+-  // apagar dados ou ver o documento raiz do responsável.
+-  function colaboradorEmailValido(email) {
+-    return email is string && email.size() > 0 && email.size() <= 160 &&
+-      email.matches('.*@.*');
+-  }
+-
+-  function colaboradoresEmailValidos(lista) {
+-    return lista is list && lista.size() <= 3 &&
+-      (lista.size() < 1 || colaboradorEmailValido(lista[0])) &&
+-      (lista.size() < 2 || colaboradorEmailValido(lista[1])) &&
+-      (lista.size() < 3 || colaboradorEmailValido(lista[2]));
+-  }
+-
+-  // Um colaborador só é reconhecido se o e-mail do próprio token de auth
+-  // (não um valor arbitrário) estiver na lista do perfil E esse e-mail já
+-  // foi verificado — sem isso, alguém poderia se cadastrar com o e-mail de
+-  // outra pessoa (sem provar posse da caixa de entrada) e ganhar acesso
+-  // antes do dono legítimo verificar a própria conta.
+-  function colaboradorAutorizado(dadosPerfil) {
+-    return signedIn() &&
+-      request.auth.token.email != null &&
+-      request.auth.token.email_verified == true &&
+-      'colaboradoresEmail' in dadosPerfil &&
+-      dadosPerfil.colaboradoresEmail is list &&
+-      request.auth.token.email in dadosPerfil.colaboradoresEmail;
+-  }
+-
+-  function perfilCriancaValido(dados) {
+-    return dados.keys().hasOnly([
+-        'nome',
+-        'avatarId',
+-        'interesseEspecialId',
+-        'perfilApoio',
+-        'preferenciasSensoriais',
+-        'planoIndividual',
+-        'atividadesDominadas',
+-        'colaboradoresEmail',
+-        'criadoEm',
+-      ]) &&
+-      dados.keys().hasAll([
+-        'nome',
+-        'avatarId',
+-        'interesseEspecialId',
+-        'perfilApoio',
+-        'preferenciasSensoriais',
+-        'planoIndividual',
+-        'atividadesDominadas',
+-      ]) &&
+-      textoObrigatorioAte(dados.nome, 40) &&
+-      dados.avatarId in [
+-        'circulo',
+-        'quadrado',
+-        'triangulo',
+-        'estrela',
+-        'coracao',
+-        'lua',
+-      ] &&
+-      dados.interesseEspecialId in [
+-        'neutro',
+-        'animais',
+-        'veiculos',
+-        'casa',
+-        'musica',
+-        'comida',
+-        'brincar',
+-        'natureza',
+-      ] &&
+-      perfilApoioValido(dados.perfilApoio) &&
+-      preferenciasValidas(dados.preferenciasSensoriais) &&
+-      planoIndividualValido(dados.planoIndividual) &&
+-      atividadesDominadasValidas(dados.atividadesDominadas) &&
+-      (!('colaboradoresEmail' in dados) ||
+-        colaboradoresEmailValidos(dados.colaboradoresEmail)) &&
+-      criadoEmValido(dados);
+-  }
+-
+-  function tentativaValida(dados) {
+-    return dados.keys().hasOnly([
+-        'atividadeId',
+-        'moduloId',
+-        'timestamp',
+-        'resultado',
+-        'nivelDicaUsado',
+-        'tempoRespostaMs',
+-      ]) &&
+-      dados.keys().hasAll([
+-        'atividadeId',
+-        'moduloId',
+-        'timestamp',
+-        'resultado',
+-        'nivelDicaUsado',
+-        'tempoRespostaMs',
+-      ]) &&
+-      textoObrigatorioAte(dados.atividadeId, 80) &&
+-      textoObrigatorioAte(dados.moduloId, 20) &&
+-      dados.timestamp is number &&
+-      dados.timestamp > 0 &&
+-      dados.resultado in ['correto', 'incorreto'] &&
+-      dados.nivelDicaUsado is int &&
+-      dados.nivelDicaUsado >= 0 &&
+-      dados.nivelDicaUsado <= 2 &&
+-      dados.tempoRespostaMs is number &&
+-      dados.tempoRespostaMs >= 0 &&
+-      dados.tempoRespostaMs <= 3600000;
+-  }
+-
+-  function observacaoValida(dados) {
+-    return dados.keys().hasOnly(['texto', 'tipo', 'timestamp']) &&
+-      dados.keys().hasAll(['texto', 'tipo', 'timestamp']) &&
+-      textoObrigatorioAte(dados.texto, 500) &&
+-      dados.tipo in [
+-        'comunicacao',
+-        'regulacao',
+-        'acesso',
+-        'generalizacao',
+-        'outro',
+-      ] &&
+-      dados.timestamp is number &&
+-      dados.timestamp > 0;
+-  }
+-
+-  allow read: if donoResponsavel();
+-  allow create, update: if donoResponsavel() &&
+-    responsavelValido(request.resource.data);
+-  allow delete: if donoResponsavel();
+-
+-  match /perfisCrianca/{perfilId} {
+-    allow read: if donoResponsavel() || colaboradorAutorizado(resource.data);
+-    // Só o dono edita o perfil (inclui adicionar/remover colaborador) — um
+-    // colaborador nunca pode alterar a própria lista de acesso ou a de
+-    // ninguém, nem apagar o perfil.
+-    allow create, update: if donoResponsavel() &&
+-      perfilCriancaValido(request.resource.data);
+-    allow delete: if donoResponsavel();
+-
+-    function perfilPai() {
+-      return get(
+-        /databases/$(database)/documents/responsaveis/$(responsavelId)/perfisCrianca/$(perfilId)
+-      ).data;
+-    }
+-
+-    function colaboradorAutorizadoNoPerfil() {
+-      return colaboradorAutorizado(perfilPai());
+-    }
+-
+-    match /tentativas/{tentativaId} {
+-      allow read: if donoResponsavel() || colaboradorAutorizadoNoPerfil();
+-      // Só o dono registra tentativa: um colaborador acompanha à distância,
+-      // não "joga" pela conta de outra família.
+-      allow create: if donoResponsavel() &&
+-        tentativaValida(request.resource.data);
+-      allow update: if false;
++    match /responsaveis/{responsavelId} {
++      function donoResponsavel() {
++        return signedIn() && request.auth.uid == responsavelId;
++      }
++
++      function textoAte(valor, limite) {
++        return valor is string && valor.size() <= limite;
++      }
++
++      function textoObrigatorioAte(valor, limite) {
++        return valor is string && valor.size() > 0 && valor.size() <= limite;
++      }
++
++      function criadoEmValido(dados) {
++        return !('criadoEm' in dados) || dados.criadoEm is timestamp;
++      }
++
++      function consentimentoPrivacidadeValido(consentimento) {
++        return consentimento is map &&
++          consentimento.keys().hasOnly(['versao', 'escopo', 'aceitoEm']) &&
++          consentimento.keys().hasAll(['versao', 'escopo', 'aceitoEm']) &&
++          consentimento.versao == 1 &&
++          consentimento.escopo == 'uso-alfabetizacao-tea-v1' &&
++          consentimento.aceitoEm is timestamp;
++      }
++
++      function responsavelValido(dados) {
++        return dados.keys().hasOnly([
++            'nome',
++            'email',
++            'consentimentoPrivacidade',
++            'criadoEm',
++          ]) &&
++          dados.keys().hasAll(['nome', 'email', 'consentimentoPrivacidade']) &&
++          textoObrigatorioAte(dados.nome, 80) &&
++          textoObrigatorioAte(dados.email, 160) &&
++          consentimentoPrivacidadeValido(dados.consentimentoPrivacidade) &&
++          criadoEmValido(dados);
++      }
++
++      function preferenciasValidas(preferencias) {
++        return preferencias is map &&
++          preferencias.keys().hasOnly([
++            'som',
++            'animacoes',
++            'altoContraste',
++            'alvosMaiores',
++            'tamanhoFonte',
++          ]) &&
++          preferencias.keys().hasAll([
++            'som',
++            'animacoes',
++            'altoContraste',
++            'alvosMaiores',
++            'tamanhoFonte',
++          ]) &&
++          preferencias.som is bool &&
++          preferencias.animacoes is bool &&
++          preferencias.altoContraste is bool &&
++          preferencias.alvosMaiores is bool &&
++          preferencias.tamanhoFonte in ['normal', 'grande', 'extra-grande'];
++      }
++
++      function planoIndividualValido(plano) {
++        return plano is map &&
++          plano.keys().hasOnly([
++            'metaAtual',
++            'apoioPreferencial',
++            'observacaoMediador',
++          ]) &&
++          plano.keys().hasAll([
++            'metaAtual',
++            'apoioPreferencial',
++            'observacaoMediador',
++          ]) &&
++          textoAte(plano.metaAtual, 160) &&
++          plano.apoioPreferencial in ['visual', 'verbal', 'gestual', 'pausa'] &&
++          textoAte(plano.observacaoMediador, 240);
++      }
++
++      function cartaoComunicacaoValido(cartao, idEsperado) {
++        return cartao is map &&
++          cartao.keys().hasOnly(['id', 'rotulo', 'fala', 'apoio']) &&
++          cartao.keys().hasAll(['id', 'rotulo', 'fala', 'apoio']) &&
++          cartao.id == idEsperado &&
++          textoObrigatorioAte(cartao.rotulo, 24) &&
++          textoObrigatorioAte(cartao.fala, 90) &&
++          textoObrigatorioAte(cartao.apoio, 140);
++      }
++
++      function cartoesComunicacaoValidos(cartoes) {
++        return cartoes is list &&
++          cartoes.size() == 4 &&
++          cartaoComunicacaoValido(cartoes[0], 'pausa') &&
++          cartaoComunicacaoValido(cartoes[1], 'ajuda') &&
++          cartaoComunicacaoValido(cartoes[2], 'nao-sei') &&
++          cartaoComunicacaoValido(cartoes[3], 'pronto');
++      }
++
++      function planoRegulacaoValido(planoRegulacao) {
++        return planoRegulacao is map &&
++          planoRegulacao.keys().hasOnly([
++            'sinaisPausa',
++            'estrategiasAjudam',
++            'evitarDuranteSobrecarga',
++          ]) &&
++          planoRegulacao.keys().hasAll([
++            'sinaisPausa',
++            'estrategiasAjudam',
++            'evitarDuranteSobrecarga',
++          ]) &&
++          textoAte(planoRegulacao.sinaisPausa, 140) &&
++          textoAte(planoRegulacao.estrategiasAjudam, 140) &&
++          textoAte(planoRegulacao.evitarDuranteSobrecarga, 140);
++      }
++
++      function perfilApoioValido(perfilApoio) {
++        return perfilApoio is map &&
++          perfilApoio.keys().hasOnly([
++            'comunicacaoPreferencial',
++            'acessoPreferencial',
++            'regulacaoPreferencial',
++            'limiteTentativasAntesPausa',
++            'cartoesComunicacao',
++            'planoRegulacao',
++            'observacoes',
++          ]) &&
++          perfilApoio.keys().hasAll([
++            'comunicacaoPreferencial',
++            'acessoPreferencial',
++            'regulacaoPreferencial',
++            'limiteTentativasAntesPausa',
++            'cartoesComunicacao',
++            'planoRegulacao',
++            'observacoes',
++          ]) &&
++          perfilApoio.comunicacaoPreferencial in [
++            'fala',
++            'gestos',
++            'figuras',
++            'dispositivo',
++            'emergente',
++          ] &&
++          perfilApoio.acessoPreferencial in [
++            'toque-direto',
++            'toque-com-confirmacao',
++            'toque-com-ajuda',
++            'mouse-teclado',
++            'escolha-mediada',
++          ] &&
++          perfilApoio.regulacaoPreferencial in [
++            'pausa',
++            'ambiente-calmo',
++            'movimento',
++            'alternar',
++          ] &&
++          perfilApoio.limiteTentativasAntesPausa is int &&
++          perfilApoio.limiteTentativasAntesPausa >= 2 &&
++          perfilApoio.limiteTentativasAntesPausa <= 20 &&
++          cartoesComunicacaoValidos(perfilApoio.cartoesComunicacao) &&
++          planoRegulacaoValido(perfilApoio.planoRegulacao) &&
++          textoAte(perfilApoio.observacoes, 240);
++      }
++
++      function atividadesDominadasValidas(atividadesDominadas) {
++        return atividadesDominadas is list && atividadesDominadas.size() <= 300;
++      }
++
++      // E-mail de colaborador (segundo responsável/terapeuta): validação de
++      // formato simples, tamanho igual ao limite de e-mail do responsável.
++      // Compartilhamento é só leitura + registrar observação de sessão (ver
++      // colaboradorAutorizado abaixo) — nunca editar perfil, criar tentativa,
++      // apagar dados ou ver o documento raiz do responsável.
++      function colaboradorEmailValido(email) {
++        return email is string && email.size() > 0 && email.size() <= 160 &&
++          email.matches('.*@.*');
++      }
++
++      function colaboradoresEmailValidos(lista) {
++        return lista is list && lista.size() <= 3 &&
++          (lista.size() < 1 || colaboradorEmailValido(lista[0])) &&
++          (lista.size() < 2 || colaboradorEmailValido(lista[1])) &&
++          (lista.size() < 3 || colaboradorEmailValido(lista[2]));
++      }
++
++      // Um colaborador só é reconhecido se o e-mail do próprio token de auth
++      // (não um valor arbitrário) estiver na lista do perfil E esse e-mail já
++      // foi verificado — sem isso, alguém poderia se cadastrar com o e-mail de
++      // outra pessoa (sem provar posse da caixa de entrada) e ganhar acesso
++      // antes do dono legítimo verificar a própria conta.
++      function colaboradorAutorizado(dadosPerfil) {
++        return signedIn() &&
++          request.auth.token.email != null &&
++          request.auth.token.email_verified == true &&
++          'colaboradoresEmail' in dadosPerfil &&
++          dadosPerfil.colaboradoresEmail is list &&
++          request.auth.token.email in dadosPerfil.colaboradoresEmail;
++      }
++
++      function perfilCriancaValido(dados) {
++        return dados.keys().hasOnly([
++            'nome',
++            'avatarId',
++            'interesseEspecialId',
++            'perfilApoio',
++            'preferenciasSensoriais',
++            'planoIndividual',
++            'atividadesDominadas',
++            'colaboradoresEmail',
++            'criadoEm',
++          ]) &&
++          dados.keys().hasAll([
++            'nome',
++            'avatarId',
++            'interesseEspecialId',
++            'perfilApoio',
++            'preferenciasSensoriais',
++            'planoIndividual',
++            'atividadesDominadas',
++          ]) &&
++          textoObrigatorioAte(dados.nome, 40) &&
++          dados.avatarId in [
++            'circulo',
++            'quadrado',
++            'triangulo',
++            'estrela',
++            'coracao',
++            'lua',
++          ] &&
++          dados.interesseEspecialId in [
++            'neutro',
++            'animais',
++            'veiculos',
++            'casa',
++            'musica',
++            'comida',
++            'brincar',
++            'natureza',
++          ] &&
++          perfilApoioValido(dados.perfilApoio) &&
++          preferenciasValidas(dados.preferenciasSensoriais) &&
++          planoIndividualValido(dados.planoIndividual) &&
++          atividadesDominadasValidas(dados.atividadesDominadas) &&
++          (!('colaboradoresEmail' in dados) ||
++            colaboradoresEmailValidos(dados.colaboradoresEmail)) &&
++          criadoEmValido(dados);
++      }
++
++      function tentativaValida(dados) {
++        return dados.keys().hasOnly([
++            'atividadeId',
++            'moduloId',
++            'timestamp',
++            'resultado',
++            'nivelDicaUsado',
++            'tempoRespostaMs',
++          ]) &&
++          dados.keys().hasAll([
++            'atividadeId',
++            'moduloId',
++            'timestamp',
++            'resultado',
++            'nivelDicaUsado',
++            'tempoRespostaMs',
++          ]) &&
++          textoObrigatorioAte(dados.atividadeId, 80) &&
++          textoObrigatorioAte(dados.moduloId, 20) &&
++          dados.timestamp is number &&
++          dados.timestamp > 0 &&
++          dados.resultado in ['correto', 'incorreto'] &&
++          dados.nivelDicaUsado is int &&
++          dados.nivelDicaUsado >= 0 &&
++          dados.nivelDicaUsado <= 2 &&
++          dados.tempoRespostaMs is number &&
++          dados.tempoRespostaMs >= 0 &&
++          dados.tempoRespostaMs <= 3600000;
++      }
++
++      function observacaoValida(dados) {
++        return dados.keys().hasOnly(['texto', 'tipo', 'timestamp']) &&
++          dados.keys().hasAll(['texto', 'tipo', 'timestamp']) &&
++          textoObrigatorioAte(dados.texto, 500) &&
++          dados.tipo in [
++            'comunicacao',
++            'regulacao',
++            'acesso',
++            'generalizacao',
++            'outro',
++          ] &&
++          dados.timestamp is number &&
++          dados.timestamp > 0;
++      }
++
++      allow read: if donoResponsavel();
++      allow create, update: if donoResponsavel() &&
++        responsavelValido(request.resource.data);
+       allow delete: if donoResponsavel();
+-    }
+ 
+-    match /observacoesSessao/{observacaoId} {
+-      allow read: if donoResponsavel() || colaboradorAutorizadoNoPerfil();
+-      allow create: if (donoResponsavel() || colaboradorAutorizadoNoPerfil()) &&
+-        observacaoValida(request.resource.data);
+-      allow update: if false;
+-      allow delete: if donoResponsavel();
+-    }
+-  }
+-}
++      match /perfisCrianca/{perfilId} {
++        allow read: if donoResponsavel() || colaboradorAutorizado(resource.data);
++        // Só o dono edita o perfil (inclui adicionar/remover colaborador) — um
++        // colaborador nunca pode alterar a própria lista de acesso ou a de
++        // ninguém, nem apagar o perfil.
++        allow create, update: if donoResponsavel() &&
++          perfilCriancaValido(request.resource.data);
++        allow delete: if donoResponsavel();
++
++        function perfilPai() {
++          return get(
++            /databases/$(database)/documents/responsaveis/$(responsavelId)/perfisCrianca/$(perfilId)

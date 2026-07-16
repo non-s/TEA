@@ -24,7 +24,6 @@ import {
   registrarObservacaoSessao,
 } from '../../firebase/progresso'
 import { useFocoPreso } from '../../hooks/useFocoPreso'
-import { useAuth } from '../../contexts/AuthContext'
 import { usePerfilAtivo } from '../../contexts/PerfilAtivoContext'
 import { EmparelhamentoIdentico } from '../../components/atividades/EmparelhamentoIdentico'
 import { NomeacaoReceptiva } from '../../components/atividades/NomeacaoReceptiva'
@@ -415,8 +414,7 @@ function PausaAtividade({
 export function Atividade() {
   const { atividadeId } = useParams<{ atividadeId: string }>()
   const navigate = useNavigate()
-  const { usuario } = useAuth()
-  const { perfilAtivo } = usePerfilAtivo()
+  const { perfilAtivo, uidResponsavelPerfilAtivo } = usePerfilAtivo()
   const [emPausa, setEmPausa] = useState(false)
   const [confirmandoVoltarTrilha, setConfirmandoVoltarTrilha] = useState(false)
   const [atividadeConcluida, setAtividadeConcluida] = useState(false)
@@ -452,9 +450,9 @@ export function Atividade() {
     perfilAtivo?.perfilApoio?.limiteTentativasAntesPausa
 
   useEffect(() => {
-    if (!usuario || !perfilAtivo) return
+    if (!uidResponsavelPerfilAtivo || !perfilAtivo) return
     return ouvirTentativas(
-      usuario.uid,
+      uidResponsavelPerfilAtivo,
       perfilAtivo.id,
       (tentativas) => {
         setTentativasAnteriores(tentativas)
@@ -466,7 +464,7 @@ export function Atividade() {
         )
       },
     )
-  }, [usuario, perfilAtivo])
+  }, [uidResponsavelPerfilAtivo, perfilAtivo])
 
   useEffect(() => {
     setAtividadesDominadasNestaSessao([])
@@ -509,7 +507,7 @@ export function Atividade() {
     setSalvandoDominio(true)
     void Promise.resolve(
       marcarAtividadeDominada(
-        usuario!.uid,
+        uidResponsavelPerfilAtivo!,
         perfilAtivo!.id,
         atividadeDominadaId,
       ),
@@ -555,13 +553,12 @@ export function Atividade() {
   }
 
   function registrarComunicacaoFuncional(mensagem: CartaoComunicacao) {
-    if (!usuario || !perfilAtivo) return
-
+    if (!uidResponsavelPerfilAtivo || !perfilAtivo) return
     const tipo = mensagem.id === 'pausa' ? 'regulacao' : 'comunicacao'
     const texto = `Comunicou "${mensagem.rotulo}": ${mensagem.fala}`
     setMensagemRegistroComunicacao(null)
     void registrarObservacaoSessao(
-      usuario.uid,
+      uidResponsavelPerfilAtivo,
       perfilAtivo.id,
       texto,
       tipo,
@@ -632,7 +629,7 @@ export function Atividade() {
             <EmparelhamentoIdentico
               atividade={atividade}
               aoDominar={aoDominar}
-              uidResponsavel={usuario!.uid}
+              uidResponsavel={uidResponsavelPerfilAtivo!}
               perfilId={perfilAtivo!.id}
               apoioPreferencial={apoioPreferencial}
               acessoPreferencial={acessoPreferencial}
@@ -649,7 +646,7 @@ export function Atividade() {
             <NomeacaoReceptiva
               atividade={atividade}
               aoDominar={aoDominar}
-              uidResponsavel={usuario!.uid}
+              uidResponsavel={uidResponsavelPerfilAtivo!}
               perfilId={perfilAtivo!.id}
               apoioPreferencial={apoioPreferencial}
               acessoPreferencial={acessoPreferencial}
@@ -666,7 +663,7 @@ export function Atividade() {
             <NomeacaoExpressiva
               atividade={atividade}
               aoDominar={aoDominar}
-              uidResponsavel={usuario!.uid}
+              uidResponsavel={uidResponsavelPerfilAtivo!}
               perfilId={perfilAtivo!.id}
               apoioPreferencial={apoioPreferencial}
               acessoPreferencial={acessoPreferencial}
@@ -683,7 +680,7 @@ export function Atividade() {
             <TracadoLetra
               atividade={atividade}
               aoDominar={aoDominar}
-              uidResponsavel={usuario!.uid}
+              uidResponsavel={uidResponsavelPerfilAtivo!}
               perfilId={perfilAtivo!.id}
               apoioPreferencial={apoioPreferencial}
               regulacaoPreferencial={regulacaoPreferencial}
@@ -699,7 +696,7 @@ export function Atividade() {
             <FormacaoSilaba
               atividade={atividade}
               aoDominar={aoDominar}
-              uidResponsavel={usuario!.uid}
+              uidResponsavel={uidResponsavelPerfilAtivo!}
               perfilId={perfilAtivo!.id}
               apoioPreferencial={apoioPreferencial}
               acessoPreferencial={acessoPreferencial}
@@ -716,7 +713,7 @@ export function Atividade() {
             <FormacaoPalavra
               atividade={atividade}
               aoDominar={aoDominar}
-              uidResponsavel={usuario!.uid}
+              uidResponsavel={uidResponsavelPerfilAtivo!}
               perfilId={perfilAtivo!.id}
               apoioPreferencial={apoioPreferencial}
               acessoPreferencial={acessoPreferencial}
@@ -733,7 +730,7 @@ export function Atividade() {
             <LeituraFrase
               atividade={atividade}
               aoDominar={aoDominar}
-              uidResponsavel={usuario!.uid}
+              uidResponsavel={uidResponsavelPerfilAtivo!}
               perfilId={perfilAtivo!.id}
               apoioPreferencial={apoioPreferencial}
               acessoPreferencial={acessoPreferencial}
@@ -750,7 +747,7 @@ export function Atividade() {
             <CompreensaoFrase
               atividade={atividade}
               aoDominar={aoDominar}
-              uidResponsavel={usuario!.uid}
+              uidResponsavel={uidResponsavelPerfilAtivo!}
               perfilId={perfilAtivo!.id}
               apoioPreferencial={apoioPreferencial}
               acessoPreferencial={acessoPreferencial}
@@ -767,7 +764,7 @@ export function Atividade() {
             <CompreensaoTexto
               atividade={atividade}
               aoDominar={aoDominar}
-              uidResponsavel={usuario!.uid}
+              uidResponsavel={uidResponsavelPerfilAtivo!}
               perfilId={perfilAtivo!.id}
               apoioPreferencial={apoioPreferencial}
               acessoPreferencial={acessoPreferencial}
@@ -786,7 +783,7 @@ export function Atividade() {
             <PerguntaLiteralTexto
               atividade={atividade}
               aoDominar={aoDominar}
-              uidResponsavel={usuario!.uid}
+              uidResponsavel={uidResponsavelPerfilAtivo!}
               perfilId={perfilAtivo!.id}
               apoioPreferencial={apoioPreferencial}
               acessoPreferencial={acessoPreferencial}

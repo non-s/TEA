@@ -14,13 +14,13 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.2",
-    "firebase": "^12.15.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-router-dom": "^7.18.1",
     "tailwindcss": "^4.3.2"
   },
   "devDependencies": {
+    "@firebase/rules-unit-testing": "^5.0.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
@@ -30,6 +30,7 @@
     "@vitejs/plugin-react": "^6.0.3",
     "@vitest/coverage-v8": "^4.1.9",
     "axe-core": "^4.12.1",
+    "firebase": "^12.16.0",
     "jsdom": "^29.1.1",
     "oxlint": "^1.71.0",
     "prettier": "^3.9.4",

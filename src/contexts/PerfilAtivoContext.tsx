@@ -41,6 +41,7 @@ function lerPerfilSalvo(): PerfilAtivoSalvo | null {
 
 interface PerfilAtivoContextValor {
   perfilAtivo: PerfilCrianca | null
+  uidResponsavelPerfilAtivo: string | null
   selecionarPerfil: (perfil: PerfilCrianca) => void
   encerrarPerfil: () => void
 }
@@ -99,8 +100,13 @@ export function PerfilAtivoProvider({ children }: { children: ReactNode }) {
   ])
 
   const valor = useMemo(
-    () => ({ perfilAtivo, selecionarPerfil, encerrarPerfil }),
-    [encerrarPerfil, perfilAtivo, selecionarPerfil],
+    () => ({
+      perfilAtivo,
+      uidResponsavelPerfilAtivo,
+      selecionarPerfil,
+      encerrarPerfil,
+    }),
+    [encerrarPerfil, perfilAtivo, selecionarPerfil, uidResponsavelPerfilAtivo],
   )
 
   return (

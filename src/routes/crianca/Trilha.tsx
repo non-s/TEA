@@ -12,7 +12,6 @@ import { Icone } from '../../curriculo/ativos/Icone'
 import type { IconeId } from '../../curriculo/ativos/tipos'
 import { acentosPorModulo } from '../../curriculo/coresModulo'
 import type { Atividade, Tentativa } from '../../curriculo/tipos'
-import { useAuth } from '../../contexts/AuthContext'
 import { usePerfilAtivo } from '../../contexts/PerfilAtivoContext'
 import { usePreferencias } from '../../contexts/PreferenciasContext'
 import { useFocoPreso } from '../../hooks/useFocoPreso'
@@ -83,16 +82,15 @@ export function Trilha() {
   const botaoContinuarTrilhaRef = useRef<HTMLButtonElement>(null)
   const { ref: dialogoResponsavelRef, aoKeyDown: aoKeyDownDialogo } =
     useFocoPreso<HTMLDialogElement>()
-  const { usuario } = useAuth()
-  const { perfilAtivo, encerrarPerfil, selecionarPerfil } = usePerfilAtivo()
+  const { uidResponsavelPerfilAtivo, perfilAtivo, encerrarPerfil, selecionarPerfil } = usePerfilAtivo()
   const { atualizarPreferencias } = usePreferencias()
   const navigate = useNavigate()
   const perfilId = perfilAtivo?.id
 
   useEffect(() => {
-    if (!usuario || !perfilId) return
+    if (!uidResponsavelPerfilAtivo || !perfilId) return
     const pararPerfil = ouvirPerfil(
-      usuario.uid,
+      uidResponsavelPerfilAtivo,
       perfilId,
       (perfil) => {
         if (!perfil) {
@@ -115,7 +113,7 @@ export function Trilha() {
       },
     )
     const pararTentativas = ouvirTentativas(
-      usuario.uid,
+      uidResponsavelPerfilAtivo,
       perfilId,
       (novasTentativas) => {
         setTentativas(novasTentativas)
@@ -138,7 +136,7 @@ export function Trilha() {
     navigate,
     perfilId,
     selecionarPerfil,
-    usuario,
+    uidResponsavelPerfilAtivo,
   ])
 
   function fecharConfirmacaoAreaResponsavel() {
