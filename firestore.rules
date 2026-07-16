@@ -69,13 +69,12 @@ match /responsaveis/{responsavelId} {
         'animacoes',
         'altoContraste',
         'alvosMaiores',
-        'tamanhoFonte',
       ]) &&
       preferencias.som is bool &&
       preferencias.animacoes is bool &&
       preferencias.altoContraste is bool &&
       preferencias.alvosMaiores is bool &&
-      preferencias.tamanhoFonte in ['normal', 'grande', 'extra-grande'];
+      (!('tamanhoFonte' in preferencias) || preferencias.tamanhoFonte in ['normal', 'grande', 'extra-grande']);
   }
 
   function planoIndividualValido(plano) {
@@ -230,10 +229,7 @@ match /responsaveis/{responsavelId} {
         'nome',
         'avatarId',
         'interesseEspecialId',
-        'perfilApoio',
         'preferenciasSensoriais',
-        'planoIndividual',
-        'atividadesDominadas',
       ]) &&
       textoObrigatorioAte(dados.nome, 40) &&
       dados.avatarId in [
@@ -254,10 +250,10 @@ match /responsaveis/{responsavelId} {
         'brincar',
         'natureza',
       ] &&
-      perfilApoioValido(dados.perfilApoio) &&
+      (!('perfilApoio' in dados) || perfilApoioValido(dados.perfilApoio)) &&
       preferenciasValidas(dados.preferenciasSensoriais) &&
-      planoIndividualValido(dados.planoIndividual) &&
-      atividadesDominadasValidas(dados.atividadesDominadas) &&
+      (!('planoIndividual' in dados) || planoIndividualValido(dados.planoIndividual)) &&
+      (!('atividadesDominadas' in dados) || atividadesDominadasValidas(dados.atividadesDominadas)) &&
       (!('colaboradoresEmail' in dados) ||
         colaboradoresEmailValidos(dados.colaboradoresEmail)) &&
       criadoEmValido(dados);

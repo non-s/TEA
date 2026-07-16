@@ -23,11 +23,6 @@ export function AjustesSensoriais({ aoAlterar }: AjustesSensoriaisProps) {
       <legend className="sr-only">Ajustes sensoriais</legend>
 
       <Interruptor
-        rotulo="Som"
-        marcado={preferencias.som}
-        aoAlterar={(som) => alterar({ som })}
-      />
-      <Interruptor
         rotulo="Animações"
         marcado={preferencias.animacoes}
         aoAlterar={(animacoes) => alterar({ animacoes })}
