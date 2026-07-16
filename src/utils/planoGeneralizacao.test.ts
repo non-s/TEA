@@ -55,6 +55,13 @@ function idsDominadasSemModulo(moduloId: string): string[] {
     .flatMap((modulo) => modulo.atividades.map((atividade) => atividade.id))
 }
 
+function idsDominadasExcetoPrefixo(prefixoId: string): string[] {
+  return trilhaV1.modulos
+    .flatMap((modulo) => modulo.atividades)
+    .filter((atividade) => !atividade.id.startsWith(prefixoId))
+    .map((atividade) => atividade.id)
+}
+
 describe('planoGeneralizacao', () => {
   it('gera nome de arquivo estavel sem expor nome da crianca', () => {
     const nome = nomeArquivoPlanoGeneralizacao(
@@ -195,7 +202,7 @@ describe('planoGeneralizacao', () => {
   })
 
   it('orienta pergunta de presenca/ausencia quando esse for o proximo passo', () => {
-    const dominadasAtePerguntasLiterais = idsDominadasSemModulo('m10')
+    const dominadasAtePerguntasLiterais = idsDominadasExcetoPrefixo('m9-presenca-')
     const relatorio = criarRelatorioProgresso(
       trilhaV1,
       dominadasAtePerguntasLiterais,

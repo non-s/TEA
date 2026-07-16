@@ -55,6 +55,13 @@ function idsDominadasSemModulo(moduloId: string): string[] {
     .flatMap((modulo) => modulo.atividades.map((atividade) => atividade.id))
 }
 
+function idsDominadasExcetoPrefixo(prefixoId: string): string[] {
+  return trilhaV1.modulos
+    .flatMap((modulo) => modulo.atividades)
+    .filter((atividade) => !atividade.id.startsWith(prefixoId))
+    .map((atividade) => atividade.id)
+}
+
 describe('cartoesImprimiveis', () => {
   it('gera nome de arquivo html estavel sem expor nome da crianca', () => {
     const nome = nomeArquivoCartoesImprimiveis(
@@ -192,7 +199,7 @@ describe('cartoesImprimiveis', () => {
   it('inclui pergunta de presenca/ausencia nos cartoes imprimiveis', () => {
     const relatorio = criarRelatorioProgresso(
       trilhaV1,
-      idsDominadasSemModulo('m10'),
+      idsDominadasExcetoPrefixo('m9-presenca-'),
       [],
       perfil.planoIndividual,
     )

@@ -13,21 +13,15 @@ describe('trilhaV1', () => {
     const moduloPerguntas = trilhaV1.modulos.find(
       (modulo) => modulo.id === 'm9',
     )
-    const moduloPresenca = trilhaV1.modulos.find(
-      (modulo) => modulo.id === 'm10',
-    )
-    const moduloInferencia = trilhaV1.modulos.find(
-      (modulo) => modulo.id === 'm11',
-    )
 
-    expect(trilhaV1.modulos).toHaveLength(13)
+    expect(trilhaV1.modulos).toHaveLength(11)
     expect(
       trilhaV1.modulos.reduce(
         (total, modulo) => total + modulo.atividades.length,
         0,
       ),
-    ).toBe(191)
-    expect(moduloSilabas?.atividades).toHaveLength(25)
+    ).toBe(277)
+    expect(moduloSilabas?.atividades).toHaveLength(50)
     expect(moduloSilabas?.atividades).toContainEqual(
       expect.objectContaining({
         id: 'm4-MU',
@@ -38,7 +32,17 @@ describe('trilhaV1', () => {
         }),
       }),
     )
-    expect(moduloPalavras?.atividades).toHaveLength(22)
+    expect(moduloSilabas?.atividades).toContainEqual(
+      expect.objectContaining({
+        id: 'm4-DA',
+        tipo: 'formacao-silaba',
+        resposta: expect.objectContaining({
+          rotulo: 'DA',
+          audioTexto: 'DA, de dado',
+        }),
+      }),
+    )
+    expect(moduloPalavras?.atividades).toHaveLength(39)
     expect(moduloPalavras?.atividades).toContainEqual(
       expect.objectContaining({
         id: 'm5-MOTO',
@@ -49,8 +53,18 @@ describe('trilhaV1', () => {
         }),
       }),
     )
+    expect(moduloPalavras?.atividades).toContainEqual(
+      expect.objectContaining({
+        id: 'm5-DADO',
+        tipo: 'formacao-palavra',
+        resposta: expect.objectContaining({
+          rotulo: 'DADO',
+          audioTexto: 'DA-DO, DADO',
+        }),
+      }),
+    )
     expect(moduloFrases?.preRequisitoModuloId).toBe('m5')
-    expect(moduloFrases?.atividades).toHaveLength(22)
+    expect(moduloFrases?.atividades).toHaveLength(39)
     expect(moduloFrases?.atividades[0]).toEqual(
       expect.objectContaining({
         id: 'm6-A-MALA',
@@ -65,8 +79,15 @@ describe('trilhaV1', () => {
         resposta: expect.objectContaining({ rotulo: 'A MOTO' }),
       }),
     )
+    expect(moduloFrases?.atividades).toContainEqual(
+      expect.objectContaining({
+        id: 'm6-O-DADO',
+        tipo: 'leitura-frase',
+        resposta: expect.objectContaining({ rotulo: 'O DADO' }),
+      }),
+    )
     expect(moduloCompreensao?.preRequisitoModuloId).toBe('m6')
-    expect(moduloCompreensao?.atividades).toHaveLength(22)
+    expect(moduloCompreensao?.atividades).toHaveLength(39)
     expect(moduloCompreensao?.atividades[0]).toEqual(
       expect.objectContaining({
         id: 'm7-A-MALA',
@@ -82,6 +103,13 @@ describe('trilhaV1', () => {
           rotulo: 'BEBE',
           audioTexto: 'BE-BE, BEBE',
         }),
+      }),
+    )
+    expect(moduloCompreensao?.atividades).toContainEqual(
+      expect.objectContaining({
+        id: 'm7-A-VIDA',
+        tipo: 'compreensao-frase',
+        resposta: expect.objectContaining({ rotulo: 'VIDA' }),
       }),
     )
     expect(moduloTextos?.preRequisitoModuloId).toBe('m7')
@@ -103,7 +131,7 @@ describe('trilhaV1', () => {
       }),
     )
     expect(moduloPerguntas?.preRequisitoModuloId).toBe('m8')
-    expect(moduloPerguntas?.atividades).toHaveLength(15)
+    expect(moduloPerguntas?.atividades).toHaveLength(45)
     expect(moduloPerguntas?.atividades[0]).toEqual(
       expect.objectContaining({
         id: 'm9-O-que-apareceu-primeiro-A-MALA-A-BALA',
@@ -120,27 +148,38 @@ describe('trilhaV1', () => {
         resposta: expect.objectContaining({ rotulo: 'MOTO' }),
       }),
     )
-    expect(moduloPresenca?.preRequisitoModuloId).toBe('m9')
-    expect(moduloPresenca?.atividades).toHaveLength(22)
-    expect(moduloPresenca?.atividades).toContainEqual(
+    expect(moduloPerguntas?.atividades).toContainEqual(
       expect.objectContaining({
-        id: 'm10-Qual-palavra-nao-apareceu-no-texto-A-MALA-A-BALA',
+        id: 'm9-presenca-Qual-palavra-nao-apareceu-no-texto-A-MALA-A-BALA',
         tipo: 'pergunta-presenca-texto',
         pergunta: 'Qual palavra não apareceu no texto?',
         resposta: expect.objectContaining({ rotulo: 'LATA' }),
         respostaDeveAparecerNoTexto: false,
       }),
     )
-    expect(moduloInferencia?.preRequisitoModuloId).toBe('m10')
-    expect(moduloInferencia?.atividades).toHaveLength(8)
-    expect(moduloInferencia?.atividades).toContainEqual(
+    expect(moduloPerguntas?.atividades).toContainEqual(
       expect.objectContaining({
-        id: 'm11-Qual-palavra-e-de-levar-coisas-A-MALA-A-BALA',
+        id: 'm9-inferencia-Qual-palavra-e-de-levar-coisas-A-MALA-A-BALA',
         tipo: 'pergunta-inferencia-texto',
         pergunta: 'Qual palavra é de levar coisas?',
         resposta: expect.objectContaining({ rotulo: 'MALA' }),
       }),
     )
+    expect(
+      moduloPerguntas?.atividades.filter(
+        (atividade) => atividade.tipo === 'pergunta-literal-texto',
+      ),
+    ).toHaveLength(15)
+    expect(
+      moduloPerguntas?.atividades.filter(
+        (atividade) => atividade.tipo === 'pergunta-presenca-texto',
+      ),
+    ).toHaveLength(22)
+    expect(
+      moduloPerguntas?.atividades.filter(
+        (atividade) => atividade.tipo === 'pergunta-inferencia-texto',
+      ),
+    ).toHaveLength(8)
   })
 
   it('encontra atividades de frase e texto pelo id', () => {
@@ -194,6 +233,16 @@ describe('trilhaV1', () => {
         }),
       }),
     )
+    expect(encontrarAtividade('m5-NOTA')).toEqual(
+      expect.objectContaining({
+        moduloId: 'm5',
+        tipo: 'formacao-palavra',
+        resposta: expect.objectContaining({
+          rotulo: 'NOTA',
+          audioTexto: 'NO-TA, NOTA',
+        }),
+      }),
+    )
     expect(encontrarAtividade('m8-A-LAMA-A-PATA')).toEqual(
       expect.objectContaining({
         moduloId: 'm8',
@@ -212,10 +261,12 @@ describe('trilhaV1', () => {
       }),
     )
     expect(
-      encontrarAtividade('m10-Qual-palavra-apareceu-no-texto-O-MAPA-A-MALA'),
+      encontrarAtividade(
+        'm9-presenca-Qual-palavra-apareceu-no-texto-O-MAPA-A-MALA',
+      ),
     ).toEqual(
       expect.objectContaining({
-        moduloId: 'm10',
+        moduloId: 'm9',
         tipo: 'pergunta-presenca-texto',
         pergunta: 'Qual palavra apareceu no texto?',
         resposta: expect.objectContaining({ rotulo: 'MAPA' }),
@@ -224,11 +275,11 @@ describe('trilhaV1', () => {
     )
     expect(
       encontrarAtividade(
-        'm10-Qual-palavra-nao-apareceu-no-texto-A-MOTO-A-PIPA',
+        'm9-presenca-Qual-palavra-nao-apareceu-no-texto-A-MOTO-A-PIPA',
       ),
     ).toEqual(
       expect.objectContaining({
-        moduloId: 'm10',
+        moduloId: 'm9',
         tipo: 'pergunta-presenca-texto',
         pergunta: 'Qual palavra não apareceu no texto?',
         resposta: expect.objectContaining({ rotulo: 'POTE' }),
@@ -236,10 +287,12 @@ describe('trilhaV1', () => {
       }),
     )
     expect(
-      encontrarAtividade('m11-Qual-palavra-anda-na-rua-A-MOTO-A-PIPA'),
+      encontrarAtividade(
+        'm9-inferencia-Qual-palavra-anda-na-rua-A-MOTO-A-PIPA',
+      ),
     ).toEqual(
       expect.objectContaining({
-        moduloId: 'm11',
+        moduloId: 'm9',
         tipo: 'pergunta-inferencia-texto',
         pergunta: 'Qual palavra anda na rua?',
         resposta: expect.objectContaining({ rotulo: 'MOTO' }),

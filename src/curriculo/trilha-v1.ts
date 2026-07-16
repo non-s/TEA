@@ -42,8 +42,8 @@ const dicasPadrao: NivelDica[] = [
 ]
 
 const criteriosDominioPadrao = {
-  acertosConsecutivosNecessarios: 1,
-  janelaTentativas: 1,
+  acertosConsecutivosNecessarios: 4,
+  janelaTentativas: 5,
 }
 
 function construirAtividade(
@@ -191,7 +191,7 @@ interface LetraNomeacao {
   som: string
 }
 
-const letrasModulo2: LetraNomeacao[] = [
+const letrasComTracado: LetraNomeacao[] = [
   { caractere: 'A', som: 'á' },
   { caractere: 'E', som: 'é' },
   { caractere: 'I', som: 'i' },
@@ -202,6 +202,15 @@ const letrasModulo2: LetraNomeacao[] = [
   { caractere: 'T', som: 'tê' },
   { caractere: 'L', som: 'ele' },
   { caractere: 'B', som: 'bê' },
+]
+
+const letrasModulo2: LetraNomeacao[] = [
+  ...letrasComTracado,
+  { caractere: 'D', som: 'dê' },
+  { caractere: 'N', som: 'ene' },
+  { caractere: 'V', som: 'vê' },
+  { caractere: 'F', som: 'efe' },
+  { caractere: 'S', som: 'esse' },
 ]
 
 function atividadeNomeacaoReceptiva(
@@ -315,7 +324,7 @@ const modulo3t: Modulo = {
     'Trace a letra com o dedo ou o mouse sobre o guia pontilhado. Prática grafomotora — não bloqueia a Formação de Sílabas, que também desbloqueia direto após a Nomeação Expressiva.',
   ordem: 3.5,
   preRequisitoModuloId: 'm3',
-  atividades: letrasModulo2.map((letra) => atividadeTracadoLetra(letra)),
+  atividades: letrasComTracado.map((letra) => atividadeTracadoLetra(letra)),
 }
 
 interface Silaba {
@@ -349,6 +358,31 @@ const silabasModulo4: Silaba[] = [
   { caractere: 'BI', palavraApoio: 'bicicleta' },
   { caractere: 'BO', palavraApoio: 'bola' },
   { caractere: 'BU', palavraApoio: 'bule' },
+  { caractere: 'DA', palavraApoio: 'dado' },
+  { caractere: 'DE', palavraApoio: 'dedo' },
+  { caractere: 'DI', palavraApoio: 'dinheiro' },
+  { caractere: 'DO', palavraApoio: 'dominó' },
+  { caractere: 'DU', palavraApoio: 'duna' },
+  { caractere: 'NA', palavraApoio: 'nariz' },
+  { caractere: 'NE', palavraApoio: 'neve' },
+  { caractere: 'NI', palavraApoio: 'ninho' },
+  { caractere: 'NO', palavraApoio: 'nota' },
+  { caractere: 'NU', palavraApoio: 'nuvem' },
+  { caractere: 'VA', palavraApoio: 'vaca' },
+  { caractere: 'VE', palavraApoio: 'vela' },
+  { caractere: 'VI', palavraApoio: 'vidro' },
+  { caractere: 'VO', palavraApoio: 'vovô' },
+  { caractere: 'VU', palavraApoio: 'vulcão' },
+  { caractere: 'FA', palavraApoio: 'fada' },
+  { caractere: 'FE', palavraApoio: 'feijão' },
+  { caractere: 'FI', palavraApoio: 'fita' },
+  { caractere: 'FO', palavraApoio: 'foca' },
+  { caractere: 'FU', palavraApoio: 'fubá' },
+  { caractere: 'SA', palavraApoio: 'sapo' },
+  { caractere: 'SE', palavraApoio: 'selo' },
+  { caractere: 'SI', palavraApoio: 'sino' },
+  { caractere: 'SO', palavraApoio: 'sopa' },
+  { caractere: 'SU', palavraApoio: 'suco' },
 ]
 
 function estimuloSilaba(idUnico: string, silaba: Silaba): Estimulo {
@@ -423,6 +457,23 @@ const palavrasModulo5: Palavra[] = [
   { texto: 'LOBO', silabas: 'LO-BO', artigo: 'O' },
   { texto: 'BEBE', silabas: 'BE-BE', artigo: 'O', fala: 'bebê' },
   { texto: 'TUBO', silabas: 'TU-BO', artigo: 'O' },
+  { texto: 'DADO', silabas: 'DA-DO', artigo: 'O' },
+  { texto: 'DEDO', silabas: 'DE-DO', artigo: 'O' },
+  { texto: 'NABO', silabas: 'NA-BO', artigo: 'O' },
+  { texto: 'NAVE', silabas: 'NA-VE', artigo: 'A' },
+  { texto: 'VIDA', silabas: 'VI-DA', artigo: 'A' },
+  { texto: 'FADA', silabas: 'FA-DA', artigo: 'A' },
+  { texto: 'SEDA', silabas: 'SE-DA', artigo: 'A' },
+  { texto: 'SAPO', silabas: 'SA-PO', artigo: 'O' },
+  { texto: 'FOFO', silabas: 'FO-FO', artigo: 'O' },
+  { texto: 'TUBA', silabas: 'TU-BA', artigo: 'A' },
+  { texto: 'NOVO', silabas: 'NO-VO', artigo: 'O' },
+  { texto: 'DUNA', silabas: 'DU-NA', artigo: 'A' },
+  { texto: 'VELA', silabas: 'VE-LA', artigo: 'A' },
+  { texto: 'SOFA', silabas: 'SO-FA', artigo: 'O', fala: 'sofá' },
+  { texto: 'LUVA', silabas: 'LU-VA', artigo: 'A' },
+  { texto: 'NOTA', silabas: 'NO-TA', artigo: 'A' },
+  { texto: 'BODE', silabas: 'BO-DE', artigo: 'O' },
 ]
 
 function estimuloPalavra(idUnico: string, palavra: Palavra): Estimulo {
@@ -873,21 +924,6 @@ function atividadePerguntaLiteralTexto(
   )
 }
 
-const modulo9: Modulo = {
-  id: 'm9',
-  titulo: 'Perguntas Literais sobre Textos',
-  descricao:
-    'Leia ou escute duas frases curtas e responda uma pergunta literal por seleção. Avança compreensão sem exigir fala oral, digitação ou inferência.',
-  ordem: 9,
-  preRequisitoModuloId: 'm8',
-  atividades: perguntasModulo9.map((texto) =>
-    atividadePerguntaLiteralTexto(
-      texto,
-      distratoresParaPalavra(texto.palavraResposta),
-    ),
-  ),
-}
-
 interface PerguntaPresencaTexto extends PerguntaTexto {
   respostaDeveAparecerNoTexto: boolean
 }
@@ -995,8 +1031,8 @@ function atividadePerguntaPresencaTexto(
   )
 
   return construirAtividade(
-    `m10-${sufixoId}`,
-    'm10',
+    `m9-presenca-${sufixoId}`,
+    'm9',
     'pergunta-presenca-texto',
     1,
     estimuloAlvo,
@@ -1010,21 +1046,6 @@ function atividadePerguntaPresencaTexto(
     texto.pergunta,
     texto.respostaDeveAparecerNoTexto,
   )
-}
-
-const modulo10: Modulo = {
-  id: 'm10',
-  titulo: 'Presença e Ausência no Texto',
-  descricao:
-    'Leia ou escute duas frases curtas e responda se uma palavra apareceu ou não apareceu no texto. Amplia atenção literal sem exigir inferência ou resposta aberta.',
-  ordem: 10,
-  preRequisitoModuloId: 'm9',
-  atividades: perguntasPresencaModulo10.map((texto) =>
-    atividadePerguntaPresencaTexto(
-      texto,
-      distratoresParaPerguntaPresenca(texto),
-    ),
-  ),
 }
 
 const perguntasInferenciaModulo11: PerguntaTexto[] = [
@@ -1109,8 +1130,8 @@ function atividadePerguntaInferenciaTexto(
   )
 
   return construirAtividade(
-    `m11-${sufixoId}`,
-    'm11',
+    `m9-inferencia-${sufixoId}`,
+    'm9',
     'pergunta-inferencia-texto',
     1,
     estimuloAlvo,
@@ -1125,17 +1146,44 @@ function atividadePerguntaInferenciaTexto(
   )
 }
 
-const modulo11: Modulo = {
-  id: 'm11',
-  titulo: 'Inferência Guiada em Textos',
+function intercalar<T>(...listas: T[][]): T[] {
+  const resultado: T[] = []
+  const maiorTamanho = Math.max(...listas.map((lista) => lista.length))
+
+  for (let indice = 0; indice < maiorTamanho; indice += 1) {
+    for (const lista of listas) {
+      if (indice < lista.length) resultado.push(lista[indice])
+    }
+  }
+
+  return resultado
+}
+
+const modulo9: Modulo = {
+  id: 'm9',
+  titulo: 'Perguntas sobre o Texto',
   descricao:
-    'Leia ou escute duas frases curtas e responda uma pergunta de sentido por seleção. Introduz inferência com apoio visual, sem resposta aberta ou exigência de fala.',
-  ordem: 11,
-  preRequisitoModuloId: 'm10',
-  atividades: perguntasInferenciaModulo11.map((texto) =>
-    atividadePerguntaInferenciaTexto(
-      texto,
-      distratoresParaPerguntaInferencia(texto),
+    'Leia ou escute duas frases curtas e responda perguntas variadas sobre elas: o que apareceu, o que não apareceu e o que dá pra concluir. Mistura os três tipos de pergunta numa única prática.',
+  ordem: 9,
+  preRequisitoModuloId: 'm8',
+  atividades: intercalar(
+    perguntasModulo9.map((texto) =>
+      atividadePerguntaLiteralTexto(
+        texto,
+        distratoresParaPalavra(texto.palavraResposta),
+      ),
+    ),
+    perguntasPresencaModulo10.map((texto) =>
+      atividadePerguntaPresencaTexto(
+        texto,
+        distratoresParaPerguntaPresenca(texto),
+      ),
+    ),
+    perguntasInferenciaModulo11.map((texto) =>
+      atividadePerguntaInferenciaTexto(
+        texto,
+        distratoresParaPerguntaInferencia(texto),
+      ),
     ),
   ),
 }
@@ -1196,8 +1244,6 @@ export const trilhaV1: Trilha = {
     modulo7,
     modulo8,
     modulo9,
-    modulo10,
-    modulo11,
   ],
 }
 

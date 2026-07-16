@@ -28,8 +28,6 @@ const ordemModulos = [
   'm7',
   'm8',
   'm9',
-  'm10',
-  'm11',
 ]
 
 export const acentosPorModulo: Record<string, AcentoModulo> =

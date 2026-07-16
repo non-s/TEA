@@ -90,7 +90,10 @@ describe('validarTrilha', () => {
 
   it('detecta pergunta de presenca/ausencia ambigua ou fora do repertorio', () => {
     const trilha = clonarTrilha(trilhaV1)
-    const atividade = trilha.modulos[11].atividades[0]
+    const modulo9 = trilha.modulos.find((modulo) => modulo.id === 'm9')!
+    const atividade = modulo9.atividades.find(
+      (atividade) => atividade.tipo === 'pergunta-presenca-texto',
+    )!
     atividade.pergunta = ''
     atividade.respostaDeveAparecerNoTexto = undefined
     atividade.resposta.rotulo = 'CASA'
@@ -122,7 +125,10 @@ describe('validarTrilha', () => {
 
   it('detecta pergunta de inferencia incompleta ou fora do texto ancora', () => {
     const trilha = clonarTrilha(trilhaV1)
-    const atividade = trilha.modulos[12].atividades[0]
+    const modulo9 = trilha.modulos.find((modulo) => modulo.id === 'm9')!
+    const atividade = modulo9.atividades.find(
+      (atividade) => atividade.tipo === 'pergunta-inferencia-texto',
+    )!
     atividade.alvo.rotulo = 'A MALA. A CASA.'
     atividade.pergunta = ''
     atividade.resposta.rotulo = 'CASA'

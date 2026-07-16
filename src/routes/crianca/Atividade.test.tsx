@@ -351,7 +351,9 @@ describe('Atividade', () => {
 
   it('renderiza pergunta de presenca no texto pelo tipo de atividade da trilha', async () => {
     const usuario = userEvent.setup()
-    renderizarAtividade('m10-Qual-palavra-nao-apareceu-no-texto-A-MALA-A-BALA')
+    renderizarAtividade(
+      'm9-presenca-Qual-palavra-nao-apareceu-no-texto-A-MALA-A-BALA',
+    )
 
     expect(
       screen.getByText(
@@ -371,7 +373,7 @@ describe('Atividade', () => {
 
   it('renderiza pergunta de inferencia guiada pelo tipo de atividade da trilha', async () => {
     const usuario = userEvent.setup()
-    renderizarAtividade('m11-Qual-palavra-anda-na-rua-A-MOTO-A-PIPA')
+    renderizarAtividade('m9-inferencia-Qual-palavra-anda-na-rua-A-MOTO-A-PIPA')
 
     expect(
       screen.getByText(
