@@ -68,12 +68,11 @@ match /responsaveis/{responsavelId} {
         'som',
         'animacoes',
         'altoContraste',
-        'alvosMaiores',
       ]) &&
       preferencias.som is bool &&
       preferencias.animacoes is bool &&
       preferencias.altoContraste is bool &&
-      preferencias.alvosMaiores is bool &&
+      (!('alvosMaiores' in preferencias) || preferencias.alvosMaiores is bool) &&
       (!('tamanhoFonte' in preferencias) || preferencias.tamanhoFonte in ['normal', 'grande', 'extra-grande']);
   }
 
@@ -145,10 +144,6 @@ match /responsaveis/{responsavelId} {
         'comunicacaoPreferencial',
         'acessoPreferencial',
         'regulacaoPreferencial',
-        'limiteTentativasAntesPausa',
-        'cartoesComunicacao',
-        'planoRegulacao',
-        'observacoes',
       ]) &&
       perfilApoio.comunicacaoPreferencial in [
         'fala',
@@ -170,12 +165,10 @@ match /responsaveis/{responsavelId} {
         'movimento',
         'alternar',
       ] &&
-      perfilApoio.limiteTentativasAntesPausa is int &&
-      perfilApoio.limiteTentativasAntesPausa >= 2 &&
-      perfilApoio.limiteTentativasAntesPausa <= 20 &&
-      cartoesComunicacaoValidos(perfilApoio.cartoesComunicacao) &&
-      planoRegulacaoValido(perfilApoio.planoRegulacao) &&
-      textoAte(perfilApoio.observacoes, 240);
+      (!('limiteTentativasAntesPausa' in perfilApoio) || (perfilApoio.limiteTentativasAntesPausa is int && perfilApoio.limiteTentativasAntesPausa >= 2 && perfilApoio.limiteTentativasAntesPausa <= 20)) &&
+      (!('cartoesComunicacao' in perfilApoio) || cartoesComunicacaoValidos(perfilApoio.cartoesComunicacao)) &&
+      (!('planoRegulacao' in perfilApoio) || planoRegulacaoValido(perfilApoio.planoRegulacao)) &&
+      (!('observacoes' in perfilApoio) || textoAte(perfilApoio.observacoes, 240));
   }
 
   function atividadesDominadasValidas(atividadesDominadas) {
@@ -228,8 +221,6 @@ match /responsaveis/{responsavelId} {
       dados.keys().hasAll([
         'nome',
         'avatarId',
-        'interesseEspecialId',
-        'preferenciasSensoriais',
       ]) &&
       textoObrigatorioAte(dados.nome, 40) &&
       dados.avatarId in [
@@ -240,7 +231,7 @@ match /responsaveis/{responsavelId} {
         'coracao',
         'lua',
       ] &&
-      dados.interesseEspecialId in [
+      (!('interesseEspecialId' in dados) || dados.interesseEspecialId in [
         'neutro',
         'animais',
         'veiculos',
@@ -249,9 +240,9 @@ match /responsaveis/{responsavelId} {
         'comida',
         'brincar',
         'natureza',
-      ] &&
+      ]) &&
       (!('perfilApoio' in dados) || perfilApoioValido(dados.perfilApoio)) &&
-      preferenciasValidas(dados.preferenciasSensoriais) &&
+      (!('preferenciasSensoriais' in dados) || preferenciasValidas(dados.preferenciasSensoriais)) &&
       (!('planoIndividual' in dados) || planoIndividualValido(dados.planoIndividual)) &&
       (!('atividadesDominadas' in dados) || atividadesDominadasValidas(dados.atividadesDominadas)) &&
       (!('colaboradoresEmail' in dados) ||
