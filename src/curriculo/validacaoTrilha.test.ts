@@ -155,8 +155,8 @@ describe('validarTrilha', () => {
   it('detecta criterio de dominio fraco ou incoerente', () => {
     const trilha = clonarTrilha(trilhaV1)
     trilha.modulos[0].atividades[0].criteriosDominio = {
-      acertosConsecutivosNecessarios: 1,
-      janelaTentativas: 0,
+      acertosConsecutivosNecessarios: 0,
+      janelaTentativas: -1,
     }
 
     const codigos = codigosDaTrilha(trilha)

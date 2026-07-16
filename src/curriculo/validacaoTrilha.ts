@@ -218,7 +218,7 @@ function validarCriteriosDominio(
 
   if (
     !Number.isInteger(acertosConsecutivosNecessarios) ||
-    acertosConsecutivosNecessarios < 3
+    acertosConsecutivosNecessarios < 1
   ) {
     registrarProblema(problemas, {
       codigo: 'CRITERIO_DOMINIO_FRACO',

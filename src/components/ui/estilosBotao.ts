@@ -6,13 +6,13 @@ const base =
 
 const porVariante: Record<VarianteBotao, string> = {
   primario:
-    'bg-gradient-to-r from-[var(--cor-primaria)] to-[var(--cor-primaria-escura)] text-white shadow-md hover:shadow-lg hover:brightness-110',
+    'bg-gradient-to-r from-[var(--cor-primaria)] to-[var(--cor-primaria-escura)] text-white shadow-[0_8px_0_var(--cor-primaria-escura)] hover:shadow-[0_10px_0_var(--cor-primaria-escura)] hover:-translate-y-1 active:translate-y-2 active:shadow-[0_0px_0_var(--cor-primaria-escura)] font-bold',
   secundario:
-    'border-2 border-[var(--cor-borda)] bg-white/80 backdrop-blur-sm text-[var(--cor-texto)] shadow-sm hover:shadow-md hover:border-[var(--cor-primaria)] hover:bg-white',
+    'border-2 border-[var(--cor-borda)] bg-white/80 backdrop-blur-sm text-[var(--cor-texto)] shadow-[0_6px_0_var(--cor-borda)] hover:shadow-[0_8px_0_var(--cor-primaria)] hover:border-[var(--cor-primaria)] hover:bg-white hover:-translate-y-1 active:translate-y-1 active:shadow-[0_0px_0_var(--cor-borda)] font-bold',
   acento:
-    'bg-gradient-to-r from-[var(--cor-acento)] to-[var(--cor-acento-escura)] text-white shadow-md hover:shadow-lg hover:brightness-110',
+    'bg-gradient-to-r from-[var(--cor-acento)] to-[var(--cor-acento-escura)] text-white shadow-[0_8px_0_var(--cor-acento-escura)] hover:shadow-[0_10px_0_var(--cor-acento-escura)] hover:-translate-y-1 active:translate-y-2 active:shadow-[0_0px_0_var(--cor-acento-escura)] font-bold',
   fantasma:
-    'text-[var(--cor-primaria)] underline underline-offset-2 hover:text-[var(--cor-primaria-escura)] hover:bg-black/5',
+    'text-[var(--cor-primaria)] font-bold underline underline-offset-4 hover:text-[var(--cor-primaria-escura)] hover:bg-black/5 hover:scale-105 active:scale-95 transition-all',
 }
 
 const porTamanho: Record<TamanhoBotao, string> = {

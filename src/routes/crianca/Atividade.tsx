@@ -116,6 +116,18 @@ function AtividadeConcluida({
       )}
 
       <div className="flex w-full flex-col gap-3">
+        {!salvandoDominio && !erroSalvamento && proximaAtividade && (
+          <Botao
+            type="button"
+            variante="primario"
+            className="text-lg py-4"
+            aria-label={`Próxima atividade: ${proximaAtividade.alvo.rotulo}`}
+            onClick={() => aoAbrirProximaAtividade(proximaAtividade.id)}
+          >
+            Próxima atividade
+          </Botao>
+        )}
+
         <Botao
           ref={botaoRef}
           type="button"
@@ -124,16 +136,6 @@ function AtividadeConcluida({
         >
           Voltar para a trilha
         </Botao>
-
-        {!salvandoDominio && !erroSalvamento && proximaAtividade && (
-          <Botao
-            type="button"
-            aria-label={`Próxima atividade: ${proximaAtividade.alvo.rotulo}`}
-            onClick={() => aoAbrirProximaAtividade(proximaAtividade.id)}
-          >
-            Próxima atividade
-          </Botao>
-        )}
       </div>
     </section>
   )
