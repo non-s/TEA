@@ -6,13 +6,13 @@ const base =
 
 const porVariante: Record<VarianteBotao, string> = {
   primario:
-    'bg-[var(--cor-primaria)] text-white hover:bg-[var(--cor-primaria-escura)]',
+    'bg-gradient-to-r from-[var(--cor-primaria)] to-[var(--cor-primaria-escura)] text-white shadow-md hover:shadow-lg hover:brightness-110',
   secundario:
-    'border-2 border-[var(--cor-borda)] bg-[var(--cor-fundo-alt)] text-[var(--cor-texto)] hover:border-[var(--cor-primaria)]',
+    'border-2 border-[var(--cor-borda)] bg-white/80 backdrop-blur-sm text-[var(--cor-texto)] shadow-sm hover:shadow-md hover:border-[var(--cor-primaria)] hover:bg-white',
   acento:
-    'bg-[var(--cor-acento)] text-white hover:bg-[var(--cor-acento-escura)]',
+    'bg-gradient-to-r from-[var(--cor-acento)] to-[var(--cor-acento-escura)] text-white shadow-md hover:shadow-lg hover:brightness-110',
   fantasma:
-    'text-[var(--cor-primaria)] underline underline-offset-2 hover:text-[var(--cor-primaria-escura)]',
+    'text-[var(--cor-primaria)] underline underline-offset-2 hover:text-[var(--cor-primaria-escura)] hover:bg-black/5',
 }
 
 const porTamanho: Record<TamanhoBotao, string> = {

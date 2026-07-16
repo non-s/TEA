@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 @import 'tailwindcss';
 
 /*
@@ -78,13 +79,40 @@ html {
   /* Escala todas as unidades `rem` (inclusive as classes de tamanho de
      texto do Tailwind), então precisa ficar no elemento raiz, não no body. */
   font-size: calc(100% * var(--escala-fonte));
+  scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
-  background: var(--cor-fundo);
+  background: linear-gradient(135deg, var(--cor-fundo) 0%, var(--cor-primaria-clara) 100%);
+  background-attachment: fixed;
   color: var(--cor-texto);
-  font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Glassmorphism utility for cards and prominent UI components */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: var(--sombra-cartao);
+}
+
+/* Micro-animations */
+button, a, .cartao-interativo {
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s ease;
+}
+
+button:hover:not(:disabled), a:hover, .cartao-interativo:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--sombra-cartao-hover);
+}
+
+button:active:not(:disabled), a:active, .cartao-interativo:active {
+  transform: translateY(1px);
 }
 
 button,

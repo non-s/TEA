@@ -1,7 +1,7 @@
 import type { FormHTMLAttributes, HTMLAttributes } from 'react'
 
 const classesBase =
-  'rounded-3xl border border-[var(--cor-borda)] bg-[var(--cor-fundo-alt)] p-6 shadow-[var(--sombra-cartao)] sm:p-8'
+  'rounded-3xl glass-panel p-6 sm:p-8'
 
 type CartaoDivProps = { as?: 'div' } & HTMLAttributes<HTMLDivElement>
 type CartaoFormProps = { as: 'form' } & FormHTMLAttributes<HTMLFormElement>
