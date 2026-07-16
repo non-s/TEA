@@ -33,28 +33,29 @@ function CartaoAtividadeTrilha({
       ? `${atividade.alvo.rotulo}, próxima atividade`
       : atividade.alvo.rotulo
 
-  return (
-    <li className="relative">
+  return <li className="relative animacao-zoom">
       <Link
         to={`/crianca/atividade/${atividade.id}`}
         aria-label={ariaLabel}
-        className={`flex min-h-[var(--min-alvo-atividade)] flex-col items-center justify-center gap-2 rounded-2xl border-2 p-4 shadow-[var(--sombra-cartao)] transition-transform motion-reduce:transition-none hover:scale-[1.02] hover:shadow-[var(--sombra-cartao-hover)] active:scale-[0.99] ${
+        className={`flex min-h-[var(--min-alvo-atividade)] flex-col items-center justify-center gap-2 rounded-2xl border p-4 shadow-[var(--sombra-cartao)] transition-all duration-300 hover:scale-[1.05] hover:shadow-[var(--sombra-cartao-hover)] hover:border-[var(--cor-primaria)] active:scale-[0.95] ${
           dominada
-            ? 'border-[var(--cor-conquista)] bg-[var(--cor-conquista-clara)]'
+            ? 'border-[var(--cor-conquista)] bg-[var(--cor-conquista-clara)] text-[var(--cor-conquista)]'
             : emFoco
-              ? 'border-[var(--cor-primaria)] bg-[var(--cor-primaria-clara)]'
-              : 'border-[var(--cor-borda)] bg-[var(--cor-fundo-alt)]'
+              ? 'border-[var(--cor-primaria)] bg-white/10 backdrop-blur-md brilho-pulsante text-[var(--cor-primaria-clara)]'
+              : 'vidro text-[var(--cor-texto-suave)]'
         }`}
       >
         <Icone
           iconeId={atividade.alvo.iconeId as IconeId}
           className={
             dominada
-              ? 'h-12 w-12 text-[var(--cor-conquista)]'
-              : 'h-12 w-12 text-[var(--cor-primaria-escura)]'
+              ? 'h-12 w-12 text-[var(--cor-conquista)] drop-shadow-sm'
+              : emFoco
+                ? 'h-12 w-12 text-[var(--cor-primaria-clara)] drop-shadow-md'
+                : 'h-12 w-12 text-[var(--cor-texto-suave)]'
           }
         />
-        <span className="text-sm text-[var(--cor-texto-suave)]">
+        <span className="text-sm font-semibold tracking-wide">
           {dominada ? 'Concluída' : emFoco ? 'Agora' : atividade.alvo.rotulo}
         </span>
       </Link>
@@ -67,7 +68,6 @@ function CartaoAtividadeTrilha({
         </span>
       )}
     </li>
-  )
 }
 
 export function Trilha() {
@@ -181,22 +181,22 @@ export function Trilha() {
     codigoAreaResponsavel.trim().toUpperCase() === 'ADULTO'
 
   return (
-    <main className="mx-auto flex max-w-3xl flex-col gap-10 px-6 py-10">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-semibold text-[var(--cor-texto)]">
+    <main className="mx-auto flex max-w-4xl flex-col gap-12 px-6 py-12 animacao-surgir">
+      <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+        <h1 className="text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-[var(--cor-primaria-clara)] to-[var(--cor-acento-clara)] drop-shadow-sm">
           Olá, {perfilAtivo?.nome}
         </h1>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-6">
           <Link
             to="/crianca/jardim"
-            className="inline-flex min-h-[var(--min-alvo-controle)] items-center text-sm text-[var(--cor-primaria-escura)] underline underline-offset-2"
+            className="inline-flex min-h-[var(--min-alvo-controle)] items-center text-base font-bold text-[var(--cor-primaria-clara)] hover:text-[var(--cor-acento-clara)] transition-colors underline underline-offset-4"
           >
             Meu jardim
           </Link>
           <button
             type="button"
             onClick={() => setConfirmandoAreaResponsavel(true)}
-            className="inline-flex min-h-[var(--min-alvo-controle)] items-center text-sm text-[var(--cor-texto-suave)] underline underline-offset-2"
+            className="inline-flex min-h-[var(--min-alvo-controle)] items-center text-base font-bold text-[var(--cor-texto-suave)] hover:text-white transition-colors underline underline-offset-4"
           >
             Área do responsável
           </button>
@@ -206,27 +206,28 @@ export function Trilha() {
       {erroCarregamento && (
         <p
           role="alert"
-          className="rounded-2xl bg-[var(--cor-erro)]/10 px-4 py-3 text-sm text-[var(--cor-erro)]"
+          className="rounded-2xl border border-[var(--cor-erro)] bg-[var(--cor-erro)]/10 px-6 py-4 text-sm font-medium text-[var(--cor-erro)] shadow-[var(--sombra-cartao)]"
         >
           {erroCarregamento}
         </p>
       )}
 
-      <section className="rounded-3xl border-2 border-[var(--cor-primaria-clara)] bg-[var(--cor-fundo-alt)] p-5 shadow-[var(--sombra-cartao)]">
+      <section className="relative overflow-hidden rounded-[2rem] border border-[var(--cor-borda)] bg-gradient-to-br from-[var(--cor-primaria-escura)] to-[var(--cor-acento-escura)] p-8 sm:p-10 shadow-[var(--sombra-brilho)] flutuar">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIi8+PC9zdmc+')] opacity-20"></div>
         {proximaAtividade ? (
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-4">
-              <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-[var(--cor-primaria-clara)] text-[var(--cor-primaria-escura)]">
+          <div className="relative z-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-6">
+              <span className="flex h-24 w-24 shrink-0 items-center justify-center rounded-3xl bg-white/20 backdrop-blur-md text-white shadow-lg border border-white/30">
                 <Icone
                   iconeId={proximaAtividade.alvo.iconeId as IconeId}
-                  className="h-10 w-10"
+                  className="h-14 w-14 drop-shadow-md"
                 />
               </span>
-              <div>
-                <p className="text-sm font-medium uppercase text-[var(--cor-texto-suave)]">
-                  Agora
+              <div className="flex flex-col justify-center">
+                <p className="text-sm font-extrabold uppercase tracking-widest text-[var(--cor-primaria-clara)] drop-shadow-sm mb-1">
+                  Continuar Trilha
                 </p>
-                <p className="text-xl font-semibold text-[var(--cor-texto)]">
+                <p className="text-4xl font-black text-white drop-shadow-md leading-tight">
                   {proximaAtividade.alvo.rotulo}
                 </p>
               </div>
@@ -234,17 +235,17 @@ export function Trilha() {
             <Link
               to={`/crianca/atividade/${proximaAtividade.id}`}
               aria-label={`Continuar com ${proximaAtividade.alvo.rotulo}`}
-              className="inline-flex min-h-[var(--min-alvo-controle)] items-center justify-center rounded-full bg-[var(--cor-primaria)] px-6 py-3 text-base font-semibold text-white hover:bg-[var(--cor-primaria-escura)]"
+              className="inline-flex min-h-[var(--min-alvo-controle)] items-center justify-center rounded-full bg-white px-10 py-4 text-xl font-black text-[var(--cor-primaria-escura)] shadow-xl transition-all hover:scale-[1.05] hover:bg-transparent hover:text-white hover:border hover:border-white"
             >
-              Continuar
+              Começar
             </Link>
           </div>
         ) : (
-          <div className="flex flex-col gap-2 text-center">
-            <p className="text-xl font-semibold text-[var(--cor-texto)]">
-              Tudo concluído nesta trilha
+          <div className="relative z-10 flex flex-col gap-3 text-center py-6">
+            <p className="text-3xl font-black text-white drop-shadow-md">
+              Tudo concluído nesta trilha! 🎉
             </p>
-            <p className="text-sm text-[var(--cor-texto-suave)]">
+            <p className="text-lg text-[var(--cor-primaria-clara)]">
               Revise atividades já dominadas quando quiser.
             </p>
           </div>
@@ -252,23 +253,24 @@ export function Trilha() {
       </section>
 
       {revisaoEspacada && (
-        <section className="rounded-3xl border-2 border-[var(--cor-conquista-clara)] bg-[var(--cor-fundo-alt)] p-5 shadow-[var(--sombra-cartao)]">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-4">
-              <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-[var(--cor-conquista-clara)] text-[var(--cor-conquista)]">
+        <section className="relative overflow-hidden rounded-[2rem] border border-[var(--cor-conquista)] bg-gradient-to-br from-[var(--cor-fundo-vidro)] to-transparent p-8 sm:p-10 shadow-[var(--sombra-cartao)] backdrop-blur-xl">
+          <div className="absolute inset-0 bg-gradient-to-tr from-[var(--cor-conquista-clara)] to-transparent opacity-20"></div>
+          <div className="relative z-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-6">
+              <span className="flex h-20 w-20 shrink-0 items-center justify-center rounded-3xl bg-[var(--cor-conquista-clara)] text-[var(--cor-conquista)] shadow-lg border border-[var(--cor-conquista)]">
                 <Icone
                   iconeId={revisaoEspacada.atividade.alvo.iconeId as IconeId}
-                  className="h-10 w-10"
+                  className="h-10 w-10 drop-shadow-md"
                 />
               </span>
-              <div>
-                <p className="text-sm font-medium uppercase text-[var(--cor-texto-suave)]">
-                  Revisão leve
+              <div className="flex flex-col justify-center">
+                <p className="text-sm font-extrabold uppercase tracking-widest text-[var(--cor-conquista)] drop-shadow-sm mb-1">
+                  Revisão Leve
                 </p>
-                <p className="text-xl font-semibold text-[var(--cor-texto)]">
+                <p className="text-3xl font-black text-white drop-shadow-md leading-tight">
                   {revisaoEspacada.atividade.alvo.rotulo}
                 </p>
-                <p className="mt-1 text-sm text-[var(--cor-texto-suave)]">
+                <p className="mt-1 text-sm text-[var(--cor-texto-suave)] font-medium">
                   {revisaoEspacada.diasDesdeUltimaPratica === null
                     ? 'Pratique de novo quando estiver tranquilo.'
                     : `Praticada há ${revisaoEspacada.diasDesdeUltimaPratica} dias.`}
@@ -278,7 +280,7 @@ export function Trilha() {
             <Link
               to={`/crianca/atividade/${revisaoEspacada.atividade.id}`}
               aria-label={`Revisar ${revisaoEspacada.atividade.alvo.rotulo}`}
-              className="inline-flex min-h-[var(--min-alvo-controle)] items-center justify-center rounded-full border-2 border-[var(--cor-conquista)] bg-[var(--cor-fundo-alt)] px-6 py-3 text-base font-semibold text-[var(--cor-texto)] hover:bg-[var(--cor-conquista-clara)]"
+              className="inline-flex min-h-[var(--min-alvo-controle)] items-center justify-center rounded-full bg-[var(--cor-conquista)] px-10 py-4 text-xl font-black text-white shadow-xl transition-all hover:scale-[1.05] hover:bg-[var(--cor-conquista-clara)] hover:text-white"
             >
               Revisar
             </Link>
@@ -320,56 +322,56 @@ export function Trilha() {
             <section
               key={modulo.id}
               aria-labelledby={tituloId}
-              className={`flex flex-col gap-4 border-t border-[var(--cor-borda)] pt-6 ${
-                desbloqueado ? '' : 'opacity-60'
+              className={`flex flex-col gap-6 vidro rounded-3xl p-6 ${
+                desbloqueado ? '' : 'opacity-60 saturate-50'
               }`}
             >
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                <div className="flex min-w-0 flex-1 items-start gap-3">
+              <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex min-w-0 flex-1 items-center gap-4">
                   <span
                     style={{ background: acento.fundo, color: acento.texto }}
-                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-semibold"
+                    className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-xl font-black shadow-md border border-white/20"
                   >
-                    {desbloqueado ? indice + 1 : 'Bloq.'}
+                    {desbloqueado ? indice + 1 : '🔒'}
                   </span>
                   <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-3">
                       <h2
                         id={tituloId}
-                        className="text-xl font-medium text-[var(--cor-texto)]"
+                        className="text-2xl font-black text-white"
                       >
                         {modulo.titulo}
                       </h2>
                       {contemProximaAtividade && (
-                        <span className="rounded-full bg-[var(--cor-primaria-clara)] px-3 py-1 text-xs font-semibold uppercase text-[var(--cor-primaria-escura)]">
+                        <span className="rounded-full bg-[var(--cor-primaria-clara)] px-3 py-1 text-xs font-black uppercase tracking-wider text-[var(--cor-primaria-escura)] shadow-sm">
                           Agora
                         </span>
                       )}
                       {contemRevisao && !contemProximaAtividade && (
-                        <span className="rounded-full bg-[var(--cor-conquista-clara)] px-3 py-1 text-xs font-semibold uppercase text-[var(--cor-conquista)]">
+                        <span className="rounded-full bg-[var(--cor-conquista-clara)] px-3 py-1 text-xs font-black uppercase tracking-wider text-[var(--cor-conquista)] shadow-sm">
                           Revisão
                         </span>
                       )}
                     </div>
-                    <p className="mt-1 text-sm text-[var(--cor-texto-suave)]">
+                    <p className="mt-1 text-base font-medium text-[var(--cor-texto-suave)]">
                       {desbloqueado
                         ? `${concluidas} de ${modulo.atividades.length} concluídas`
                         : `Complete "${preRequisito?.titulo}" para desbloquear`}
                     </p>
                     {desbloqueado && (
-                      <div className="mt-3 flex items-center gap-3">
+                      <div className="mt-4 flex items-center gap-4">
                         <div
-                          className="h-2 flex-1 rounded-full bg-[var(--cor-borda)]"
+                          className="h-3 flex-1 rounded-full bg-black/40 overflow-hidden shadow-inner border border-white/10"
                           aria-hidden="true"
                         >
                           <div
-                            className="h-2 rounded-full bg-[var(--cor-primaria)]"
+                            className="h-full rounded-full bg-gradient-to-r from-[var(--cor-primaria-escura)] to-[var(--cor-primaria-clara)] transition-all duration-500"
                             style={{ width: `${percentualConcluido}%` }}
                           />
                         </div>
-                        <span className="text-xs text-[var(--cor-texto-suave)]">
+                        <span className="text-sm font-bold text-[var(--cor-texto-suave)]">
                           {restantes === 0
-                            ? 'Pronto'
+                            ? 'Pronto!'
                             : `${restantes} restantes`}
                         </span>
                       </div>
@@ -382,7 +384,7 @@ export function Trilha() {
                     aria-expanded={atividadesVisiveis}
                     aria-controls={atividadesId}
                     onClick={() => alternarModulo(modulo.id)}
-                    className="inline-flex min-h-[var(--min-alvo-controle)] items-center justify-center gap-2 rounded-full border-2 border-[var(--cor-borda)] bg-[var(--cor-fundo-alt)] px-4 py-2 text-sm font-semibold text-[var(--cor-texto)] hover:border-[var(--cor-primaria)] hover:bg-[var(--cor-primaria-clara)]"
+                    className="inline-flex min-h-[var(--min-alvo-controle)] items-center justify-center gap-2 rounded-full border border-[var(--cor-borda)] bg-white/5 backdrop-blur-sm px-6 py-3 text-base font-bold text-white hover:border-[var(--cor-primaria)] hover:bg-white/10 transition-colors shadow-sm"
                   >
                     <span aria-hidden="true">
                       {atividadesVisiveis ? '-' : '+'}

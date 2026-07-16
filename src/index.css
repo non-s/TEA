@@ -1,48 +1,44 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
 @import 'tailwindcss';
 
-/*
- * Paleta calma e de alto contraste legível, pensada para reduzir sobrecarga
- * sensorial (tons dessaturados, sem cores vibrantes/neon). O azul é a cor
- * de ação principal; o terracota é o acento quente (uso pontual, nunca em
- * grandes áreas); o dourado marca conquistas/domínio, separado do verde de
- * "resposta correta" para não confundir os dois significados.
- */
 :root {
-  --cor-fundo: #e0f2fe;
-  --cor-fundo-alt: #ffffff;
-  --cor-texto: #1e293b;
-  --cor-texto-suave: #64748b;
+  --cor-fundo: #0f172a;
+  --cor-fundo-alt: rgba(255, 255, 255, 0.05);
+  --cor-fundo-vidro: rgba(255, 255, 255, 0.1);
+  --cor-texto: #f8fafc;
+  --cor-texto-suave: #cbd5e1;
 
   --cor-primaria: #8b5cf6;
   --cor-primaria-escura: #7c3aed;
-  --cor-primaria-clara: #ddd6fe;
+  --cor-primaria-clara: #a78bfa;
 
-  --cor-acento: #f43f5e;
-  --cor-acento-escura: #e11d48;
-  --cor-acento-clara: #fecdd3;
+  --cor-acento: #ec4899;
+  --cor-acento-escura: #db2777;
+  --cor-acento-clara: #f472b6;
 
   --cor-sucesso: #10b981;
-  --cor-sucesso-clara: #d1fae5;
-  --cor-conquista: #f59e0b;
-  --cor-conquista-clara: #fef3c7;
+  --cor-sucesso-clara: rgba(16, 185, 129, 0.2);
+  --cor-conquista: #fbbf24;
+  --cor-conquista-clara: rgba(251, 191, 36, 0.2);
   --cor-erro: #ef4444;
 
-  --cor-borda: rgba(255, 255, 255, 0.6);
-  --cor-anel-foco: var(--cor-primaria);
+  --cor-borda: rgba(255, 255, 255, 0.15);
+  --cor-anel-foco: var(--cor-acento);
 
   --sombra-cartao:
-    0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05),
-    inset 0 2px 4px rgba(255, 255, 255, 0.8);
+    0 8px 32px 0 rgba(0, 0, 0, 0.3),
+    inset 0 1px 1px rgba(255, 255, 255, 0.1);
   --sombra-cartao-hover:
-    0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04),
-    inset 0 2px 4px rgba(255, 255, 255, 0.8);
+    0 16px 48px 0 rgba(139, 92, 246, 0.3),
+    inset 0 1px 1px rgba(255, 255, 255, 0.2);
+
+  --sombra-brilho: 0 0 20px rgba(139, 92, 246, 0.5);
 
   --escala-fonte: 1;
   --min-alvo-controle: 3rem;
   --min-alvo-atividade: 8rem;
 
-  color-scheme: light;
+  color-scheme: dark;
 }
 
 :root[data-alvos-maiores='true'] {
@@ -53,6 +49,7 @@
 :root[data-alto-contraste='true'] {
   --cor-fundo: #000000;
   --cor-fundo-alt: #000000;
+  --cor-fundo-vidro: #000000;
   --cor-texto: #ffffff;
   --cor-texto-suave: #f2f2f2;
 
@@ -75,28 +72,72 @@
 
   --sombra-cartao: none;
   --sombra-cartao-hover: none;
+  --sombra-brilho: none;
 }
 
 html {
-  /* Escala todas as unidades `rem` (inclusive as classes de tamanho de
-     texto do Tailwind), então precisa ficar no elemento raiz, não no body. */
   font-size: calc(100% * var(--escala-fonte));
   scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
-  background: linear-gradient(-45deg, #e0f2fe, #fae8ff, #fef9c3, #e0e7ff);
-  background-size: 400% 400%;
-  animation: bgAnimation 15s ease infinite;
+  background-color: var(--cor-fundo);
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.2) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(236, 72, 153, 0.2) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.1) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, rgba(56, 189, 248, 0.2) 0px, transparent 50%);
+  background-attachment: fixed;
   color: var(--cor-texto);
-  font-family:
-    'Outfit',
-    system-ui,
-    -apple-system,
-    sans-serif;
+  font-family: 'Outfit', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes pulse-glow {
+  0% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4); }
+  70% { box-shadow: 0 0 0 15px rgba(139, 92, 246, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
+}
+
+@keyframes slide-up {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes zoom-in {
+  0% { opacity: 0; transform: scale(0.9); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.vidro {
+  background: var(--cor-fundo-vidro);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--cor-borda);
+}
+
+.animacao-surgir {
+  animation: slide-up 0.5s ease-out forwards;
+}
+
+.animacao-zoom {
+  animation: zoom-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.flutuar {
+  animation: float 6s ease-in-out infinite;
+}
+
+.brilho-pulsante {
+  animation: pulse-glow 2s infinite;
 }
 
 @keyframes bgAnimation {

@@ -4,8 +4,6 @@ interface ClassesAlvoToqueOpcoes {
   className?: string
 }
 
-const movimentoCalmo =
-  'transition-transform motion-reduce:transition-none hover:scale-[1.02] active:scale-[0.99]'
 
 export function classesAlvoToque({
   animacoes = true,
@@ -13,11 +11,11 @@ export function classesAlvoToque({
   className = '',
 }: ClassesAlvoToqueOpcoes = {}) {
   return [
-    'flex min-h-[var(--min-alvo-atividade)] min-w-[var(--min-alvo-atividade)] items-center justify-center rounded-2xl border-2 bg-[var(--cor-fundo-alt)] text-[var(--cor-texto)] shadow-[var(--sombra-cartao)]',
-    animacoes ? movimentoCalmo : 'motion-reduce:transition-none',
+    'flex min-h-[var(--min-alvo-atividade)] min-w-[var(--min-alvo-atividade)] items-center justify-center rounded-3xl border border-white/20 vidro text-[var(--cor-texto)] shadow-lg hover:shadow-[var(--sombra-brilho)]',
+    animacoes ? 'transition-all duration-300 hover:scale-[1.05] active:scale-[0.95]' : '',
     destacado
-      ? 'border-[var(--cor-primaria)] ring-2 ring-[var(--cor-primaria)]/25'
-      : 'border-[var(--cor-borda)]',
+      ? 'border-[var(--cor-primaria-clara)] bg-[var(--cor-primaria-escura)]/50 ring-4 ring-[var(--cor-primaria)]/50 brilho-pulsante'
+      : 'hover:bg-white/10 hover:border-[var(--cor-primaria-clara)]',
     className,
   ]
     .filter(Boolean)

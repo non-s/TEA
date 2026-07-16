@@ -82,44 +82,47 @@ function AtividadeConcluida({
   return (
     <section
       aria-labelledby="titulo-conclusao-atividade"
-      className="flex w-full max-w-md flex-col items-center gap-6 text-center"
+      className="flex w-full max-w-md flex-col items-center gap-8 text-center animacao-zoom"
     >
-      <div className="flex w-full flex-col gap-3 rounded-2xl border-2 border-[var(--cor-sucesso-clara)] bg-[var(--cor-fundo-alt)] p-6 shadow-[var(--sombra-cartao)]">
-        <p className="text-sm font-semibold uppercase text-[var(--cor-texto-suave)]">
-          Feito
-        </p>
-        <h1
-          id="titulo-conclusao-atividade"
-          className="text-2xl font-semibold text-[var(--cor-texto)]"
-        >
-          Atividade concluída
-        </h1>
-        <p className="text-base text-[var(--cor-texto-suave)]">
-          {rotuloAtividade}
-        </p>
+      <div className="relative overflow-hidden flex w-full flex-col gap-4 rounded-[2rem] border border-[var(--cor-sucesso)] bg-gradient-to-b from-[var(--cor-sucesso-clara)] to-[var(--cor-fundo-alt)] p-8 shadow-[var(--sombra-cartao)] flutuar">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIi8+PC9zdmc+')] opacity-20"></div>
+        <div className="relative z-10 flex flex-col items-center gap-2">
+          <p className="text-sm font-black uppercase tracking-widest text-[var(--cor-sucesso)] drop-shadow-sm">
+            Feito! 🎉
+          </p>
+          <h1
+            id="titulo-conclusao-atividade"
+            className="text-4xl font-black text-[var(--cor-texto)]"
+          >
+            Atividade concluída
+          </h1>
+          <p className="text-xl font-bold text-[var(--cor-texto-suave)] mt-2">
+            {rotuloAtividade}
+          </p>
+        </div>
       </div>
 
       {erroSalvamento && (
         <p
           role="alert"
-          className="rounded-2xl bg-[var(--cor-erro)]/10 px-4 py-3 text-sm text-[var(--cor-erro)]"
+          className="rounded-2xl border border-[var(--cor-erro)] bg-[var(--cor-erro)]/10 px-6 py-4 text-sm font-medium text-[var(--cor-erro)] shadow-sm animacao-surgir"
         >
           {erroSalvamento}
         </p>
       )}
 
       {salvandoDominio && (
-        <p aria-live="polite" className="text-sm text-[var(--cor-texto-suave)]">
+        <p aria-live="polite" className="text-sm font-bold text-[var(--cor-primaria-clara)] brilho-pulsante px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm">
           Salvando progresso...
         </p>
       )}
 
-      <div className="flex w-full flex-col gap-3">
+      <div className="flex w-full flex-col gap-4 z-10">
         {!salvandoDominio && !erroSalvamento && proximaAtividade && (
           <Botao
             type="button"
             variante="primario"
-            className="text-lg py-4"
+            className="text-xl py-5 shadow-xl transition-all hover:scale-[1.05]"
             aria-label={`Próxima atividade: ${proximaAtividade.alvo.rotulo}`}
             onClick={() => aoAbrirProximaAtividade(proximaAtividade.id)}
           >
@@ -131,6 +134,7 @@ function AtividadeConcluida({
           ref={botaoRef}
           type="button"
           variante="secundario"
+          className="text-lg py-4 vidro hover:bg-white/20 transition-all hover:scale-[1.02]"
           onClick={aoVoltarTrilha}
         >
           Voltar para a trilha

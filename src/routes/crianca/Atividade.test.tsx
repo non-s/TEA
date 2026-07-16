@@ -565,19 +565,19 @@ describe('Atividade', () => {
     })
     renderizarAtividade('m0-n1-a1')
 
-    async function responderCorreto() {
-      await usuario.click(screen.getByRole('button', { name: /círculo/i }))
+    async function responderIncorreto() {
+      await usuario.click(screen.getByRole('button', { name: /quadrado/i }))
       await act(async () => {
         await vi.advanceTimersByTimeAsync(800)
       })
     }
 
     await usuario.click(screen.getByRole('button', { name: 'Começar' }))
-    await responderCorreto()
+    await responderIncorreto()
     await usuario.click(screen.getByRole('button', { name: 'Continuar' }))
-    await responderCorreto()
+    await responderIncorreto()
     await usuario.click(screen.getByRole('button', { name: 'Continuar' }))
-    await responderCorreto()
+    await responderIncorreto()
 
     expect(screen.getByText('Pode terminar por agora')).toBeInTheDocument()
 
@@ -663,7 +663,7 @@ describe('Atividade', () => {
       advanceTimers: vi.advanceTimersByTime,
       delay: null,
     })
-    mocks.marcarAtividadeDominada.mockRejectedValueOnce(new Error('offline'))
+    mocks.marcarAtividadeDominada.mockRejectedValue(new Error('offline'))
     mocks.tentativas = Array.from({ length: 7 }, (_, indice) => ({
       atividadeId: 'm0-n1-a1',
       moduloId: 'm0',
@@ -683,13 +683,15 @@ describe('Atividade', () => {
     expect(
       screen.getByRole('heading', { name: 'Atividade concluída' }),
     ).toBeInTheDocument()
+
+    vi.useRealTimers() // findByRole needs real timers to poll DOM
+
     expect(await screen.findByRole('alert')).toHaveTextContent(
       'A atividade foi concluída, mas ainda não foi salva na trilha.',
     )
     expect(
       screen.queryByRole('button', { name: /Próxima atividade/i }),
     ).not.toBeInTheDocument()
-    vi.useRealTimers()
   })
 
   it('usa escolha mediada quando o perfil indica olhar ou gesto', async () => {

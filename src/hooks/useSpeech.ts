@@ -20,9 +20,21 @@ export function useSpeech() {
     }
   }, [preferencias.som])
 
-  const falar = useCallback((_texto: string) => {
-    // Fala desativada conforme solicitado.
-  }, [])
+  const falar = useCallback(
+    (texto: string) => {
+      if (!verificarDisponibilidade() || !preferencias.som) return
+
+      window.speechSynthesis.cancel() // Interrompe qualquer fala em andamento
+
+      const utterance = new SpeechSynthesisUtterance(texto)
+      utterance.lang = 'pt-BR'
+      utterance.rate = 0.9 // Um pouco mais lento para clareza
+      utterance.pitch = 1.1 // Tom um pouco mais agudo/infantil
+
+      window.speechSynthesis.speak(utterance)
+    },
+    [preferencias.som],
+  )
 
   return { falar, disponivel: verificarDisponibilidade() }
 }
