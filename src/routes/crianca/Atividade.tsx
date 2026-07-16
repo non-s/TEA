@@ -526,10 +526,10 @@ export function Atividade() {
             : [...atuais, atividadeDominadaId],
         )
       })
-      .catch((erro) => {
+      .catch((erro: any) => {
         console.error('Erro ao salvar no Firebase:', erro)
         setErroSalvamentoDominio(
-          'A atividade foi concluída, mas ainda não foi salva na trilha. Verifique a conexão antes de encerrar.',
+          `Falha ao salvar (Erro do Firebase): ${erro.message || JSON.stringify(erro)}`
         )
       })
       .finally(() => setSalvandoDominio(false))
