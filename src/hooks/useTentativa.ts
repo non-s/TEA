@@ -11,14 +11,14 @@ export type RegistrarTentativa = (
 interface EstadoAtividade {
   nivelDicaAtual: number
   acertosConsecutivos: number
-  acertosConsecutivosNoNivelIndependente: number
+  historicoIndependente: boolean[]
   dominada: boolean
 }
 
 const estadoInicial: EstadoAtividade = {
   nivelDicaAtual: NIVEL_SUPORTE_TOTAL,
   acertosConsecutivos: 0,
-  acertosConsecutivosNoNivelIndependente: 0,
+  historicoIndependente: [],
   dominada: false,
 }
 
@@ -37,7 +37,7 @@ function estadoInicialDaAtividade(
             nivelDicaAtual: tentativa.nivelDicaUsado,
           },
           tentativa.resultado === 'correto',
-          atividade.criteriosDominio.acertosConsecutivosNecessarios,
+          atividade.criteriosDominio,
         ),
       estadoInicial,
     )
@@ -61,31 +61,38 @@ function estadosIguais(a: EstadoAtividade, b: EstadoAtividade): boolean {
   return (
     a.nivelDicaAtual === b.nivelDicaAtual &&
     a.acertosConsecutivos === b.acertosConsecutivos &&
-    a.acertosConsecutivosNoNivelIndependente ===
-      b.acertosConsecutivosNoNivelIndependente &&
-    a.dominada === b.dominada
+    a.dominada === b.dominada &&
+    a.historicoIndependente.length === b.historicoIndependente.length &&
+    a.historicoIndependente.every((val, index) => val === b.historicoIndependente[index])
   )
 }
 
 function proximoEstado(
   atual: EstadoAtividade,
   correto: boolean,
-  acertosConsecutivosNecessarios: number,
+  criterios: { acertosConsecutivosNecessarios: number; janelaTentativas: number },
 ): EstadoAtividade {
+  const noIndependente = atual.nivelDicaAtual === NIVEL_INDEPENDENTE
+
+  let historicoIndependente = atual.historicoIndependente
+  if (noIndependente) {
+    historicoIndependente = [...historicoIndependente, correto].slice(-criterios.janelaTentativas)
+  }
+
+  const acertosNoIndependente = historicoIndependente.filter(Boolean).length
+  const dominada = acertosNoIndependente >= criterios.acertosConsecutivosNecessarios
+
   if (!correto) {
     return {
       ...atual,
       acertosConsecutivos: 0,
-      acertosConsecutivosNoNivelIndependente: 0,
+      historicoIndependente,
+      dominada,
       nivelDicaAtual: Math.max(0, atual.nivelDicaAtual - 1),
     }
   }
 
   const acertosConsecutivos = atual.acertosConsecutivos + 1
-  const noIndependente = atual.nivelDicaAtual === NIVEL_INDEPENDENTE
-  const acertosConsecutivosNoNivelIndependente = noIndependente
-    ? atual.acertosConsecutivosNoNivelIndependente + 1
-    : 0
 
   // Esmaece a dica (dá menos suporte) após 2 acertos seguidos no nível atual.
   const deveFazerFading =
@@ -94,14 +101,10 @@ function proximoEstado(
     ? Math.min(NIVEL_INDEPENDENTE, atual.nivelDicaAtual + 1)
     : atual.nivelDicaAtual
 
-  const dominada =
-    noIndependente &&
-    acertosConsecutivosNoNivelIndependente >= acertosConsecutivosNecessarios
-
   return {
     nivelDicaAtual,
     acertosConsecutivos,
-    acertosConsecutivosNoNivelIndependente,
+    historicoIndependente,
     dominada,
   }
 }
@@ -110,8 +113,6 @@ function estadoComMaisApoio(atual: EstadoAtividade): EstadoAtividade {
   return {
     ...atual,
     acertosConsecutivos: 0,
-    acertosConsecutivosNoNivelIndependente: 0,
-    dominada: false,
     nivelDicaAtual: NIVEL_SUPORTE_TOTAL,
   }
 }
@@ -238,7 +239,7 @@ export function useTentativa(
     const novoEstado = proximoEstado(
       estado,
       correto,
-      atividade.criteriosDominio.acertosConsecutivosNecessarios,
+      atividade.criteriosDominio,
     )
     setEstado(novoEstado)
     setTentativasSessao(totalTentativasSessao)

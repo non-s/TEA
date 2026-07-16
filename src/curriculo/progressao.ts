@@ -24,6 +24,11 @@ export function moduloDesbloqueado(
     (m) => m.id === preRequisitoModuloId,
   )
   if (!preRequisito) return true
+
+  if (!moduloDesbloqueado(preRequisito.preRequisitoModuloId, dominadas)) {
+    return false
+  }
+
   return preRequisito.atividades.every((a) => dominadas.has(a.id))
 }
 

@@ -42,8 +42,8 @@ const dicasPadrao: NivelDica[] = [
 ]
 
 const criteriosDominioPadrao = {
-  acertosConsecutivosNecessarios: 8,
-  janelaTentativas: 10,
+  acertosConsecutivosNecessarios: 3,
+  janelaTentativas: 4,
 }
 
 function construirAtividade(

@@ -22,14 +22,9 @@ export function useSpeech() {
 
   const falar = useCallback(
     (texto: string) => {
-      if (!preferencias.som || !verificarDisponibilidade()) return
-
-      window.speechSynthesis.cancel()
-      const fala = new SpeechSynthesisUtterance(texto)
-      fala.lang = 'pt-BR'
-      window.speechSynthesis.speak(fala)
+      // Fala desativada conforme solicitado.
     },
-    [preferencias.som],
+    [],
   )
 
   return { falar, disponivel: verificarDisponibilidade() }
