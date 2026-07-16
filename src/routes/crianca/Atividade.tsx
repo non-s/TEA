@@ -529,7 +529,7 @@ export function Atividade() {
       .catch((erro: any) => {
         console.error('Erro ao salvar no Firebase:', erro)
         setErroSalvamentoDominio(
-          `Falha ao salvar (Erro do Firebase): ${erro.message || JSON.stringify(erro)}`
+          `Falha ao salvar (Erro do Firebase): ${erro.message || JSON.stringify(erro)}`,
         )
       })
       .finally(() => setSalvandoDominio(false))
