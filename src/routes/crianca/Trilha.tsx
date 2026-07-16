@@ -207,6 +207,14 @@ export function Trilha() {
           >
             Área do responsável
           </button>
+          <button
+            type="button"
+            onClick={aoVoltarParaResponsavel}
+            className="inline-flex min-h-[var(--min-alvo-controle)] items-center text-base font-bold text-[var(--cor-erro)] hover:text-[var(--cor-erro-escura)] transition-colors underline underline-offset-4"
+            aria-label="Sair do perfil"
+          >
+            Sair
+          </button>
         </div>
       </div>
 

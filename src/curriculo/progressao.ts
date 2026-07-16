@@ -19,17 +19,8 @@ export function moduloDesbloqueado(
   preRequisitoModuloId: string | undefined,
   dominadas: Set<string>,
 ): boolean {
-  if (!preRequisitoModuloId) return true
-  const preRequisito = trilhaV1.modulos.find(
-    (m) => m.id === preRequisitoModuloId,
-  )
-  if (!preRequisito) return true
-
-  if (!moduloDesbloqueado(preRequisito.preRequisitoModuloId, dominadas)) {
-    return false
-  }
-
-  return preRequisito.atividades.every((a) => dominadas.has(a.id))
+  // A pedido do usuário, todos os módulos estão desbloqueados
+  return true
 }
 
 export function encontrarProximaAtividadeDisponivel(
