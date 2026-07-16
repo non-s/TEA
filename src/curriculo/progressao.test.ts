@@ -9,27 +9,27 @@ import type { Tentativa } from './tipos'
 
 describe('moduloDesbloqueado', () => {
   it('sempre desbloqueia um módulo sem pré-requisito', () => {
-    expect(moduloDesbloqueado(undefined, new Set())).toBe(true)
+    expect(moduloDesbloqueado(undefined, new Set(), trilhaV1)).toBe(true)
   })
 
-  it.skip('mantém bloqueado se nenhuma atividade do pré-requisito foi dominada', () => {
-    expect(moduloDesbloqueado('m0', new Set())).toBe(false)
+  it('mantém bloqueado se nenhuma atividade do pré-requisito foi dominada', () => {
+    expect(moduloDesbloqueado('m0', new Set(), trilhaV1)).toBe(false)
   })
 
-  it.skip('mantém bloqueado se só parte das atividades do pré-requisito foi dominada', () => {
+  it('mantém bloqueado se só parte das atividades do pré-requisito foi dominada', () => {
     const modulo0 = trilhaV1.modulos.find((m) => m.id === 'm0')!
     const algumas = modulo0.atividades.slice(0, 1).map((a) => a.id)
-    expect(moduloDesbloqueado('m0', new Set(algumas))).toBe(false)
+    expect(moduloDesbloqueado('m0', new Set(algumas), trilhaV1)).toBe(false)
   })
 
   it('desbloqueia quando todas as atividades do pré-requisito foram dominadas', () => {
     const modulo0 = trilhaV1.modulos.find((m) => m.id === 'm0')!
     const todas = modulo0.atividades.map((a) => a.id)
-    expect(moduloDesbloqueado('m0', new Set(todas))).toBe(true)
+    expect(moduloDesbloqueado('m0', new Set(todas), trilhaV1)).toBe(true)
   })
 
   it('desbloqueia se o pré-requisito referenciado não existir (proteção contra dado inconsistente)', () => {
-    expect(moduloDesbloqueado('modulo-inexistente', new Set())).toBe(true)
+    expect(moduloDesbloqueado('modulo-inexistente', new Set(), trilhaV1)).toBe(true)
   })
   it('encontra a primeira atividade disponível ainda não dominada', () => {
     expect(encontrarProximaAtividadeDisponivel(trilhaV1, new Set())?.id).toBe(

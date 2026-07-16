@@ -87,10 +87,7 @@ function proximoEstado(
   }
 
   const acertosNoIndependente = historicoIndependente.filter(Boolean).length
-  // Modificado: a pedido do usuário, qualquer resposta correta (mesmo com dica)
-  // encerra a atividade (1 clique em vez de passar por vários níveis de dica).
-  const dominada =
-    correto || acertosNoIndependente >= criterios.acertosConsecutivosNecessarios
+  const dominada = acertosNoIndependente >= criterios.acertosConsecutivosNecessarios
 
   if (!correto) {
     return {

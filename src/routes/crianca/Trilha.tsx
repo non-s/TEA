@@ -316,6 +316,7 @@ export function Trilha() {
           const desbloqueado = moduloDesbloqueado(
             modulo.preRequisitoModuloId,
             dominadas,
+            trilhaV1
           )
           const preRequisito = trilhaV1.modulos.find(
             (m) => m.id === modulo.preRequisitoModuloId,

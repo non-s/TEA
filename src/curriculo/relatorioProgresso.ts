@@ -50,8 +50,9 @@ function statusModulo(
   dominadasNoModulo: number,
   totalTentativas: number,
   dominadas: Set<string>,
+  trilha?: Trilha,
 ): StatusModulo {
-  if (!moduloDesbloqueado(modulo.preRequisitoModuloId, dominadas)) {
+  if (!moduloDesbloqueado(modulo.preRequisitoModuloId, dominadas, trilha)) {
     return 'bloqueado'
   }
   if (dominadasNoModulo === modulo.atividades.length) return 'dominado'
@@ -258,6 +259,7 @@ export function criarRelatorioProgresso(
         dominadasNoModulo,
         tentativasDoModulo.length,
         dominadas,
+        trilha
       ),
       totalTentativas: tentativasDoModulo.length,
       percentualAcerto,

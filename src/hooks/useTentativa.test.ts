@@ -125,7 +125,7 @@ describe('useTentativa', () => {
     expect(result.current.tentativasSessao).toBe(0)
   })
 
-  it('marca como dominada mesmo se estiver recebendo dica (1 clique)', () => {
+  it('nao marca como dominada apos uma unica resposta correta com dica', () => {
     const { result } = renderHook(() =>
       useTentativa(atividade, 'uid-teste', 'perfil-teste'),
     )
@@ -135,7 +135,7 @@ describe('useTentativa', () => {
       resultado = result.current.responder('alvo')
     })
 
-    expect(resultado).toEqual({ correto: true, dominada: true })
+    expect(resultado).toEqual({ correto: true, dominada: false })
   })
 
   it('permite registrar tentativa local sem usar o backend padrao', async () => {
@@ -279,7 +279,7 @@ describe('useTentativa', () => {
       resposta = result.current.responder('alvo')
     })
 
-    expect(resposta).toEqual({ correto: true, dominada: true })
+    expect(resposta).toEqual({ correto: true, dominada: false })
     expect(result.current.tentativasSessao).toBe(1)
     await waitFor(() => {
       expect(result.current.erroRegistroTentativa).toContain(
