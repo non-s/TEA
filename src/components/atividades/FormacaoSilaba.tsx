@@ -91,7 +91,7 @@ export function FormacaoSilaba({
     setFeedback(resultado.correto ? 'correto' : 'incorreto')
     falar(resultado.correto ? 'Isso!' : 'Tente de novo')
 
-    window.setTimeout(() => {
+    setTimeout(() => {
       setFeedback(null)
       if (resultado.dominada) {
         aoDominar()

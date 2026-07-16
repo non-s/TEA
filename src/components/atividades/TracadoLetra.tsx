@@ -145,7 +145,7 @@ export function TracadoLetra({
     setFeedback(resultadoTentativa.correto ? 'correto' : 'incorreto')
     falar(resultadoTentativa.correto ? `Isso! ${letra}` : 'Tente de novo')
 
-    window.setTimeout(() => {
+    setTimeout(() => {
       setFeedback(null)
       setTracosDesenhados([])
       if (resultadoTentativa.dominada) {

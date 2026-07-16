@@ -84,10 +84,18 @@ html {
 
 body {
   margin: 0;
-  background: linear-gradient(135deg, var(--cor-fundo) 0%, var(--cor-primaria-clara) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--cor-fundo) 0%,
+    var(--cor-primaria-clara) 100%
+  );
   background-attachment: fixed;
   color: var(--cor-texto);
-  font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+  font-family:
+    'Outfit',
+    system-ui,
+    -apple-system,
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -102,16 +110,25 @@ body {
 }
 
 /* Micro-animations */
-button, a, .cartao-interativo {
-  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s ease;
+button,
+a,
+.cartao-interativo {
+  transition:
+    transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.2s ease;
 }
 
-button:hover:not(:disabled), a:hover, .cartao-interativo:hover {
+button:hover:not(:disabled),
+a:hover,
+.cartao-interativo:hover {
   transform: translateY(-2px);
   box-shadow: var(--sombra-cartao-hover);
 }
 
-button:active:not(:disabled), a:active, .cartao-interativo:active {
+button:active:not(:disabled),
+a:active,
+.cartao-interativo:active {
   transform: translateY(1px);
 }
 
