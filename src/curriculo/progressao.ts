@@ -1,4 +1,3 @@
-import { trilhaV1 } from './trilha-v1'
 import type { Atividade, Tentativa, Trilha } from './tipos'
 
 export const INTERVALO_REVISAO_PADRAO_MS = 3 * 24 * 60 * 60 * 1000
@@ -16,8 +15,8 @@ export interface RevisaoEspacada {
  * habilidade ensinada no anterior).
  */
 export function moduloDesbloqueado(
-  preRequisitoModuloId: string | undefined,
-  dominadas: Set<string>,
+  _preRequisitoModuloId: string | undefined,
+  _dominadas: Set<string>,
 ): boolean {
   // A pedido do usuário, todos os módulos estão desbloqueados
   return true
