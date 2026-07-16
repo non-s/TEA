@@ -33,7 +33,8 @@ function CartaoAtividadeTrilha({
       ? `${atividade.alvo.rotulo}, próxima atividade`
       : atividade.alvo.rotulo
 
-  return <li className="relative animacao-zoom">
+  return (
+    <li className="relative animacao-zoom">
       <Link
         to={`/crianca/atividade/${atividade.id}`}
         aria-label={ariaLabel}
@@ -68,6 +69,7 @@ function CartaoAtividadeTrilha({
         </span>
       )}
     </li>
+  )
 }
 
 export function Trilha() {
@@ -82,7 +84,12 @@ export function Trilha() {
   const botaoContinuarTrilhaRef = useRef<HTMLButtonElement>(null)
   const { ref: dialogoResponsavelRef, aoKeyDown: aoKeyDownDialogo } =
     useFocoPreso<HTMLDialogElement>()
-  const { uidResponsavelPerfilAtivo, perfilAtivo, encerrarPerfil, selecionarPerfil } = usePerfilAtivo()
+  const {
+    uidResponsavelPerfilAtivo,
+    perfilAtivo,
+    encerrarPerfil,
+    selecionarPerfil,
+  } = usePerfilAtivo()
   const { atualizarPreferencias } = usePreferencias()
   const navigate = useNavigate()
   const perfilId = perfilAtivo?.id

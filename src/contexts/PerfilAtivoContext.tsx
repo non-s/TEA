@@ -102,11 +102,18 @@ export function PerfilAtivoProvider({ children }: { children: ReactNode }) {
   const valor = useMemo(
     () => ({
       perfilAtivo,
-      uidResponsavelPerfilAtivo: uidResponsavelPerfilAtivo ?? usuario?.uid ?? null,
+      uidResponsavelPerfilAtivo:
+        uidResponsavelPerfilAtivo ?? usuario?.uid ?? null,
       selecionarPerfil,
       encerrarPerfil,
     }),
-    [encerrarPerfil, perfilAtivo, selecionarPerfil, uidResponsavelPerfilAtivo, usuario],
+    [
+      encerrarPerfil,
+      perfilAtivo,
+      selecionarPerfil,
+      uidResponsavelPerfilAtivo,
+      usuario,
+    ],
   )
 
   return (

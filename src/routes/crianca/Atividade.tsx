@@ -112,7 +112,10 @@ function AtividadeConcluida({
       )}
 
       {salvandoDominio && (
-        <p aria-live="polite" className="text-sm font-bold text-[var(--cor-primaria-clara)] brilho-pulsante px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm">
+        <p
+          aria-live="polite"
+          className="text-sm font-bold text-[var(--cor-primaria-clara)] brilho-pulsante px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm"
+        >
           Salvando progresso...
         </p>
       )}
@@ -524,7 +527,7 @@ export function Atividade() {
         )
       })
       .catch((erro) => {
-        console.error("Erro ao salvar no Firebase:", erro)
+        console.error('Erro ao salvar no Firebase:', erro)
         setErroSalvamentoDominio(
           'A atividade foi concluída, mas ainda não foi salva na trilha. Verifique a conexão antes de encerrar.',
         )
