@@ -63,24 +63,32 @@ function estadosIguais(a: EstadoAtividade, b: EstadoAtividade): boolean {
     a.acertosConsecutivos === b.acertosConsecutivos &&
     a.dominada === b.dominada &&
     a.historicoIndependente.length === b.historicoIndependente.length &&
-    a.historicoIndependente.every((val, index) => val === b.historicoIndependente[index])
+    a.historicoIndependente.every(
+      (val, index) => val === b.historicoIndependente[index],
+    )
   )
 }
 
 function proximoEstado(
   atual: EstadoAtividade,
   correto: boolean,
-  criterios: { acertosConsecutivosNecessarios: number; janelaTentativas: number },
+  criterios: {
+    acertosConsecutivosNecessarios: number
+    janelaTentativas: number
+  },
 ): EstadoAtividade {
   const noIndependente = atual.nivelDicaAtual === NIVEL_INDEPENDENTE
 
   let historicoIndependente = atual.historicoIndependente
   if (noIndependente) {
-    historicoIndependente = [...historicoIndependente, correto].slice(-criterios.janelaTentativas)
+    historicoIndependente = [...historicoIndependente, correto].slice(
+      -criterios.janelaTentativas,
+    )
   }
 
   const acertosNoIndependente = historicoIndependente.filter(Boolean).length
-  const dominada = acertosNoIndependente >= criterios.acertosConsecutivosNecessarios
+  const dominada =
+    acertosNoIndependente >= criterios.acertosConsecutivosNecessarios
 
   if (!correto) {
     return {

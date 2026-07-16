@@ -20,12 +20,9 @@ export function useSpeech() {
     }
   }, [preferencias.som])
 
-  const falar = useCallback(
-    (texto: string) => {
-      // Fala desativada conforme solicitado.
-    },
-    [],
-  )
+  const falar = useCallback((_texto: string) => {
+    // Fala desativada conforme solicitado.
+  }, [])
 
   return { falar, disponivel: verificarDisponibilidade() }
 }
