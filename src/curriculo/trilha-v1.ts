@@ -219,6 +219,9 @@ const letrasModulo2: LetraNomeacao[] = [
   { caractere: 'H', som: 'agá' },
   { caractere: 'G', som: 'gê' },
   { caractere: 'J', som: 'jota' },
+  // Q quase nunca aparece sozinha em português — vem sempre com U (QUA/QUE/
+  // QUI). É ensinada aqui pelo nome, do mesmo jeito que H.
+  { caractere: 'Q', som: 'quê' },
 ]
 
 function atividadeNomeacaoReceptiva(
@@ -490,6 +493,15 @@ const silabasModulo4: Silaba[] = [
   { caractere: 'LOU', palavraApoio: 'louco' },
   { caractere: 'MOI', palavraApoio: 'moita' },
   { caractere: 'COU', palavraApoio: 'couro' },
+  // QU e GU: o U não tem som próprio antes de E/I (queijo, guerra) — só
+  // marca que o som continua "duro". Antes de A o U é pronunciado (quatro,
+  // água). QUO/GUO ficam de fora por serem raras.
+  { caractere: 'QUA', palavraApoio: 'quatro' },
+  { caractere: 'QUE', palavraApoio: 'queijo' },
+  { caractere: 'QUI', palavraApoio: 'quilo' },
+  { caractere: 'GUA', palavraApoio: 'água' },
+  { caractere: 'GUE', palavraApoio: 'guerra' },
+  { caractere: 'GUI', palavraApoio: 'guitarra' },
 ]
 
 function estimuloSilaba(idUnico: string, silaba: Silaba): Estimulo {
@@ -622,6 +634,28 @@ const palavrasModulo5: Palavra[] = [
   { texto: 'LOUCO', silabas: 'LOU-CO', artigo: 'O' },
   { texto: 'MOITA', silabas: 'MOI-TA', artigo: 'A' },
   { texto: 'COURO', silabas: 'COU-RO', artigo: 'O' },
+  { texto: 'QUATRO', silabas: 'QUA-TRO', artigo: 'O' },
+  { texto: 'SEGUE', silabas: 'SE-GUE', artigo: 'O' },
+  { texto: 'CAMA', silabas: 'CA-MA', artigo: 'A' },
+  { texto: 'MESA', silabas: 'ME-SA', artigo: 'A' },
+  { texto: 'FOME', silabas: 'FO-ME', artigo: 'A' },
+  { texto: 'FOLHA', silabas: 'FO-LHA', artigo: 'A' },
+  { texto: 'GALHO', silabas: 'GA-LHO', artigo: 'O' },
+  { texto: 'MOLHO', silabas: 'MO-LHO', artigo: 'O' },
+  { texto: 'FALA', silabas: 'FA-LA', artigo: 'A' },
+  { texto: 'FILA', silabas: 'FI-LA', artigo: 'A' },
+  { texto: 'COLA', silabas: 'CO-LA', artigo: 'A' },
+  { texto: 'SUJO', silabas: 'SU-JO', artigo: 'O' },
+  { texto: 'SECO', silabas: 'SE-CO', artigo: 'O' },
+  { texto: 'FUGA', silabas: 'FU-GA', artigo: 'A' },
+  { texto: 'TOCA', silabas: 'TO-CA', artigo: 'A' },
+  { texto: 'DUPLA', silabas: 'DU-PLA', artigo: 'A' },
+  { texto: 'CAPA', silabas: 'CA-PA', artigo: 'A' },
+  { texto: 'SOPA', silabas: 'SO-PA', artigo: 'A' },
+  { texto: 'CUBO', silabas: 'CU-BO', artigo: 'O' },
+  { texto: 'FOCA', silabas: 'FO-CA', artigo: 'A' },
+  { texto: 'FRASE', silabas: 'FRA-SE', artigo: 'A' },
+  { texto: 'GRUTA', silabas: 'GRU-TA', artigo: 'A' },
 ]
 
 function estimuloPalavra(idUnico: string, palavra: Palavra): Estimulo {
