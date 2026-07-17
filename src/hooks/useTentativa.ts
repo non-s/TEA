@@ -87,7 +87,8 @@ function proximoEstado(
   }
 
   const acertosNoIndependente = historicoIndependente.filter(Boolean).length
-  const dominada = acertosNoIndependente >= criterios.acertosConsecutivosNecessarios
+  const dominada =
+    acertosNoIndependente >= criterios.acertosConsecutivosNecessarios
 
   if (!correto) {
     return {

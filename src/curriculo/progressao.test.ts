@@ -29,7 +29,9 @@ describe('moduloDesbloqueado', () => {
   })
 
   it('desbloqueia se o pré-requisito referenciado não existir (proteção contra dado inconsistente)', () => {
-    expect(moduloDesbloqueado('modulo-inexistente', new Set(), trilhaV1)).toBe(true)
+    expect(moduloDesbloqueado('modulo-inexistente', new Set(), trilhaV1)).toBe(
+      true,
+    )
   })
   it('encontra a primeira atividade disponível ainda não dominada', () => {
     expect(encontrarProximaAtividadeDisponivel(trilhaV1, new Set())?.id).toBe(

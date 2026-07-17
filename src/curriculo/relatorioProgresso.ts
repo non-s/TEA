@@ -259,7 +259,7 @@ export function criarRelatorioProgresso(
         dominadasNoModulo,
         tentativasDoModulo.length,
         dominadas,
-        trilha
+        trilha,
       ),
       totalTentativas: tentativasDoModulo.length,
       percentualAcerto,

@@ -20,13 +20,17 @@ export function moduloDesbloqueado(
   trilha?: Trilha, // Adicionado como parâmetro opcional
 ): boolean {
   if (!preRequisitoModuloId) return true
-  
+
   if (!trilha) return true // Fallback de segurança
 
-  const moduloAnterior = trilha.modulos.find((m) => m.id === preRequisitoModuloId)
+  const moduloAnterior = trilha.modulos.find(
+    (m) => m.id === preRequisitoModuloId,
+  )
   if (!moduloAnterior) return true
 
-  return moduloAnterior.atividades.every((atividade) => dominadas.has(atividade.id))
+  return moduloAnterior.atividades.every((atividade) =>
+    dominadas.has(atividade.id),
+  )
 }
 
 export function encontrarProximaAtividadeDisponivel(
@@ -34,7 +38,8 @@ export function encontrarProximaAtividadeDisponivel(
   dominadas: Set<string>,
 ): Atividade | null {
   for (const modulo of trilha.modulos) {
-    if (!moduloDesbloqueado(modulo.preRequisitoModuloId, dominadas, trilha)) continue
+    if (!moduloDesbloqueado(modulo.preRequisitoModuloId, dominadas, trilha))
+      continue
     const atividade = modulo.atividades.find((a) => !dominadas.has(a.id))
     if (atividade) return atividade
   }
