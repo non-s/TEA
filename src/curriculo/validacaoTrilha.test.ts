@@ -26,8 +26,8 @@ describe('validarTrilha', () => {
   it('detecta palavra formada por silaba ainda nao ensinada', () => {
     const trilha = clonarTrilha(trilhaV1)
     const atividade = trilha.modulos[6].atividades[0]
-    atividade.resposta.rotulo = 'GAMA'
-    atividade.resposta.audioTexto = 'GA-MA, GAMA'
+    atividade.resposta.rotulo = 'ZUCA'
+    atividade.resposta.audioTexto = 'ZU-CA, ZUCA'
 
     expect(codigosDaTrilha(trilha)).toContain('PALAVRA_COM_SILABA_NAO_ENSINADA')
   })
@@ -35,8 +35,8 @@ describe('validarTrilha', () => {
   it('detecta frase com palavra ainda nao ensinada', () => {
     const trilha = clonarTrilha(trilhaV1)
     const atividade = trilha.modulos[7].atividades[0]
-    atividade.resposta.rotulo = 'O GATO'
-    atividade.resposta.audioTexto = 'O gato'
+    atividade.resposta.rotulo = 'O ZEBU'
+    atividade.resposta.audioTexto = 'O zebu'
 
     expect(codigosDaTrilha(trilha)).toContain('FRASE_COM_PALAVRA_NAO_ENSINADA')
   })
@@ -44,7 +44,7 @@ describe('validarTrilha', () => {
   it('detecta compreensao de frase com palavra-resposta ainda nao ensinada', () => {
     const trilha = clonarTrilha(trilhaV1)
     const atividade = trilha.modulos[8].atividades[0]
-    atividade.resposta.rotulo = 'GATO'
+    atividade.resposta.rotulo = 'ZEBU'
     atividade.resposta.audioTexto = 'CA-SA, CASA'
 
     expect(codigosDaTrilha(trilha)).toContain(
@@ -55,12 +55,12 @@ describe('validarTrilha', () => {
   it('detecta compreensao de texto com palavra ainda nao ensinada', () => {
     const trilha = clonarTrilha(trilhaV1)
     const atividade = trilha.modulos[9].atividades[0]
-    atividade.alvo.rotulo = 'A MALA. A GATO.'
+    atividade.alvo.rotulo = 'A MALA. A ZEBU.'
 
     expect(codigosDaTrilha(trilha)).toContain('TEXTO_COM_PALAVRA_NAO_ENSINADA')
 
     atividade.alvo.rotulo = 'A MALA. A BALA.'
-    atividade.resposta.rotulo = 'GATO'
+    atividade.resposta.rotulo = 'ZEBU'
 
     expect(codigosDaTrilha(trilha)).toContain(
       'COMPREENSAO_TEXTO_COM_PALAVRA_NAO_ENSINADA',
@@ -70,7 +70,7 @@ describe('validarTrilha', () => {
   it('detecta pergunta literal de texto incompleta ou fora do repertorio', () => {
     const trilha = clonarTrilha(trilhaV1)
     const atividade = trilha.modulos[10].atividades[0]
-    atividade.alvo.rotulo = 'A MALA. A GATO.'
+    atividade.alvo.rotulo = 'A MALA. A ZEBU.'
     atividade.pergunta = ''
 
     const codigosTextoInvalido = codigosDaTrilha(trilha)
@@ -81,7 +81,7 @@ describe('validarTrilha', () => {
 
     atividade.alvo.rotulo = 'A MALA. A BALA.'
     atividade.pergunta = 'O que apareceu primeiro?'
-    atividade.resposta.rotulo = 'GATO'
+    atividade.resposta.rotulo = 'ZEBU'
 
     expect(codigosDaTrilha(trilha)).toContain(
       'PERGUNTA_TEXTO_RESPOSTA_NAO_ENSINADA',
@@ -96,7 +96,7 @@ describe('validarTrilha', () => {
     )!
     atividade.pergunta = ''
     atividade.respostaDeveAparecerNoTexto = undefined
-    atividade.resposta.rotulo = 'GATO'
+    atividade.resposta.rotulo = 'ZEBU'
 
     const codigosIncompletos = codigosDaTrilha(trilha)
     expect(codigosIncompletos).toContain('PERGUNTA_PRESENCA_TEXTO_SEM_PERGUNTA')
@@ -129,9 +129,9 @@ describe('validarTrilha', () => {
     const atividade = modulo9.atividades.find(
       (atividade) => atividade.tipo === 'pergunta-inferencia-texto',
     )!
-    atividade.alvo.rotulo = 'A MALA. A GATO.'
+    atividade.alvo.rotulo = 'A MALA. A ZEBU.'
     atividade.pergunta = ''
-    atividade.resposta.rotulo = 'GATO'
+    atividade.resposta.rotulo = 'ZEBU'
 
     const codigosInvalidos = codigosDaTrilha(trilha)
     expect(codigosInvalidos).toContain(

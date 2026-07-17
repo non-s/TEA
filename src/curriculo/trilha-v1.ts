@@ -217,6 +217,8 @@ const letrasModulo2: LetraNomeacao[] = [
   // pelo nome da letra porque aparece dentro dos dígrafos CH/LH/NH do
   // módulo de sílabas, não porque forma uma sílaba própria como as outras.
   { caractere: 'H', som: 'agá' },
+  { caractere: 'G', som: 'gê' },
+  { caractere: 'J', som: 'jota' },
 ]
 
 function atividadeNomeacaoReceptiva(
@@ -436,6 +438,31 @@ const silabasModulo4: Silaba[] = [
   { caractere: 'TRI', palavraApoio: 'trigo' },
   { caractere: 'TRO', palavraApoio: 'trovão' },
   { caractere: 'TRU', palavraApoio: 'trufa' },
+  { caractere: 'GA', palavraApoio: 'gato' },
+  { caractere: 'GE', palavraApoio: 'gelo' },
+  { caractere: 'GI', palavraApoio: 'girafa' },
+  { caractere: 'GO', palavraApoio: 'gol' },
+  { caractere: 'GU', palavraApoio: 'gude' },
+  { caractere: 'JA', palavraApoio: 'jacaré' },
+  { caractere: 'JE', palavraApoio: 'hoje' },
+  { caractere: 'JI', palavraApoio: 'jiboia' },
+  { caractere: 'JO', palavraApoio: 'jogo' },
+  { caractere: 'JU', palavraApoio: 'julho' },
+  // Encontros consonantais com R, completando a família iniciada com
+  // BR/CR/FR/TR. DRU, GRO e PRU ficam de fora — não achei palavra comum
+  // em português pra apoiar a criança nessas combinações.
+  { caractere: 'DRA', palavraApoio: 'dragão' },
+  { caractere: 'DRE', palavraApoio: 'dreno' },
+  { caractere: 'DRI', palavraApoio: 'driblar' },
+  { caractere: 'DRO', palavraApoio: 'quadro' },
+  { caractere: 'GRA', palavraApoio: 'grama' },
+  { caractere: 'GRE', palavraApoio: 'alegre' },
+  { caractere: 'GRI', palavraApoio: 'grito' },
+  { caractere: 'GRU', palavraApoio: 'grupo' },
+  { caractere: 'PRA', palavraApoio: 'prato' },
+  { caractere: 'PRE', palavraApoio: 'presente' },
+  { caractere: 'PRI', palavraApoio: 'prima' },
+  { caractere: 'PRO', palavraApoio: 'prova' },
 ]
 
 function estimuloSilaba(idUnico: string, silaba: Silaba): Estimulo {
@@ -542,6 +569,16 @@ const palavrasModulo5: Palavra[] = [
   { texto: 'SECA', silabas: 'SE-CA', artigo: 'A' },
   { texto: 'RIMA', silabas: 'RI-MA', artigo: 'A' },
   { texto: 'TREVO', silabas: 'TRE-VO', artigo: 'O' },
+  { texto: 'GATO', silabas: 'GA-TO', artigo: 'O' },
+  { texto: 'JOGO', silabas: 'JO-GO', artigo: 'O' },
+  { texto: 'GELO', silabas: 'GE-LO', artigo: 'O' },
+  { texto: 'GRUPO', silabas: 'GRU-PO', artigo: 'O' },
+  { texto: 'PRATO', silabas: 'PRA-TO', artigo: 'O' },
+  { texto: 'PROVA', silabas: 'PRO-VA', artigo: 'A' },
+  { texto: 'GRADE', silabas: 'GRA-DE', artigo: 'A' },
+  { texto: 'JACA', silabas: 'JA-CA', artigo: 'A' },
+  { texto: 'GRITO', silabas: 'GRI-TO', artigo: 'O' },
+  { texto: 'PRESA', silabas: 'PRE-SA', artigo: 'A' },
 ]
 
 function estimuloPalavra(idUnico: string, palavra: Palavra): Estimulo {
