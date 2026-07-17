@@ -78,7 +78,11 @@ export function EmparelhamentoIdentico({
   )
 
   const rotuloAlvoFalado = atividade.alvo.audioTexto ?? atividade.alvo.rotulo
-  const instrucao = `Toque na figura igual a esta: ${rotuloAlvoFalado}`
+  const textoInstrucao =
+    atividade.tipo === 'emparelhamento-categoria'
+      ? 'Toque na mesma letra, escrita diferente:'
+      : 'Toque na figura igual a esta:'
+  const instrucao = `${textoInstrucao} ${rotuloAlvoFalado}`
 
   function aoClicarEmOpcao(estimuloId: string) {
     if (feedback) return
@@ -110,7 +114,7 @@ export function EmparelhamentoIdentico({
     >
       <div className="flex flex-col items-center gap-8">
         <p className="text-xl text-[var(--cor-texto)]" aria-live="polite">
-          Toque na figura igual a esta:
+          {textoInstrucao}
         </p>
 
         <Icone

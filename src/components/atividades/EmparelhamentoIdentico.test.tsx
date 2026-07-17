@@ -71,6 +71,49 @@ describe('EmparelhamentoIdentico', () => {
     expect(screen.getByRole('button', { name: 'quadrado' })).toBeInTheDocument()
   })
 
+  it('usa instrução diferente para emparelhamento por categoria (maiúscula/minúscula)', async () => {
+    const usuario = userEvent.setup()
+    const atividadeCategoria: Atividade = {
+      ...atividade,
+      tipo: 'emparelhamento-categoria',
+      alvo: {
+        id: 'alvo-maiusculo',
+        rotulo: 'A',
+        iconeId: 'letra-a-maiuscula',
+        audioTexto: 'letra maiúscula á',
+      },
+      resposta: {
+        id: 'resposta-minusculo',
+        rotulo: 'a',
+        iconeId: 'letra-a-minuscula',
+      },
+      distratores: [
+        { id: 'distrator-b', rotulo: 'b', iconeId: 'letra-b-minuscula' },
+      ],
+    }
+    renderComProvider(
+      <EmparelhamentoIdentico
+        atividade={atividadeCategoria}
+        aoDominar={vi.fn()}
+        perfilId="perfil-teste"
+      />,
+    )
+
+    expect(
+      screen.getByText(
+        'Toque na mesma letra, escrita diferente: letra maiúscula á',
+      ),
+    ).toBeInTheDocument()
+    await usuario.click(screen.getByRole('button', { name: 'Começar' }))
+
+    expect(
+      screen.getByText('Toque na mesma letra, escrita diferente:'),
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByText('Toque na figura igual a esta:'),
+    ).not.toBeInTheDocument()
+  })
+
   it('chama aoDominar após atingir o critério de domínio', async () => {
     vi.useFakeTimers({ shouldAdvanceTime: true })
     const usuario = userEvent.setup({ delay: null })
