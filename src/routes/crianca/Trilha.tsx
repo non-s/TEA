@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { trilhaV1 } from '../../curriculo/trilha-v1'
 import {
@@ -11,7 +11,6 @@ import type { IconeId } from '../../curriculo/ativos/tipos'
 import { acentosPorModulo } from '../../curriculo/coresModulo'
 import type { Atividade } from '../../curriculo/tipos'
 import { usePerfilAtivo } from '../../contexts/PerfilAtivoContext'
-import { useFocoPreso } from '../../hooks/useFocoPreso'
 
 interface CartaoAtividadeTrilhaProps {
   atividade: Atividade
@@ -71,23 +70,13 @@ function CartaoAtividadeTrilha({
 
 export function Trilha() {
   const [modulosAbertos, setModulosAbertos] = useState<Set<string>>(new Set())
-  const [confirmandoTrocaPerfil, setConfirmandoTrocaPerfil] = useState(false)
-  const [codigoTrocaPerfil, setCodigoTrocaPerfil] = useState('')
-  const botaoContinuarTrilhaRef = useRef<HTMLButtonElement>(null)
-  const { ref: dialogoTrocaRef, aoKeyDown: aoKeyDownDialogo } =
-    useFocoPreso<HTMLDialogElement>()
   const { perfilAtivo, encerrarPerfil } = usePerfilAtivo()
   const navigate = useNavigate()
   const perfilId = perfilAtivo?.id
   const dominadas = new Set(perfilAtivo?.atividadesDominadas ?? [])
   const tentativas = perfilId ? listarTentativas(perfilId) : []
 
-  function fecharConfirmacaoTrocaPerfil() {
-    setConfirmandoTrocaPerfil(false)
-    setCodigoTrocaPerfil('')
-  }
-
-  function aoTrocarPerfil() {
+  function aoSair() {
     encerrarPerfil()
     navigate('/')
   }
@@ -104,12 +93,6 @@ export function Trilha() {
     })
   }
 
-  useEffect(() => {
-    if (confirmandoTrocaPerfil) {
-      botaoContinuarTrilhaRef.current?.focus()
-    }
-  }, [confirmandoTrocaPerfil])
-
   const proximaAtividade = encontrarProximaAtividadeDisponivel(
     trilhaV1,
     dominadas,
@@ -119,8 +102,6 @@ export function Trilha() {
     dominadas,
     tentativas,
   )
-  const codigoAdultoConfirmado =
-    codigoTrocaPerfil.trim().toUpperCase() === 'ADULTO'
 
   return (
     <main className="mx-auto flex max-w-4xl flex-col gap-12 px-6 py-12 animacao-surgir">
@@ -137,10 +118,10 @@ export function Trilha() {
           </Link>
           <button
             type="button"
-            onClick={() => setConfirmandoTrocaPerfil(true)}
+            onClick={aoSair}
             className="inline-flex min-h-[var(--min-alvo-controle)] items-center text-base font-bold text-[var(--cor-texto-suave)] hover:text-[var(--cor-texto)] transition-colors underline underline-offset-4"
           >
-            Trocar de perfil
+            Sair
           </button>
         </div>
       </div>
@@ -339,85 +320,6 @@ export function Trilha() {
           )
         })}
       </div>
-
-      {confirmandoTrocaPerfil && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 px-6"
-          role="presentation"
-        >
-          <dialog
-            ref={dialogoTrocaRef}
-            open
-            aria-modal="true"
-            aria-labelledby="titulo-troca-perfil"
-            aria-describedby="texto-troca-perfil ajuda-troca-perfil"
-            onCancel={(evento) => {
-              evento.preventDefault()
-              fecharConfirmacaoTrocaPerfil()
-            }}
-            onKeyDown={(evento) => {
-              aoKeyDownDialogo(evento)
-              if (evento.key === 'Escape') {
-                fecharConfirmacaoTrocaPerfil()
-              }
-            }}
-            className="m-0 flex w-full max-w-sm flex-col gap-4 rounded-3xl border-2 border-[var(--cor-borda)] bg-[var(--cor-fundo-alt)] p-6 text-center shadow-[var(--sombra-cartao-hover)]"
-          >
-            <div>
-              <h2
-                id="titulo-troca-perfil"
-                className="text-xl font-semibold text-[var(--cor-texto)]"
-              >
-                Trocar de perfil
-              </h2>
-              <p
-                id="texto-troca-perfil"
-                className="mt-2 text-sm leading-6 text-[var(--cor-texto-suave)]"
-              >
-                Para trocar, o adulto digita ADULTO.
-              </p>
-            </div>
-
-            <div className="flex flex-col gap-3">
-              <button
-                ref={botaoContinuarTrilhaRef}
-                type="button"
-                onClick={fecharConfirmacaoTrocaPerfil}
-                className="inline-flex min-h-[var(--min-alvo-controle)] items-center justify-center rounded-full bg-[var(--cor-primaria)] px-5 py-3 text-base font-semibold text-white hover:bg-[var(--cor-primaria-escura)]"
-              >
-                Continuar na trilha
-              </button>
-              <label className="flex flex-col gap-2 text-left text-sm font-medium text-[var(--cor-texto)]">
-                Confirmação do adulto
-                <input
-                  autoComplete="off"
-                  inputMode="text"
-                  value={codigoTrocaPerfil}
-                  onChange={(evento) =>
-                    setCodigoTrocaPerfil(evento.target.value)
-                  }
-                  className="rounded-2xl border-2 border-[var(--cor-borda)] bg-[var(--cor-fundo)] px-4 py-3 text-base text-[var(--cor-texto)] uppercase"
-                  aria-describedby="ajuda-troca-perfil"
-                />
-              </label>
-              <p
-                id="ajuda-troca-perfil"
-                className="text-left text-xs leading-5 text-[var(--cor-texto-suave)]"
-              >
-                Isso evita que a criança saia da trilha por toque acidental.
-              </p>
-              <button
-                type="button"
-                disabled={!codigoAdultoConfirmado}
-                onClick={aoTrocarPerfil}
-                className="inline-flex min-h-[var(--min-alvo-controle)] items-center justify-center rounded-full border-2 border-[var(--cor-borda)] bg-[var(--cor-fundo-alt)] px-5 py-3 text-base font-medium text-[var(--cor-texto)] hover:border-[var(--cor-primaria)] disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                Confirmar troca de perfil
-              </button>
-            </div>
-          </dialog>
-        </div>
-      )}
     </main>
   )
 }

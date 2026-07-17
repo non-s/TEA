@@ -49,7 +49,7 @@ O campo opcional `pecas: Estimulo[]` existe só para `montagem-palavra` (Módulo
 
 `src/routes/NaoEncontrada.tsx` cobre o `path="*"` do roteador. Em vez de renderizar nada quando um hash está errado, o app mostra uma mensagem curta, sem culpa, com retorno ao início.
 
-Na trilha infantil (`src/routes/crianca/Trilha.tsx`), trocar de perfil é um "adult gate" leve: o diálogo mantém "Continuar na trilha" como primeira ação e só habilita a troca depois que o adulto digita `ADULTO`. Isso não é autenticação nem senha; é uma barreira de intenção para reduzir toques acidentais e transições adultas inesperadas durante a sessão da criança.
+Na trilha infantil (`src/routes/crianca/Trilha.tsx`), o botão "Sair" encerra o perfil ativo e volta para a tela inicial (`/`) num único toque, sem confirmação — como não há conta nem dado sensível por trás, sair só devolve a pessoa à tela de escolher/criar perfil, e o progresso continua salvo no aparelho de qualquer forma.
 
 Na conclusão de uma atividade (`src/routes/crianca/Atividade.tsx`), o app calcula a próxima atividade com `encontrarProximaAtividadeAposConclusao`, combinando as atividades dominadas do perfil, domínios confirmados localmente na sessão e a atividade recém-concluída. Como `marcarAtividadeDominada` escreve direto no `localStorage` (síncrono, sem round-trip de rede), não existe estado intermediário de "salvando" nem cenário de falha de rede a tratar aqui.
 

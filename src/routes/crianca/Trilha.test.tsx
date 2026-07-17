@@ -136,61 +136,14 @@ describe('Trilha', () => {
     expect(botaoModuloSeguinte).toHaveAttribute('aria-expanded', 'true')
   })
 
-  it('exige confirmacao adulta antes de trocar de perfil', async () => {
+  it('sai do perfil e volta para a tela inicial com um único toque', async () => {
     const usuario = userEvent.setup()
     renderizarTrilha()
 
-    await usuario.click(
-      screen.getByRole('button', { name: 'Trocar de perfil' }),
-    )
-
-    expect(screen.getByRole('dialog', { name: /troca/i })).toBeInTheDocument()
-    expect(
-      screen.getByRole('button', { name: 'Continuar na trilha' }),
-    ).toHaveFocus()
-    expect(screen.getByLabelText(/Confirma/)).toBeInTheDocument()
-    expect(
-      screen.getByRole('button', { name: 'Confirmar troca de perfil' }),
-    ).toBeDisabled()
-
-    await usuario.tab()
-    expect(screen.getByLabelText(/Confirma/)).toHaveFocus()
-    await usuario.tab()
-    expect(
-      screen.getByRole('button', { name: 'Continuar na trilha' }),
-    ).toHaveFocus()
-    await usuario.tab({ shift: true })
-    expect(screen.getByLabelText(/Confirma/)).toHaveFocus()
-    expect(mocks.encerrarPerfil).not.toHaveBeenCalled()
-
-    await usuario.clear(screen.getByLabelText(/Confirma/))
-    await usuario.type(screen.getByLabelText(/Confirma/), 'adulto')
-    const botaoConfirmar = screen.getByRole('button', {
-      name: 'Confirmar troca de perfil',
-    })
-    expect(botaoConfirmar).toBeEnabled()
-    await usuario.click(botaoConfirmar)
+    await usuario.click(screen.getByRole('button', { name: 'Sair' }))
 
     expect(mocks.encerrarPerfil).toHaveBeenCalledOnce()
     expect(mocks.navigate).toHaveBeenCalledWith('/')
-  })
-
-  it('mantem a crianca na trilha quando a troca de perfil foi aberta por engano', async () => {
-    const usuario = userEvent.setup()
-    renderizarTrilha()
-
-    await usuario.click(
-      screen.getByRole('button', { name: 'Trocar de perfil' }),
-    )
-    await usuario.click(
-      screen.getByRole('button', { name: 'Continuar na trilha' }),
-    )
-
-    expect(
-      screen.queryByRole('dialog', { name: /troca/i }),
-    ).not.toBeInTheDocument()
-    expect(mocks.encerrarPerfil).not.toHaveBeenCalled()
-    expect(mocks.navigate).not.toHaveBeenCalled()
   })
 
   it('não tem violações de acessibilidade detectáveis automaticamente', async () => {
