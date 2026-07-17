@@ -2,37 +2,11 @@ import { describe, expect, it } from 'vitest'
 import {
   encontrarAtividadeParaRevisao,
   encontrarProximaAtividadeDisponivel,
-  moduloDesbloqueado,
 } from './progressao'
 import { trilhaV1 } from './trilha-v1'
 import type { Tentativa } from './tipos'
 
-describe('moduloDesbloqueado', () => {
-  it('sempre desbloqueia um módulo sem pré-requisito', () => {
-    expect(moduloDesbloqueado(undefined, new Set(), trilhaV1)).toBe(true)
-  })
-
-  it('mantém bloqueado se nenhuma atividade do pré-requisito foi dominada', () => {
-    expect(moduloDesbloqueado('m0', new Set(), trilhaV1)).toBe(false)
-  })
-
-  it('mantém bloqueado se só parte das atividades do pré-requisito foi dominada', () => {
-    const modulo0 = trilhaV1.modulos.find((m) => m.id === 'm0')!
-    const algumas = modulo0.atividades.slice(0, 1).map((a) => a.id)
-    expect(moduloDesbloqueado('m0', new Set(algumas), trilhaV1)).toBe(false)
-  })
-
-  it('desbloqueia quando todas as atividades do pré-requisito foram dominadas', () => {
-    const modulo0 = trilhaV1.modulos.find((m) => m.id === 'm0')!
-    const todas = modulo0.atividades.map((a) => a.id)
-    expect(moduloDesbloqueado('m0', new Set(todas), trilhaV1)).toBe(true)
-  })
-
-  it('desbloqueia se o pré-requisito referenciado não existir (proteção contra dado inconsistente)', () => {
-    expect(moduloDesbloqueado('modulo-inexistente', new Set(), trilhaV1)).toBe(
-      true,
-    )
-  })
+describe('encontrarProximaAtividadeDisponivel', () => {
   it('encontra a primeira atividade disponível ainda não dominada', () => {
     expect(encontrarProximaAtividadeDisponivel(trilhaV1, new Set())?.id).toBe(
       'm0-n1-a1',
@@ -44,7 +18,9 @@ describe('moduloDesbloqueado', () => {
       encontrarProximaAtividadeDisponivel(trilhaV1, dominadasModulo0)?.moduloId,
     ).toBe('m1')
   })
+})
 
+describe('encontrarAtividadeParaRevisao', () => {
   it('sugere revisao espacada para atividade dominada sem pratica recente', () => {
     const atividade = trilhaV1.modulos[0].atividades[0]
     const tresDias = 3 * 24 * 60 * 60 * 1000

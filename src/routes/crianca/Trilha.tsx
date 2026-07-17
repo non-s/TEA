@@ -4,7 +4,6 @@ import { trilhaV1 } from '../../curriculo/trilha-v1'
 import {
   encontrarAtividadeParaRevisao,
   encontrarProximaAtividadeDisponivel,
-  moduloDesbloqueado,
 } from '../../curriculo/progressao'
 import { listarTentativas } from '../../local/perfilLocal'
 import { Icone } from '../../curriculo/ativos/Icone'
@@ -232,24 +231,15 @@ export function Trilha() {
           const percentualConcluido = Math.round(
             (concluidas / modulo.atividades.length) * 100,
           )
-          const desbloqueado = moduloDesbloqueado(
-            modulo.preRequisitoModuloId,
-            dominadas,
-            trilhaV1,
-          )
-          const preRequisito = trilhaV1.modulos.find(
-            (m) => m.id === modulo.preRequisitoModuloId,
-          )
           const contemProximaAtividade =
             proximaAtividade?.moduloId === modulo.id
           const contemRevisao =
             revisaoEspacada?.atividade.moduloId === modulo.id
           const abertoManualmente = modulosAbertos.has(modulo.id)
           const atividadesVisiveis =
-            desbloqueado &&
-            (contemProximaAtividade || contemRevisao || abertoManualmente)
+            contemProximaAtividade || contemRevisao || abertoManualmente
           const podeAlternarAtividades =
-            desbloqueado && !contemProximaAtividade && !contemRevisao
+            !contemProximaAtividade && !contemRevisao
           const atividadesId = `atividades-${modulo.id}`
           const tituloId = `titulo-${modulo.id}`
 
@@ -257,9 +247,7 @@ export function Trilha() {
             <section
               key={modulo.id}
               aria-labelledby={tituloId}
-              className={`flex flex-col gap-6 vidro rounded-3xl p-6 ${
-                desbloqueado ? '' : 'opacity-60 saturate-50'
-              }`}
+              className="flex flex-col gap-6 vidro rounded-3xl p-6"
             >
               <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex min-w-0 flex-1 items-center gap-4">
@@ -267,7 +255,7 @@ export function Trilha() {
                     style={{ background: acento.fundo, color: acento.texto }}
                     className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-xl font-black shadow-md border border-white/20"
                   >
-                    {desbloqueado ? indice + 1 : '🔒'}
+                    {indice + 1}
                   </span>
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-3">
@@ -289,28 +277,22 @@ export function Trilha() {
                       )}
                     </div>
                     <p className="mt-1 text-base font-medium text-[var(--cor-texto-suave)]">
-                      {desbloqueado
-                        ? `${concluidas} de ${modulo.atividades.length} concluídas`
-                        : `Complete "${preRequisito?.titulo}" para desbloquear`}
+                      {`${concluidas} de ${modulo.atividades.length} concluídas`}
                     </p>
-                    {desbloqueado && (
-                      <div className="mt-4 flex items-center gap-4">
+                    <div className="mt-4 flex items-center gap-4">
+                      <div
+                        className="h-3 flex-1 rounded-full bg-black/40 overflow-hidden shadow-inner border border-white/10"
+                        aria-hidden="true"
+                      >
                         <div
-                          className="h-3 flex-1 rounded-full bg-black/40 overflow-hidden shadow-inner border border-white/10"
-                          aria-hidden="true"
-                        >
-                          <div
-                            className="h-full rounded-full bg-gradient-to-r from-[var(--cor-primaria-escura)] to-[var(--cor-primaria-clara)] transition-all duration-500"
-                            style={{ width: `${percentualConcluido}%` }}
-                          />
-                        </div>
-                        <span className="text-sm font-bold text-[var(--cor-texto-suave)]">
-                          {restantes === 0
-                            ? 'Pronto!'
-                            : `${restantes} restantes`}
-                        </span>
+                          className="h-full rounded-full bg-gradient-to-r from-[var(--cor-primaria-escura)] to-[var(--cor-primaria-clara)] transition-all duration-500"
+                          style={{ width: `${percentualConcluido}%` }}
+                        />
                       </div>
-                    )}
+                      <span className="text-sm font-bold text-[var(--cor-texto-suave)]">
+                        {restantes === 0 ? 'Pronto!' : `${restantes} restantes`}
+                      </span>
+                    </div>
                   </div>
                 </div>
                 {podeAlternarAtividades && (
@@ -331,10 +313,10 @@ export function Trilha() {
                 )}
               </div>
 
-              {desbloqueado && !atividadesVisiveis && (
+              {!atividadesVisiveis && (
                 <p className="text-sm text-[var(--cor-texto-suave)]">
                   Atividades guardadas para manter a trilha mais calma. Abra
-                  quando quiser revisar este módulo.
+                  quando quiser ver ou praticar este módulo.
                 </p>
               )}
 

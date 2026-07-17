@@ -119,17 +119,21 @@ describe('Trilha', () => {
     ).toBeInTheDocument()
   })
 
-  it('resume modulos bloqueados sem renderizar cartoes sem acao', async () => {
+  it('deixa todos os módulos acessíveis, sem cadeado nem texto de bloqueio', async () => {
+    const usuario = userEvent.setup()
     renderizarTrilha()
 
     await screen.findByRole('heading', { name: 'Olá, Lia' })
 
-    expect(
-      screen.getByText('Complete "Emparelhamento Idêntico" para desbloquear'),
-    ).toBeInTheDocument()
-    expect(
-      screen.queryByText('Bloqueado', { selector: 'span' }),
-    ).not.toBeInTheDocument()
+    expect(screen.queryByText('🔒')).not.toBeInTheDocument()
+    expect(screen.queryByText(/para desbloquear/)).not.toBeInTheDocument()
+
+    const botaoModuloSeguinte = screen.getAllByRole('button', {
+      name: 'Ver atividades',
+    })[0]
+    await usuario.click(botaoModuloSeguinte)
+
+    expect(botaoModuloSeguinte).toHaveAttribute('aria-expanded', 'true')
   })
 
   it('exige confirmacao adulta antes de trocar de perfil', async () => {

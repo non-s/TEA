@@ -9,37 +9,17 @@ export interface RevisaoEspacada {
 }
 
 /**
- * Um módulo com pré-requisito só desbloqueia depois que TODAS as
- * atividades do módulo anterior foram dominadas — reflete a cadeia de
- * pré-requisitos descrita em docs/PEDAGOGIA.md (cada módulo depende da
- * habilidade ensinada no anterior).
+ * Todos os módulos ficam sempre acessíveis — a criança pode ir direto na
+ * atividade que ela acha que consegue fazer, sem precisar dominar um
+ * módulo inteiro antes de tentar o próximo. `preRequisitoModuloId`
+ * continua existindo nos dados só para validar a ordem de ensino do
+ * currículo (`validacaoTrilha.ts`), não para bloquear acesso na tela.
  */
-export function moduloDesbloqueado(
-  preRequisitoModuloId: string | undefined,
-  dominadas: Set<string>,
-  trilha?: Trilha, // Adicionado como parâmetro opcional
-): boolean {
-  if (!preRequisitoModuloId) return true
-
-  if (!trilha) return true // Fallback de segurança
-
-  const moduloAnterior = trilha.modulos.find(
-    (m) => m.id === preRequisitoModuloId,
-  )
-  if (!moduloAnterior) return true
-
-  return moduloAnterior.atividades.every((atividade) =>
-    dominadas.has(atividade.id),
-  )
-}
-
 export function encontrarProximaAtividadeDisponivel(
   trilha: Trilha,
   dominadas: Set<string>,
 ): Atividade | null {
   for (const modulo of trilha.modulos) {
-    if (!moduloDesbloqueado(modulo.preRequisitoModuloId, dominadas, trilha))
-      continue
     const atividade = modulo.atividades.find((a) => !dominadas.has(a.id))
     if (atividade) return atividade
   }
