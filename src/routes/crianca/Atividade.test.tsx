@@ -532,24 +532,18 @@ describe('Atividade', () => {
     expect(mocks.navigate).not.toHaveBeenCalled()
   })
 
-  it('mostra conclusao previsivel antes de voltar para a trilha', async () => {
+  it('domina com uma unica resposta correta e avanca sozinha para a proxima atividade', async () => {
     vi.useFakeTimers({ shouldAdvanceTime: true })
     const usuario = userEvent.setup({
       advanceTimers: vi.advanceTimersByTime,
       delay: null,
     })
-    mocks.tentativas = Array.from({ length: 7 }, (_, indice) => ({
-      atividadeId: 'm0-n1-a1',
-      moduloId: 'm0',
-      timestamp: indice + 1,
-      resultado: 'correto' as const,
-      nivelDicaUsado: 2,
-      tempoRespostaMs: 1000,
-    }))
     renderizarAtividade('m0-n1-a1')
 
     await usuario.click(screen.getByRole('button', { name: 'Começar' }))
-    await usuario.click(screen.getByRole('button', { name: 'círculo' }))
+    await usuario.click(
+      screen.getByRole('button', { name: 'círculo. Escolha esta' }),
+    )
     await act(async () => {
       await vi.advanceTimersByTimeAsync(800)
     })
@@ -563,8 +557,32 @@ describe('Atividade', () => {
     expect(
       screen.getByRole('button', { name: 'Voltar para a trilha' }),
     ).toHaveFocus()
-    const botaoProxima = await screen.findByRole('button', {
-      name: 'Próxima atividade: estrela',
+    expect(
+      screen.queryByRole('button', { name: /Próxima atividade/ }),
+    ).not.toBeInTheDocument()
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(1400)
+    })
+
+    expect(mocks.navigate).toHaveBeenCalledWith('/crianca/atividade/m0-n1-a2')
+    vi.useRealTimers()
+  })
+
+  it('permite voltar para a trilha manualmente antes do avanco automatico', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true })
+    const usuario = userEvent.setup({
+      advanceTimers: vi.advanceTimersByTime,
+      delay: null,
+    })
+    renderizarAtividade('m0-n1-a1')
+
+    await usuario.click(screen.getByRole('button', { name: 'Começar' }))
+    await usuario.click(
+      screen.getByRole('button', { name: 'círculo. Escolha esta' }),
+    )
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(800)
     })
 
     await usuario.click(
@@ -572,10 +590,6 @@ describe('Atividade', () => {
     )
 
     expect(mocks.navigate).toHaveBeenCalledWith('/crianca/trilha')
-
-    await usuario.click(botaoProxima)
-
-    expect(mocks.navigate).toHaveBeenCalledWith('/crianca/atividade/m0-n1-a2')
     vi.useRealTimers()
   })
 

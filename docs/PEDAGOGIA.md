@@ -98,19 +98,19 @@ Nas atividades de frase e texto, a tela de preparação também lembra o mediado
 
 ## Técnicas de ensino usadas em toda atividade
 
-### Ensino sem erro (errorless learning) e esmaecimento de dica (prompt fading)
+### Ensino sem erro (errorless learning) e apoio visual (modelagem)
 
-Cada atividade tem 3 níveis de dica, do mais para o menos suporte: **modelagem** (a resposta aparece com o aviso visual "Escolha esta") → **destaque visual** (a opção correta recebe um leve brilho) → **nenhuma** (resposta independente). A criança começa recebendo suporte total e o sistema retira o suporte gradualmente conforme os acertos se acumulam — e devolve suporte na primeira resposta errada.
+Cada atividade começa em **modelagem**: a resposta certa já aparece com o aviso visual "Escolha esta", então a primeira tentativa é sempre bem-sucedida por reconhecimento guiado, não por acaso ou punição de tentativa e erro. Um erro (raro, mas possível — ex. a criança toca em outra opção antes de olhar) aumenta o apoio na tentativa seguinte; nunca reduz.
 
-Esse desenho segue diretamente a literatura sobre _most-to-least prompting_: começar com o prompt mais intrusivo e esmaecer reduz a chance de a criança "praticar" o erro, o que a pesquisa mostra reduzir frustração e acelerar aquisição em comparação com deixar a criança errar livremente primeiro.
+Esse desenho segue a literatura sobre _errorless learning_: começar com o prompt mais intrusivo (mostrar a resposta) e deixar a criança confirmar por toque evita que ela "pratique" o erro, o que a pesquisa mostra reduzir frustração e preservar a atenção da criança na tarefa em vez de na dificuldade.
 
-A interface mostra o apoio atual em linguagem simples ("Sozinho", "Com pista", "Com ajuda visual"). Isso ajuda o adulto mediador a entender quando manter ou retirar suporte sem transformar erro em falha pública para a criança.
+A interface mostra o apoio atual em linguagem simples ("Sozinho", "Com pista", "Com ajuda visual"). Isso ajuda o adulto mediador a entender quanto apoio a atividade está oferecendo, sem transformar erro em falha pública para a criança.
 
 ### Critério de domínio
 
-Uma atividade é considerada dominada assim que a criança acerta uma vez já no nível "sem dica" — depois de ter passado pelo esmaecimento de modelagem e destaque visual descrito acima. Isso evita o problema oposto de exigir repetição excessiva do mesmo item depois que a criança já demonstrou saber a resposta sem nenhum apoio: uma vez que a resposta veio de forma independente, insistir em mais tentativas idênticas não ensina nada novo, só cansa e frustra.
+Uma atividade é considerada dominada assim que a criança acerta **uma única vez**, em qualquer nível de apoio (mesmo com a resposta em destaque). Ela não precisa repetir a mesma resposta várias vezes nem "provar" independência antes de avançar: ao acertar, a plataforma avança sozinha para a próxima atividade, sem exigir um toque extra num botão de "continuar". Se errar, a criança continua na mesma atividade — com mais apoio na tentativa seguinte — até acertar.
 
-Esse critério não exige que a criança faça tudo em uma única sessão longa. Ao abrir a atividade, a plataforma reconstrói o estado de apoio e a sequência recente a partir das tentativas salvas: se a criança fez acertos independentes, pausou e voltou depois, esse progresso continua contando; se houve erro ou necessidade de dica, o apoio também é retomado de forma coerente.
+Essa escolha prioriza reduzir o número de toques e decisões exigidas da criança por atividade, mantendo a trilha inteira previsível: errar nunca trava nem pune, acertar sempre avança. A repetição espaçada (abaixo) é o que garante prática contínua de uma habilidade ao longo do tempo, em vez de exigir repetição imediata dentro da mesma sessão.
 
 ### Revisão espaçada sem pressão
 

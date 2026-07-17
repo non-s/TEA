@@ -43,9 +43,8 @@ interface PausaAtividadeProps {
 
 interface AtividadeConcluidaProps {
   rotuloAtividade: string
-  proximaAtividade: AtividadeCurricular | null
+  temProximaAtividade: boolean
   aoVoltarTrilha: () => void
-  aoAbrirProximaAtividade: (atividadeId: string) => void
 }
 
 interface SessaoEncerradaProps {
@@ -61,9 +60,8 @@ interface ConfirmarVoltarTrilhaProps {
 
 function AtividadeConcluida({
   rotuloAtividade,
-  proximaAtividade,
+  temProximaAtividade,
   aoVoltarTrilha,
-  aoAbrirProximaAtividade,
 }: AtividadeConcluidaProps) {
   const botaoRef = useRef<HTMLButtonElement>(null)
 
@@ -95,16 +93,13 @@ function AtividadeConcluida({
       </div>
 
       <div className="flex w-full flex-col gap-4 z-10">
-        {proximaAtividade && (
-          <Botao
-            type="button"
-            variante="primario"
-            className="text-xl py-5 shadow-xl transition-all hover:scale-[1.05]"
-            aria-label={`Próxima atividade: ${proximaAtividade.alvo.rotulo}`}
-            onClick={() => aoAbrirProximaAtividade(proximaAtividade.id)}
+        {temProximaAtividade && (
+          <p
+            aria-live="polite"
+            className="text-base text-[var(--cor-texto-suave)]"
           >
-            Próxima atividade
-          </Botao>
+            Já vamos para a próxima atividade…
+          </p>
         )}
 
         <Botao
@@ -441,6 +436,28 @@ export function Atividade() {
     setSinalPedirAjuda(0)
   }, [atividade?.id])
 
+  useEffect(() => {
+    if (!atividade || !atividadeConcluida) return
+    const proxima = encontrarProximaAtividadeAposConclusao(
+      trilhaV1,
+      perfilAtivo?.atividadesDominadas ?? [],
+      atividadesDominadasNestaSessao,
+      atividade.id,
+    )
+    if (!proxima) return
+
+    const tempo = setTimeout(() => {
+      navigate(`/crianca/atividade/${proxima.id}`)
+    }, 1400)
+    return () => clearTimeout(tempo)
+  }, [
+    atividade,
+    atividadeConcluida,
+    atividadesDominadasNestaSessao,
+    navigate,
+    perfilAtivo?.atividadesDominadas,
+  ])
+
   if (!atividade) {
     return (
       <main className="mx-auto flex max-w-xl flex-col items-center gap-4 px-6 py-10 text-center">
@@ -498,11 +515,10 @@ export function Atividade() {
       <main className="mx-auto flex min-h-svh max-w-xl flex-col items-center justify-center px-6 py-10">
         <AtividadeConcluida
           rotuloAtividade={atividade.alvo.rotulo}
-          proximaAtividade={encontrarProximoPassoAposConclusao(atividade)}
-          aoVoltarTrilha={() => navigate('/crianca/trilha')}
-          aoAbrirProximaAtividade={(proximaAtividadeId) =>
-            navigate(`/crianca/atividade/${proximaAtividadeId}`)
+          temProximaAtividade={
+            encontrarProximoPassoAposConclusao(atividade) !== null
           }
+          aoVoltarTrilha={() => navigate('/crianca/trilha')}
         />
       </main>
     )

@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import type { Atividade, Tentativa } from '../curriculo/tipos'
 
 const NIVEL_SUPORTE_TOTAL = 0
-const NIVEL_INDEPENDENTE = 2
 
 export type RegistrarTentativa = (
   tentativa: Tentativa,
@@ -10,15 +9,11 @@ export type RegistrarTentativa = (
 
 interface EstadoAtividade {
   nivelDicaAtual: number
-  acertosConsecutivos: number
-  historicoIndependente: boolean[]
   dominada: boolean
 }
 
 const estadoInicial: EstadoAtividade = {
   nivelDicaAtual: NIVEL_SUPORTE_TOTAL,
-  acertosConsecutivos: 0,
-  historicoIndependente: [],
   dominada: false,
 }
 
@@ -32,12 +27,8 @@ function estadoInicialDaAtividade(
     .reduce(
       (estado, tentativa) =>
         proximoEstado(
-          {
-            ...estado,
-            nivelDicaAtual: tentativa.nivelDicaUsado,
-          },
+          { ...estado, nivelDicaAtual: tentativa.nivelDicaUsado },
           tentativa.resultado === 'correto',
-          atividade.criteriosDominio,
         ),
       estadoInicial,
     )
@@ -58,69 +49,35 @@ function assinaturaTentativasDaAtividade(
 }
 
 function estadosIguais(a: EstadoAtividade, b: EstadoAtividade): boolean {
-  return (
-    a.nivelDicaAtual === b.nivelDicaAtual &&
-    a.acertosConsecutivos === b.acertosConsecutivos &&
-    a.dominada === b.dominada &&
-    a.historicoIndependente.length === b.historicoIndependente.length &&
-    a.historicoIndependente.every(
-      (val, index) => val === b.historicoIndependente[index],
-    )
-  )
+  return a.nivelDicaAtual === b.nivelDicaAtual && a.dominada === b.dominada
 }
 
+/**
+ * Domina assim que a criança acerta uma vez, em qualquer nível de apoio —
+ * ela não precisa "provar" a mesma resposta várias vezes. Um erro só
+ * aumenta o apoio pra próxima tentativa, sem penalizar nem travar a
+ * atividade.
+ */
 function proximoEstado(
   atual: EstadoAtividade,
   correto: boolean,
-  criterios: {
-    acertosConsecutivosNecessarios: number
-    janelaTentativas: number
-  },
 ): EstadoAtividade {
-  const noIndependente = atual.nivelDicaAtual === NIVEL_INDEPENDENTE
-
-  let historicoIndependente = atual.historicoIndependente
-  if (noIndependente) {
-    historicoIndependente = [...historicoIndependente, correto].slice(
-      -criterios.janelaTentativas,
-    )
-  }
-
-  const acertosNoIndependente = historicoIndependente.filter(Boolean).length
-  const dominada =
-    acertosNoIndependente >= criterios.acertosConsecutivosNecessarios
-
   if (!correto) {
     return {
-      ...atual,
-      acertosConsecutivos: 0,
-      historicoIndependente,
-      dominada,
       nivelDicaAtual: Math.max(0, atual.nivelDicaAtual - 1),
+      dominada: false,
     }
   }
 
-  const acertosConsecutivos = atual.acertosConsecutivos + 1
-
-  // Esmaece a dica (dá menos suporte) após 2 acertos seguidos no nível atual.
-  const deveFazerFading =
-    !noIndependente && acertosConsecutivos > 0 && acertosConsecutivos % 2 === 0
-  const nivelDicaAtual = deveFazerFading
-    ? Math.min(NIVEL_INDEPENDENTE, atual.nivelDicaAtual + 1)
-    : atual.nivelDicaAtual
-
   return {
-    nivelDicaAtual,
-    acertosConsecutivos,
-    historicoIndependente,
-    dominada,
+    nivelDicaAtual: atual.nivelDicaAtual,
+    dominada: true,
   }
 }
 
 function estadoComMaisApoio(atual: EstadoAtividade): EstadoAtividade {
   return {
     ...atual,
-    acertosConsecutivos: 0,
     nivelDicaAtual: NIVEL_SUPORTE_TOTAL,
   }
 }
@@ -176,12 +133,7 @@ export function useTentativa(
       tentativasAnterioresRef.current,
     )
     setEstado((atual) => (estadosIguais(atual, proximo) ? atual : proximo))
-  }, [
-    atividade,
-    atividade.criteriosDominio.acertosConsecutivosNecessarios,
-    assinaturaHistorico,
-    tentativasSessao,
-  ])
+  }, [atividade, assinaturaHistorico, tentativasSessao])
 
   useEffect(() => {
     const sinalAtual = opcoes.sinalPedirAjuda ?? 0
@@ -242,11 +194,7 @@ export function useTentativa(
         )
       })
 
-    const novoEstado = proximoEstado(
-      estado,
-      correto,
-      atividade.criteriosDominio,
-    )
+    const novoEstado = proximoEstado(estado, correto)
     setEstado(novoEstado)
     setTentativasSessao(totalTentativasSessao)
     if (

@@ -49,15 +49,7 @@ const tentativasParaNivelIndependente = [
     moduloId: atividade.moduloId,
     timestamp: 1,
     resultado: 'correto' as const,
-    nivelDicaUsado: 1,
-    tempoRespostaMs: 1000,
-  },
-  {
-    atividadeId: atividade.id,
-    moduloId: atividade.moduloId,
-    timestamp: 2,
-    resultado: 'correto' as const,
-    nivelDicaUsado: 1,
+    nivelDicaUsado: 2,
     tempoRespostaMs: 1000,
   },
 ]
