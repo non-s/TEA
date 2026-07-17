@@ -78,10 +78,7 @@ export function EmparelhamentoIdentico({
   )
 
   const rotuloAlvoFalado = atividade.alvo.audioTexto ?? atividade.alvo.rotulo
-  const textoInstrucao =
-    atividade.tipo === 'emparelhamento-categoria'
-      ? 'Toque na mesma letra, escrita diferente:'
-      : 'Toque na figura igual a esta:'
+  const textoInstrucao = 'Toque na figura igual a esta:'
   const instrucao = `${textoInstrucao} ${rotuloAlvoFalado}`
 
   function aoClicarEmOpcao(estimuloId: string) {

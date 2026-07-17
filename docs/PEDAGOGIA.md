@@ -38,7 +38,7 @@ Discriminação visual básica (tocar a figura idêntica à mostrada) é o pré-
 
 ### Módulo 1 — Maiúscula e Minúscula
 
-Depois de emparelhamento idêntico, o próximo passo é generalização: reconhecer que "A" e "a" são a _mesma_ letra apesar de visualmente diferentes. Essa etapa intermediária de emparelhamento por identidade/categoria é o que separa cópia visual pura de reconhecimento conceitual.
+Depois de emparelhamento idêntico com formas abstratas, o próximo passo é a mesma habilidade de discriminação visual aplicada a letras reais: tocar a letra igual à mostrada, primeiro entre maiúsculas, depois entre minúsculas (ex: "A" mostrado, "A" é a resposta certa entre distratoras como "E"/"I"). A tarefa em si continua sendo emparelhamento idêntico — a instrução "toque na igual" permanece literalmente verdadeira em toda atividade, sem misturar formas diferentes da mesma letra na mesma tarefa. Reconhecer que "A" e "a" são a mesma letra fica para exposição natural ao longo da trilha (a criança encontra as duas formas em atividades separadas), não como um teste explícito de equivalência nesta etapa — testar equivalência de formas visualmente diferentes sob a instrução "igual" provou ser confuso, então essa comparação foi removida daqui.
 
 ### Módulo 2 — Nomeação Receptiva de Letras
 

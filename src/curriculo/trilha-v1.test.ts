@@ -20,7 +20,7 @@ describe('trilhaV1', () => {
         (total, modulo) => total + modulo.atividades.length,
         0,
       ),
-    ).toBe(753)
+    ).toBe(758)
     expect(moduloSilabas?.atividades).toHaveLength(157)
     expect(moduloSilabas?.atividades).toContainEqual(
       expect.objectContaining({

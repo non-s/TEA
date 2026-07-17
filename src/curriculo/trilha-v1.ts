@@ -142,34 +142,36 @@ const vogais: Vogal[] = [
   { maiuscula: 'U', minuscula: 'u', som: 'u' },
 ]
 
-function atividadeCategoriaVogal(
+function atividadeIdenticaVogal(
   vogal: Vogal,
+  caso: 'maiuscula' | 'minuscula',
   distratores: Vogal[],
 ): Atividade {
-  const alvo = estimuloLetra(
-    `letra-${vogal.maiuscula}-maiuscula`,
-    vogal.maiuscula,
-    `letra maiúscula ${vogal.som}`,
-  )
-  const resposta = estimuloLetra(
-    `letra-${vogal.minuscula}-minuscula`,
-    vogal.minuscula,
-    `letra minúscula ${vogal.som}`,
-  )
+  const forma = caso === 'maiuscula' ? vogal.maiuscula : vogal.minuscula
+  const rotulo =
+    caso === 'maiuscula'
+      ? `letra maiúscula ${vogal.som}`
+      : `letra minúscula ${vogal.som}`
+  const estimulo = estimuloLetra(`letra-${forma}-${caso}`, forma, rotulo)
   return construirAtividade(
-    `m1-${vogal.maiuscula}`,
+    `m1-${forma}-${caso}`,
     'm1',
     'emparelhamento-categoria',
     1,
-    alvo,
-    resposta,
-    distratores.map((d) =>
-      estimuloLetra(
-        `letra-${d.minuscula}-minuscula-distrator-${vogal.maiuscula}`,
-        d.minuscula,
-        `letra minúscula ${d.som}`,
-      ),
-    ),
+    estimulo,
+    estimulo,
+    distratores.map((d) => {
+      const formaDistrator = caso === 'maiuscula' ? d.maiuscula : d.minuscula
+      const rotuloDistrator =
+        caso === 'maiuscula'
+          ? `letra maiúscula ${d.som}`
+          : `letra minúscula ${d.som}`
+      return estimuloLetra(
+        `letra-${formaDistrator}-${caso}-distrator-${forma}`,
+        formaDistrator,
+        rotuloDistrator,
+      )
+    }),
   )
 }
 
@@ -177,15 +179,19 @@ const modulo1: Modulo = {
   id: 'm1',
   titulo: 'Maiúscula e Minúscula',
   descricao:
-    'Toque na letra minúscula que corresponde à letra maiúscula mostrada. Generalização de identidade, base para o reconhecimento de letras em qualquer formato.',
+    'Toque na letra igual à letra mostrada — primeiro entre maiúsculas, depois entre minúsculas. Discriminação visual de letras, base para o reconhecimento de letras em qualquer formato.',
   ordem: 1,
   preRequisitoModuloId: 'm0',
-  atividades: vogais.map((vogal, indice) =>
-    atividadeCategoriaVogal(vogal, [
+  atividades: vogais.flatMap((vogal, indice) => {
+    const distratores = [
       vogais[(indice + 1) % vogais.length],
       vogais[(indice + 2) % vogais.length],
-    ]),
-  ),
+    ]
+    return [
+      atividadeIdenticaVogal(vogal, 'maiuscula', distratores),
+      atividadeIdenticaVogal(vogal, 'minuscula', distratores),
+    ]
+  }),
 }
 
 interface LetraNomeacao {

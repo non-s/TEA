@@ -71,24 +71,21 @@ describe('EmparelhamentoIdentico', () => {
     expect(screen.getByRole('button', { name: 'quadrado' })).toBeInTheDocument()
   })
 
-  it('usa instrução diferente para emparelhamento por categoria (maiúscula/minúscula)', async () => {
+  it('usa a mesma instrução para emparelhamento por categoria (letra igual à mostrada)', async () => {
     const usuario = userEvent.setup()
+    const estimuloLetraA = {
+      id: 'letra-a-maiuscula',
+      rotulo: 'A',
+      iconeId: 'letra-a-maiuscula',
+      audioTexto: 'letra maiúscula á',
+    }
     const atividadeCategoria: Atividade = {
       ...atividade,
       tipo: 'emparelhamento-categoria',
-      alvo: {
-        id: 'alvo-maiusculo',
-        rotulo: 'A',
-        iconeId: 'letra-a-maiuscula',
-        audioTexto: 'letra maiúscula á',
-      },
-      resposta: {
-        id: 'resposta-minusculo',
-        rotulo: 'a',
-        iconeId: 'letra-a-minuscula',
-      },
+      alvo: estimuloLetraA,
+      resposta: estimuloLetraA,
       distratores: [
-        { id: 'distrator-b', rotulo: 'b', iconeId: 'letra-b-minuscula' },
+        { id: 'letra-b-maiuscula', rotulo: 'B', iconeId: 'letra-b-maiuscula' },
       ],
     }
     renderComProvider(
@@ -100,18 +97,13 @@ describe('EmparelhamentoIdentico', () => {
     )
 
     expect(
-      screen.getByText(
-        'Toque na mesma letra, escrita diferente: letra maiúscula á',
-      ),
+      screen.getByText('Toque na figura igual a esta: letra maiúscula á'),
     ).toBeInTheDocument()
     await usuario.click(screen.getByRole('button', { name: 'Começar' }))
 
     expect(
-      screen.getByText('Toque na mesma letra, escrita diferente:'),
+      screen.getByRole('button', { name: 'A. Escolha esta' }),
     ).toBeInTheDocument()
-    expect(
-      screen.queryByText('Toque na figura igual a esta:'),
-    ).not.toBeInTheDocument()
   })
 
   it('chama aoDominar após atingir o critério de domínio', async () => {
