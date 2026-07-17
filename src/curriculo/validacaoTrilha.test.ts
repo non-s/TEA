@@ -26,8 +26,8 @@ describe('validarTrilha', () => {
   it('detecta palavra formada por silaba ainda nao ensinada', () => {
     const trilha = clonarTrilha(trilhaV1)
     const atividade = trilha.modulos[6].atividades[0]
-    atividade.resposta.rotulo = 'ZUCA'
-    atividade.resposta.audioTexto = 'ZU-CA, ZUCA'
+    atividade.resposta.rotulo = 'HAPA'
+    atividade.resposta.audioTexto = 'HA-PA, HAPA'
 
     expect(codigosDaTrilha(trilha)).toContain('PALAVRA_COM_SILABA_NAO_ENSINADA')
   })

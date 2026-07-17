@@ -222,6 +222,7 @@ const letrasModulo2: LetraNomeacao[] = [
   // Q quase nunca aparece sozinha em português — vem sempre com U (QUA/QUE/
   // QUI). É ensinada aqui pelo nome, do mesmo jeito que H.
   { caractere: 'Q', som: 'quê' },
+  { caractere: 'Z', som: 'zê' },
 ]
 
 function atividadeNomeacaoReceptiva(
@@ -502,6 +503,32 @@ const silabasModulo4: Silaba[] = [
   { caractere: 'GUA', palavraApoio: 'água' },
   { caractere: 'GUE', palavraApoio: 'guerra' },
   { caractere: 'GUI', palavraApoio: 'guitarra' },
+  { caractere: 'ZA', palavraApoio: 'zangado' },
+  { caractere: 'ZE', palavraApoio: 'zero' },
+  { caractere: 'ZI', palavraApoio: 'zíper' },
+  { caractere: 'ZO', palavraApoio: 'zoológico' },
+  { caractere: 'ZU', palavraApoio: 'azul' },
+  // Sílabas fechadas: a consoante do fim não puxa vogal nenhuma (a sílaba
+  // "fecha" nela). Cada uma já entra combinada com uma sílaba aberta já
+  // ensinada, formando uma palavra real de duas sílabas.
+  { caractere: 'POR', palavraApoio: 'porta' },
+  { caractere: 'CAR', palavraApoio: 'carta' },
+  { caractere: 'FES', palavraApoio: 'festa' },
+  { caractere: 'GOS', palavraApoio: 'gosto' },
+  { caractere: 'VOL', palavraApoio: 'volta' },
+  { caractere: 'SAL', palavraApoio: 'salto' },
+  { caractere: 'MOS', palavraApoio: 'mosca' },
+  { caractere: 'PER', palavraApoio: 'perto' },
+  // Nasalização com M/N no fim da sílaba (canto, tempo, vento) — a outra
+  // forma de nasalizar vogal em português, com til (ão/ãe/õe), fica de
+  // fora: exigiria letras acentuadas que ainda não fazem parte do
+  // alfabeto ensinado.
+  { caractere: 'CAN', palavraApoio: 'canto' },
+  { caractere: 'CON', palavraApoio: 'conta' },
+  { caractere: 'TEM', palavraApoio: 'tempo' },
+  { caractere: 'VEN', palavraApoio: 'vento' },
+  { caractere: 'MON', palavraApoio: 'monte' },
+  { caractere: 'PON', palavraApoio: 'ponte' },
 ]
 
 function estimuloSilaba(idUnico: string, silaba: Silaba): Estimulo {
@@ -656,6 +683,22 @@ const palavrasModulo5: Palavra[] = [
   { texto: 'FOCA', silabas: 'FO-CA', artigo: 'A' },
   { texto: 'FRASE', silabas: 'FRA-SE', artigo: 'A' },
   { texto: 'GRUTA', silabas: 'GRU-TA', artigo: 'A' },
+  { texto: 'ZEBRA', silabas: 'ZE-BRA', artigo: 'A' },
+  { texto: 'ZERO', silabas: 'ZE-RO', artigo: 'O' },
+  { texto: 'PORTA', silabas: 'POR-TA', artigo: 'A' },
+  { texto: 'CARTA', silabas: 'CAR-TA', artigo: 'A' },
+  { texto: 'FESTA', silabas: 'FES-TA', artigo: 'A' },
+  { texto: 'GOSTO', silabas: 'GOS-TO', artigo: 'O' },
+  { texto: 'VOLTA', silabas: 'VOL-TA', artigo: 'A' },
+  { texto: 'SALTO', silabas: 'SAL-TO', artigo: 'O' },
+  { texto: 'MOSCA', silabas: 'MOS-CA', artigo: 'A' },
+  { texto: 'PERTO', silabas: 'PER-TO', artigo: 'O' },
+  { texto: 'CANTO', silabas: 'CAN-TO', artigo: 'O' },
+  { texto: 'CONTA', silabas: 'CON-TA', artigo: 'A' },
+  { texto: 'TEMPO', silabas: 'TEM-PO', artigo: 'O' },
+  { texto: 'VENTO', silabas: 'VEN-TO', artigo: 'O' },
+  { texto: 'MONTE', silabas: 'MON-TE', artigo: 'O' },
+  { texto: 'PONTE', silabas: 'PON-TE', artigo: 'A' },
 ]
 
 function estimuloPalavra(idUnico: string, palavra: Palavra): Estimulo {
