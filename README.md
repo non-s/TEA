@@ -30,10 +30,10 @@ A fundamentação pedagógica completa, com referências científicas, está em 
 - Modo de toque com confirmação: o primeiro toque apenas seleciona a opção e a resposta só é registrada depois de "Confirmar", reduzindo erro por toque acidental ou baixa precisão motora.
 - Modo de toque com apoio do mediador: o toque ou sinal observado também fica pendente até o adulto confirmar com a criança, evitando registrar dificuldade de acesso como erro pedagógico.
 - Modo de resposta mediada: quando o perfil indica escolha por olhar/gesto, a atividade mostra uma opção por vez com controles para o mediador avançar/escolher; setas e Enter/Espaço também funcionam para teclado ou acionador.
-- Trilha com **191 atividades em 13 módulos**: emparelhamento visual → maiúscula/minúscula → nomeação receptiva de letras → nomeação expressiva de letras (por toque ou por voz opcional) → traçado de letras num guia pontilhado (módulo paralelo, não bloqueia os seguintes) → formação de sílabas CV com A/E/I/O/U e apoio de palavra familiar (ex: "MA, de mamãe", "MU, de música") → formação de palavras simples com duas sílabas conhecidas → leitura de frases curtas por seleção → compreensão literal de frase → compreensão literal de texto curto com duas frases → pergunta literal sobre texto curto → presença/ausência de palavra no texto → inferência guiada por seleção.
+- Trilha com **371 atividades em 11 módulos**: emparelhamento visual → maiúscula/minúscula → nomeação receptiva de letras → nomeação expressiva de letras (por toque ou por voz opcional) → traçado de letras num guia pontilhado (módulo paralelo, não bloqueia os seguintes) → formação de sílabas CV (13 consoantes de alta frequência × 5 vogais, mais os dígrafos CH/LH/NH e os encontros consonantais BR/CR/FR/TR) com apoio de palavra familiar (ex: "MA, de mamãe", "CHA, de chave") → formação de palavras simples com duas sílabas conhecidas → leitura de frases curtas por seleção → compreensão literal de frase → compreensão literal de texto curto com duas frases → perguntas sobre o texto (literal, presença/ausência e inferência guiada, misturadas no mesmo módulo).
 - Resposta por voz opcional na nomeação expressiva: quando o navegador suporta e a família ativa por dispositivo em Configurações, a criança pode falar o nome da letra em vez de tocar — a opção de toque nunca é removida.
 - Jardim de Conquistas: cada módulo da trilha vira um canteiro visual que floresce conforme a criança domina as atividades — sem pontuação, ranking ou cronômetro.
-- Cada atividade usa dica com esmaecimento progressivo e critério de domínio (8 acertos seguidos independente), reforço positivo imediato, nunca punição.
+- Cada atividade usa dica com esmaecimento progressivo e critério de domínio (4 de 5 acertos mais recentes já no nível independente), reforço positivo imediato, nunca punição.
 - O estado pedagógico de uma atividade é retomado pelo histórico salvo, então uma pausa ou recarregamento não apaga acertos independentes recentes nem o nível de apoio necessário.
 - A trilha da criança destaca um botão "Continuar" para a próxima atividade disponível e mantém aberto apenas o módulo em foco/revisão; módulos concluídos ficam resumidos e podem ser abertos sob demanda, reduzindo escolha excessiva sem remover a navegação livre.
 - Ao concluir uma atividade, a criança/adulto pode voltar para a trilha ou abrir a próxima atividade calculada, mas a plataforma só mostra esse atalho depois que o domínio foi salvo.
@@ -77,6 +77,41 @@ npm run dev
 ```
 
 Para testar autenticação/perfis/progresso, copie `.env.example` para `.env.local` com as credenciais do seu próprio projeto Firebase (gratuito) — veja [`CONTRIBUTING.md`](CONTRIBUTING.md). App Check é opcional em desenvolvimento: preencha `VITE_FIREBASE_APPCHECK_RECAPTCHA_SITE_KEY` apenas quando já tiver registrado o app Web no Firebase Console/App Check.
+
+### Desenvolvimento local sem projeto Firebase real
+
+Pra testar cadastro/login/perfis/progresso sem criar nem tocar em nenhum
+projeto Firebase real (nem o de produção, nem um pessoal), use o Firebase
+Local Emulator Suite:
+
+```bash
+# terminal 1 — emuladores de Auth + Firestore (precisa de Java 21+)
+npm run emuladores
+
+# terminal 2
+npm run dev
+```
+
+E em `.env.local`, preencha os campos com qualquer valor não vazio e ligue
+o emulador:
+
+```bash
+VITE_FIREBASE_API_KEY=demo-api-key
+VITE_FIREBASE_AUTH_DOMAIN=localhost
+VITE_FIREBASE_PROJECT_ID=demo-tea-dev
+VITE_FIREBASE_STORAGE_BUCKET=demo-tea-dev.appspot.com
+VITE_FIREBASE_MESSAGING_SENDER_ID=000000000000
+VITE_FIREBASE_APP_ID=1:000000000000:web:0
+VITE_USE_FIREBASE_EMULATOR=true
+```
+
+Os dados ficam só na memória do emulador (nada é salvo de verdade, nada sai
+da sua máquina). O emulador do Firestore roda em Java: se `npm run
+emuladores` reclamar que não encontra Java, instale um JDK 21+ (`sudo
+apt-get install default-jre-headless` ou equivalente) — ou, sem acesso a
+`sudo`, baixe um JRE portátil (ex. [Eclipse
+Temurin](https://adoptium.net/temurin/releases/?version=21)) e aponte o
+`PATH` pra ele só nesse terminal.
 
 Outros comandos úteis:
 

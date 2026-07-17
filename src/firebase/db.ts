@@ -1,4 +1,5 @@
 import {
+  connectFirestoreEmulator,
   getFirestore,
   initializeFirestore,
   memoryLocalCache,
@@ -8,6 +9,10 @@ import { app } from './app'
 import { inicializarAppCheck } from './appCheck'
 
 inicializarAppCheck()
+
+const usaEmuladorFirebase =
+  import.meta.env.VITE_USE_FIREBASE_EMULATOR === 'true' &&
+  import.meta.env.MODE !== 'test'
 
 export const CHAVE_CACHE_OFFLINE_FIRESTORE = 'tea:cache-offline-firestore'
 
@@ -35,9 +40,10 @@ export function definirCacheOfflineFirestore(ativo: boolean) {
 function inicializarDb() {
   try {
     return initializeFirestore(app, {
-      localCache: cacheOfflineFirestoreAtivo()
-        ? persistentLocalCache({})
-        : memoryLocalCache(),
+      localCache:
+        cacheOfflineFirestoreAtivo() && !usaEmuladorFirebase
+          ? persistentLocalCache({})
+          : memoryLocalCache(),
     })
   } catch {
     return getFirestore(app)
@@ -45,3 +51,7 @@ function inicializarDb() {
 }
 
 export const db = inicializarDb()
+
+if (usaEmuladorFirebase) {
+  connectFirestoreEmulator(db, '127.0.0.1', 8080)
+}

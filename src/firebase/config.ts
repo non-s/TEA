@@ -1,4 +1,4 @@
-import { getAuth } from 'firebase/auth'
+import { connectAuthEmulator, getAuth } from 'firebase/auth'
 import { app } from './app'
 
 /**
@@ -8,3 +8,12 @@ import { app } from './app'
  * `./db.ts`, importado só pelos módulos que leem/escrevem dados familiares.
  */
 export const auth = getAuth(app)
+
+if (
+  import.meta.env.VITE_USE_FIREBASE_EMULATOR === 'true' &&
+  import.meta.env.MODE !== 'test'
+) {
+  connectAuthEmulator(auth, 'http://127.0.0.1:9099', {
+    disableWarnings: true,
+  })
+}

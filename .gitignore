@@ -13,6 +13,10 @@ dist-ssr
 coverage
 *.local
 
+# Firestore Emulator: regras geradas (fonte real é firestore.rules) e dados
+.firebase-emulador/
+firebase-export-*/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
