@@ -14,6 +14,12 @@ const textoPorEstagio = {
   floresceu: 'Floresceu!',
 } as const
 
+const incentivoPorEstagio = {
+  semente: 'Vai começar quando quiser.',
+  brotando: 'Já está brotando bonito.',
+  floresceu: 'Que canteiro lindo!',
+} as const
+
 export function Jardim() {
   const [dominadas, setDominadas] = useState<Set<string>>(new Set())
   const [erro, setErro] = useState<string | null>(null)
@@ -82,11 +88,16 @@ export function Jardim() {
       <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
         {canteiros.map((canteiro) => {
           const acento = acentoDoModulo(canteiro.moduloId)
+          const floresceu = canteiro.estagio === 'floresceu'
           return (
             <li
               key={canteiro.moduloId}
               aria-label={`${canteiro.titulo}: ${textoPorEstagio[canteiro.estagio]}`}
-              className="flex flex-col items-center gap-2 rounded-2xl border-2 border-[var(--cor-borda)] bg-[var(--cor-fundo-alt)] p-4 text-center shadow-[var(--sombra-cartao)]"
+              className={`flex flex-col items-center gap-2 rounded-2xl border-2 p-4 text-center shadow-[var(--sombra-cartao)] transition-colors ${
+                floresceu
+                  ? 'border-[var(--cor-conquista)] bg-[var(--cor-conquista-clara)]'
+                  : 'border-[var(--cor-borda)] bg-[var(--cor-fundo-alt)]'
+              }`}
             >
               <PlantaJardim
                 estagio={canteiro.estagio}
@@ -98,6 +109,9 @@ export function Jardim() {
               </span>
               <span className="text-xs text-[var(--cor-texto-suave)]">
                 {textoPorEstagio[canteiro.estagio]}
+              </span>
+              <span className="text-xs italic text-[var(--cor-texto-suave)]">
+                {incentivoPorEstagio[canteiro.estagio]}
               </span>
             </li>
           )

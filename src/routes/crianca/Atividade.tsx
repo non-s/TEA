@@ -114,7 +114,7 @@ function AtividadeConcluida({
       {salvandoDominio && (
         <p
           aria-live="polite"
-          className="text-sm font-bold text-[var(--cor-primaria-clara)] brilho-pulsante px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm"
+          className="text-sm font-bold text-white brilho-pulsante px-4 py-2 rounded-full bg-[var(--cor-primaria)]"
         >
           Salvando progresso...
         </p>

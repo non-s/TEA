@@ -42,7 +42,7 @@ function CartaoAtividadeTrilha({
           dominada
             ? 'border-[var(--cor-conquista)] bg-[var(--cor-conquista-clara)] text-[var(--cor-conquista)]'
             : emFoco
-              ? 'border-[var(--cor-primaria)] bg-white/10 backdrop-blur-md brilho-pulsante text-[var(--cor-primaria-clara)]'
+              ? 'border-[var(--cor-primaria)] bg-[var(--cor-primaria)] brilho-pulsante text-white'
               : 'vidro text-[var(--cor-texto-suave)]'
         }`}
       >
@@ -52,7 +52,7 @@ function CartaoAtividadeTrilha({
             dominada
               ? 'h-12 w-12 text-[var(--cor-conquista)] drop-shadow-sm'
               : emFoco
-                ? 'h-12 w-12 text-[var(--cor-primaria-clara)] drop-shadow-md'
+                ? 'h-12 w-12 text-white drop-shadow-md'
                 : 'h-12 w-12 text-[var(--cor-texto-suave)]'
           }
         />
@@ -190,20 +190,20 @@ export function Trilha() {
   return (
     <main className="mx-auto flex max-w-4xl flex-col gap-12 px-6 py-12 animacao-surgir">
       <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-[var(--cor-primaria-clara)] to-[var(--cor-acento-clara)] drop-shadow-sm">
+        <h1 className="text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-[var(--cor-primaria-escura)] to-[var(--cor-acento-escura)] drop-shadow-sm">
           Olá, {perfilAtivo?.nome}
         </h1>
         <div className="flex items-center gap-6">
           <Link
             to="/crianca/jardim"
-            className="inline-flex min-h-[var(--min-alvo-controle)] items-center text-base font-bold text-[var(--cor-primaria-clara)] hover:text-[var(--cor-acento-clara)] transition-colors underline underline-offset-4"
+            className="inline-flex min-h-[var(--min-alvo-controle)] items-center text-base font-bold text-[var(--cor-primaria-escura)] hover:text-[var(--cor-acento-escura)] transition-colors underline underline-offset-4"
           >
             Meu jardim
           </Link>
           <button
             type="button"
             onClick={() => setConfirmandoAreaResponsavel(true)}
-            className="inline-flex min-h-[var(--min-alvo-controle)] items-center text-base font-bold text-[var(--cor-texto-suave)] hover:text-white transition-colors underline underline-offset-4"
+            className="inline-flex min-h-[var(--min-alvo-controle)] items-center text-base font-bold text-[var(--cor-texto-suave)] hover:text-[var(--cor-texto)] transition-colors underline underline-offset-4"
           >
             Área do responsável
           </button>
@@ -295,7 +295,7 @@ export function Trilha() {
             <Link
               to={`/crianca/atividade/${revisaoEspacada.atividade.id}`}
               aria-label={`Revisar ${revisaoEspacada.atividade.alvo.rotulo}`}
-              className="inline-flex min-h-[var(--min-alvo-controle)] items-center justify-center rounded-full bg-[var(--cor-conquista)] px-10 py-4 text-xl font-black text-white shadow-xl transition-all hover:scale-[1.05] hover:bg-[var(--cor-conquista-clara)] hover:text-white"
+              className="inline-flex min-h-[var(--min-alvo-controle)] items-center justify-center rounded-full bg-[var(--cor-conquista)] px-10 py-4 text-xl font-black text-white shadow-xl transition-all hover:scale-[1.05] hover:bg-[#c9862a] hover:text-white"
             >
               Revisar
             </Link>
@@ -316,7 +316,7 @@ export function Trilha() {
           const desbloqueado = moduloDesbloqueado(
             modulo.preRequisitoModuloId,
             dominadas,
-            trilhaV1
+            trilhaV1,
           )
           const preRequisito = trilhaV1.modulos.find(
             (m) => m.id === modulo.preRequisitoModuloId,
@@ -354,7 +354,7 @@ export function Trilha() {
                     <div className="flex flex-wrap items-center gap-3">
                       <h2
                         id={tituloId}
-                        className="text-2xl font-black text-white"
+                        className="text-2xl font-black text-[var(--cor-texto)]"
                       >
                         {modulo.titulo}
                       </h2>
@@ -400,7 +400,7 @@ export function Trilha() {
                     aria-expanded={atividadesVisiveis}
                     aria-controls={atividadesId}
                     onClick={() => alternarModulo(modulo.id)}
-                    className="inline-flex min-h-[var(--min-alvo-controle)] items-center justify-center gap-2 rounded-full border border-[var(--cor-borda)] bg-white/5 backdrop-blur-sm px-6 py-3 text-base font-bold text-white hover:border-[var(--cor-primaria)] hover:bg-white/10 transition-colors shadow-sm"
+                    className="inline-flex min-h-[var(--min-alvo-controle)] items-center justify-center gap-2 rounded-full border border-[var(--cor-borda)] vidro px-6 py-3 text-base font-bold text-[var(--cor-texto)] hover:border-[var(--cor-primaria)] transition-colors shadow-sm"
                   >
                     <span aria-hidden="true">
                       {atividadesVisiveis ? '-' : '+'}

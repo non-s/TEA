@@ -8,9 +8,9 @@ const porVariante: Record<VarianteBotao, string> = {
   primario:
     'bg-gradient-to-r from-[var(--cor-primaria)] to-[var(--cor-acento)] text-white shadow-lg hover:shadow-[var(--sombra-brilho)] border border-white/20',
   secundario:
-    'vidro text-[var(--cor-texto)] hover:bg-white/10 hover:border-[var(--cor-primaria-clara)] hover:text-white',
+    'vidro text-[var(--cor-texto)] hover:bg-white/10 hover:border-[var(--cor-primaria-escura)] hover:text-[var(--cor-primaria-escura)]',
   acento:
-    'bg-gradient-to-r from-[var(--cor-acento)] to-[var(--cor-acento-escura)] text-white shadow-lg hover:shadow-[0_0_20px_rgba(236,72,153,0.5)] border border-white/20',
+    'bg-gradient-to-r from-[var(--cor-acento)] to-[var(--cor-acento-escura)] text-white shadow-lg hover:shadow-[0_0_20px_rgba(255,176,0,0.5)] border border-white/20',
   fantasma:
     'text-[var(--cor-primaria-clara)] font-bold underline underline-offset-4 hover:text-[var(--cor-acento-clara)] hover:bg-white/5',
 }

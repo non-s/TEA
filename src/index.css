@@ -2,42 +2,43 @@
 @import 'tailwindcss';
 
 :root {
-  --cor-fundo: #0f172a;
-  --cor-fundo-alt: rgba(255, 255, 255, 0.05);
-  --cor-fundo-vidro: rgba(255, 255, 255, 0.1);
-  --cor-texto: #f8fafc;
-  --cor-texto-suave: #cbd5e1;
+  --cor-fundo: #fff6ec;
+  --cor-fundo-alt: rgba(58, 46, 34, 0.04);
+  --cor-fundo-vidro: rgba(255, 255, 255, 0.55);
+  --cor-texto: #3a2e22;
+  --cor-texto-suave: #8a7863;
 
-  --cor-primaria: #8b5cf6;
-  --cor-primaria-escura: #7c3aed;
-  --cor-primaria-clara: #a78bfa;
+  --cor-primaria: #ff7a45;
+  --cor-primaria-escura: #e85d2a;
+  --cor-primaria-clara: #ffb088;
 
-  --cor-acento: #ec4899;
-  --cor-acento-escura: #db2777;
-  --cor-acento-clara: #f472b6;
+  --cor-acento: #ffb000;
+  --cor-acento-escura: #e09400;
+  --cor-acento-clara: #ffd766;
 
-  --cor-sucesso: #10b981;
-  --cor-sucesso-clara: rgba(16, 185, 129, 0.2);
-  --cor-conquista: #fbbf24;
-  --cor-conquista-clara: rgba(251, 191, 36, 0.2);
-  --cor-erro: #ef4444;
+  --cor-sucesso: #4caf6d;
+  --cor-sucesso-clara: rgba(76, 175, 109, 0.16);
+  --cor-conquista: #e8a33d;
+  --cor-conquista-clara: rgba(232, 163, 61, 0.2);
+  --cor-erro: #e15252;
 
-  --cor-borda: rgba(255, 255, 255, 0.15);
-  --cor-anel-foco: var(--cor-acento);
+  --cor-borda: rgba(58, 46, 34, 0.14);
+  --cor-anel-foco: var(--cor-primaria-escura);
 
   --sombra-cartao:
-    0 8px 32px 0 rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    0 8px 32px 0 rgba(58, 46, 34, 0.12),
+    inset 0 1px 1px rgba(255, 255, 255, 0.6);
   --sombra-cartao-hover:
-    0 16px 48px 0 rgba(139, 92, 246, 0.3),
-    inset 0 1px 1px rgba(255, 255, 255, 0.2);
+    0 16px 48px 0 rgba(255, 122, 69, 0.25),
+    inset 0 1px 1px rgba(255, 255, 255, 0.7);
 
-  --sombra-brilho: 0 0 20px rgba(139, 92, 246, 0.5);
+  --sombra-brilho: 0 0 20px rgba(255, 122, 69, 0.45);
 
   --escala-fonte: 1;
   --min-alvo-controle: 3rem;
   --min-alvo-atividade: 8rem;
 
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 :root[data-alvos-maiores='true'] {
@@ -72,6 +73,8 @@
   --sombra-cartao: none;
   --sombra-cartao-hover: none;
   --sombra-brilho: none;
+
+  color-scheme: dark;
 }
 
 html {
@@ -83,10 +86,10 @@ body {
   margin: 0;
   background-color: var(--cor-fundo);
   background-image:
-    radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.2) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, rgba(236, 72, 153, 0.2) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.1) 0px, transparent 50%),
-    radial-gradient(at 0% 100%, rgba(56, 189, 248, 0.2) 0px, transparent 50%);
+    radial-gradient(at 0% 0%, rgba(255, 122, 69, 0.14) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(255, 176, 0, 0.14) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(76, 175, 109, 0.1) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, rgba(255, 214, 102, 0.14) 0px, transparent 50%);
   background-attachment: fixed;
   color: var(--cor-texto);
   font-family:
@@ -112,13 +115,13 @@ body {
 
 @keyframes pulse-glow {
   0% {
-    box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4);
+    box-shadow: 0 0 0 0 rgba(255, 122, 69, 0.4);
   }
   70% {
-    box-shadow: 0 0 0 15px rgba(139, 92, 246, 0);
+    box-shadow: 0 0 0 15px rgba(255, 122, 69, 0);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(139, 92, 246, 0);
+    box-shadow: 0 0 0 0 rgba(255, 122, 69, 0);
   }
 }
 
