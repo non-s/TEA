@@ -20,8 +20,8 @@ describe('trilhaV1', () => {
         (total, modulo) => total + modulo.atividades.length,
         0,
       ),
-    ).toBe(427)
-    expect(moduloSilabas?.atividades).toHaveLength(115)
+    ).toBe(492)
+    expect(moduloSilabas?.atividades).toHaveLength(132)
     expect(moduloSilabas?.atividades).toContainEqual(
       expect.objectContaining({
         id: 'm4-MU',
@@ -62,7 +62,7 @@ describe('trilhaV1', () => {
         }),
       }),
     )
-    expect(moduloPalavras?.atividades).toHaveLength(64)
+    expect(moduloPalavras?.atividades).toHaveLength(80)
     expect(moduloPalavras?.atividades).toContainEqual(
       expect.objectContaining({
         id: 'm5-MOTO',
@@ -94,7 +94,7 @@ describe('trilhaV1', () => {
       }),
     )
     expect(moduloFrases?.preRequisitoModuloId).toBe('m5')
-    expect(moduloFrases?.atividades).toHaveLength(64)
+    expect(moduloFrases?.atividades).toHaveLength(80)
     expect(moduloFrases?.atividades[0]).toEqual(
       expect.objectContaining({
         id: 'm6-A-MALA',
@@ -117,7 +117,7 @@ describe('trilhaV1', () => {
       }),
     )
     expect(moduloCompreensao?.preRequisitoModuloId).toBe('m6')
-    expect(moduloCompreensao?.atividades).toHaveLength(64)
+    expect(moduloCompreensao?.atividades).toHaveLength(80)
     expect(moduloCompreensao?.atividades[0]).toEqual(
       expect.objectContaining({
         id: 'm7-A-MALA',

@@ -463,6 +463,33 @@ const silabasModulo4: Silaba[] = [
   { caractere: 'PRE', palavraApoio: 'presente' },
   { caractere: 'PRI', palavraApoio: 'prima' },
   { caractere: 'PRO', palavraApoio: 'prova' },
+  // Encontros consonantais com L. A maioria das combinações (BLA/BLE/BLI,
+  // CLE/CLI, FLA/FLE/FLI/FLU, GLA/GLE/GLI/GLU, PLE/PLI/PLO) não tem palavra
+  // comum em português pra apoiar a criança, então ficam de fora — só
+  // entram as combinações com uma palavra de verdade por trás.
+  { caractere: 'BLO', palavraApoio: 'bloco' },
+  { caractere: 'BLU', palavraApoio: 'blusa' },
+  { caractere: 'CLA', palavraApoio: 'clara' },
+  { caractere: 'CLO', palavraApoio: 'clone' },
+  { caractere: 'CLU', palavraApoio: 'clube' },
+  { caractere: 'FLO', palavraApoio: 'flor' },
+  { caractere: 'GLO', palavraApoio: 'globo' },
+  { caractere: 'PLA', palavraApoio: 'placa' },
+  { caractere: 'PLU', palavraApoio: 'pluma' },
+  // Ditongos: duas vogais na mesma sílaba. Em vez de ensinar o ditongo
+  // solto, cada um já entra combinado com a consoante inicial de uma
+  // palavra real — assim continua cabendo no molde de "duas sílabas CV"
+  // do resto da trilha, sem precisar de palavra de uma sílaba só. Ditongos
+  // nasais (ÃO, ÃE, ÕE) ficam de fora: dependem de letras com til, que
+  // ainda não fazem parte do alfabeto ensinado.
+  { caractere: 'FEI', palavraApoio: 'feira' },
+  { caractere: 'BEI', palavraApoio: 'beijo' },
+  { caractere: 'NOI', palavraApoio: 'noite' },
+  { caractere: 'AU', palavraApoio: 'aula' },
+  { caractere: 'BAI', palavraApoio: 'baile' },
+  { caractere: 'LOU', palavraApoio: 'louco' },
+  { caractere: 'MOI', palavraApoio: 'moita' },
+  { caractere: 'COU', palavraApoio: 'couro' },
 ]
 
 function estimuloSilaba(idUnico: string, silaba: Silaba): Estimulo {
@@ -579,6 +606,22 @@ const palavrasModulo5: Palavra[] = [
   { texto: 'JACA', silabas: 'JA-CA', artigo: 'A' },
   { texto: 'GRITO', silabas: 'GRI-TO', artigo: 'O' },
   { texto: 'PRESA', silabas: 'PRE-SA', artigo: 'A' },
+  { texto: 'BLOCO', silabas: 'BLO-CO', artigo: 'O' },
+  { texto: 'BLUSA', silabas: 'BLU-SA', artigo: 'A' },
+  { texto: 'CLARA', silabas: 'CLA-RA', artigo: 'A' },
+  { texto: 'CLONE', silabas: 'CLO-NE', artigo: 'O' },
+  { texto: 'CLUBE', silabas: 'CLU-BE', artigo: 'O' },
+  { texto: 'GLOBO', silabas: 'GLO-BO', artigo: 'O' },
+  { texto: 'PLACA', silabas: 'PLA-CA', artigo: 'A' },
+  { texto: 'PLUMA', silabas: 'PLU-MA', artigo: 'A' },
+  { texto: 'FEIRA', silabas: 'FEI-RA', artigo: 'A' },
+  { texto: 'BEIJO', silabas: 'BEI-JO', artigo: 'O' },
+  { texto: 'NOITE', silabas: 'NOI-TE', artigo: 'A' },
+  { texto: 'AULA', silabas: 'AU-LA', artigo: 'A' },
+  { texto: 'BAILE', silabas: 'BAI-LE', artigo: 'O' },
+  { texto: 'LOUCO', silabas: 'LOU-CO', artigo: 'O' },
+  { texto: 'MOITA', silabas: 'MOI-TA', artigo: 'A' },
+  { texto: 'COURO', silabas: 'COU-RO', artigo: 'O' },
 ]
 
 function estimuloPalavra(idUnico: string, palavra: Palavra): Estimulo {
