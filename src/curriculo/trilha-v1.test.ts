@@ -20,8 +20,8 @@ describe('trilhaV1', () => {
         (total, modulo) => total + modulo.atividades.length,
         0,
       ),
-    ).toBe(277)
-    expect(moduloSilabas?.atividades).toHaveLength(50)
+    ).toBe(371)
+    expect(moduloSilabas?.atividades).toHaveLength(93)
     expect(moduloSilabas?.atividades).toContainEqual(
       expect.objectContaining({
         id: 'm4-MU',
@@ -42,7 +42,27 @@ describe('trilhaV1', () => {
         }),
       }),
     )
-    expect(moduloPalavras?.atividades).toHaveLength(39)
+    expect(moduloSilabas?.atividades).toContainEqual(
+      expect.objectContaining({
+        id: 'm4-CHA',
+        tipo: 'formacao-silaba',
+        resposta: expect.objectContaining({
+          rotulo: 'CHA',
+          audioTexto: 'CHA, de chave',
+        }),
+      }),
+    )
+    expect(moduloSilabas?.atividades).toContainEqual(
+      expect.objectContaining({
+        id: 'm4-BRU',
+        tipo: 'formacao-silaba',
+        resposta: expect.objectContaining({
+          rotulo: 'BRU',
+          audioTexto: 'BRU, de bruxa',
+        }),
+      }),
+    )
+    expect(moduloPalavras?.atividades).toHaveLength(54)
     expect(moduloPalavras?.atividades).toContainEqual(
       expect.objectContaining({
         id: 'm5-MOTO',
@@ -63,8 +83,18 @@ describe('trilhaV1', () => {
         }),
       }),
     )
+    expect(moduloPalavras?.atividades).toContainEqual(
+      expect.objectContaining({
+        id: 'm5-CHAVE',
+        tipo: 'formacao-palavra',
+        resposta: expect.objectContaining({
+          rotulo: 'CHAVE',
+          audioTexto: 'CHA-VE, CHAVE',
+        }),
+      }),
+    )
     expect(moduloFrases?.preRequisitoModuloId).toBe('m5')
-    expect(moduloFrases?.atividades).toHaveLength(39)
+    expect(moduloFrases?.atividades).toHaveLength(54)
     expect(moduloFrases?.atividades[0]).toEqual(
       expect.objectContaining({
         id: 'm6-A-MALA',
@@ -87,7 +117,7 @@ describe('trilhaV1', () => {
       }),
     )
     expect(moduloCompreensao?.preRequisitoModuloId).toBe('m6')
-    expect(moduloCompreensao?.atividades).toHaveLength(39)
+    expect(moduloCompreensao?.atividades).toHaveLength(54)
     expect(moduloCompreensao?.atividades[0]).toEqual(
       expect.objectContaining({
         id: 'm7-A-MALA',

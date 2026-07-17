@@ -202,7 +202,8 @@ describe('planoGeneralizacao', () => {
   })
 
   it('orienta pergunta de presenca/ausencia quando esse for o proximo passo', () => {
-    const dominadasAtePerguntasLiterais = idsDominadasExcetoPrefixo('m9-presenca-')
+    const dominadasAtePerguntasLiterais =
+      idsDominadasExcetoPrefixo('m9-presenca-')
     const relatorio = criarRelatorioProgresso(
       trilhaV1,
       dominadasAtePerguntasLiterais,

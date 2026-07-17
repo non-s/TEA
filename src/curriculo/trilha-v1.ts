@@ -211,6 +211,12 @@ const letrasModulo2: LetraNomeacao[] = [
   { caractere: 'V', som: 'vê' },
   { caractere: 'F', som: 'efe' },
   { caractere: 'S', som: 'esse' },
+  { caractere: 'C', som: 'cê' },
+  { caractere: 'R', som: 'erre' },
+  // H quase não tem som sozinha em português (é muda) — é ensinada aqui
+  // pelo nome da letra porque aparece dentro dos dígrafos CH/LH/NH do
+  // módulo de sílabas, não porque forma uma sílaba própria como as outras.
+  { caractere: 'H', som: 'agá' },
 ]
 
 function atividadeNomeacaoReceptiva(
@@ -383,6 +389,53 @@ const silabasModulo4: Silaba[] = [
   { caractere: 'SI', palavraApoio: 'sino' },
   { caractere: 'SO', palavraApoio: 'sopa' },
   { caractere: 'SU', palavraApoio: 'suco' },
+  { caractere: 'CA', palavraApoio: 'casa' },
+  { caractere: 'CE', palavraApoio: 'cebola' },
+  { caractere: 'CI', palavraApoio: 'cinema' },
+  { caractere: 'CO', palavraApoio: 'coelho' },
+  { caractere: 'CU', palavraApoio: 'cubo' },
+  { caractere: 'RA', palavraApoio: 'rato' },
+  { caractere: 'RE', palavraApoio: 'rede' },
+  { caractere: 'RI', palavraApoio: 'rio' },
+  { caractere: 'RO', palavraApoio: 'roda' },
+  { caractere: 'RU', palavraApoio: 'rua' },
+  // Dígrafos: duas letras, um som só. LHU e NHU ficam de fora — não há
+  // palavra comum em português com esse som para apoiar a criança.
+  { caractere: 'CHA', palavraApoio: 'chave' },
+  { caractere: 'CHE', palavraApoio: 'chefe' },
+  { caractere: 'CHI', palavraApoio: 'chinelo' },
+  { caractere: 'CHO', palavraApoio: 'chocolate' },
+  { caractere: 'CHU', palavraApoio: 'chuva' },
+  { caractere: 'LHA', palavraApoio: 'orelha' },
+  { caractere: 'LHE', palavraApoio: 'mulher' },
+  { caractere: 'LHI', palavraApoio: 'filhinho' },
+  { caractere: 'LHO', palavraApoio: 'filho' },
+  { caractere: 'NHA', palavraApoio: 'aranha' },
+  { caractere: 'NHE', palavraApoio: 'sonhe' },
+  { caractere: 'NHI', palavraApoio: 'caminhinho' },
+  { caractere: 'NHO', palavraApoio: 'carinho' },
+  // Encontros consonantais com R — duas consoantes, sílaba só. Os com L
+  // (BL, CL, FL, GL, PL) e os com D/G/P (DR, GR, PR) ficam para depois.
+  { caractere: 'BRA', palavraApoio: 'braço' },
+  { caractere: 'BRE', palavraApoio: 'breve' },
+  { caractere: 'BRI', palavraApoio: 'brinco' },
+  { caractere: 'BRO', palavraApoio: 'broa' },
+  { caractere: 'BRU', palavraApoio: 'bruxa' },
+  { caractere: 'CRA', palavraApoio: 'cratera' },
+  { caractere: 'CRE', palavraApoio: 'creme' },
+  { caractere: 'CRI', palavraApoio: 'criança' },
+  { caractere: 'CRO', palavraApoio: 'crocodilo' },
+  { caractere: 'CRU', palavraApoio: 'cru' },
+  { caractere: 'FRA', palavraApoio: 'frango' },
+  { caractere: 'FRE', palavraApoio: 'freio' },
+  { caractere: 'FRI', palavraApoio: 'frio' },
+  { caractere: 'FRO', palavraApoio: 'frota' },
+  { caractere: 'FRU', palavraApoio: 'fruta' },
+  { caractere: 'TRA', palavraApoio: 'trator' },
+  { caractere: 'TRE', palavraApoio: 'trem' },
+  { caractere: 'TRI', palavraApoio: 'trigo' },
+  { caractere: 'TRO', palavraApoio: 'trovão' },
+  { caractere: 'TRU', palavraApoio: 'trufa' },
 ]
 
 function estimuloSilaba(idUnico: string, silaba: Silaba): Estimulo {
@@ -474,6 +527,21 @@ const palavrasModulo5: Palavra[] = [
   { texto: 'LUVA', silabas: 'LU-VA', artigo: 'A' },
   { texto: 'NOTA', silabas: 'NO-TA', artigo: 'A' },
   { texto: 'BODE', silabas: 'BO-DE', artigo: 'O' },
+  { texto: 'CASA', silabas: 'CA-SA', artigo: 'A' },
+  { texto: 'ROSA', silabas: 'RO-SA', artigo: 'A' },
+  { texto: 'RATO', silabas: 'RA-TO', artigo: 'O' },
+  { texto: 'CERA', silabas: 'CE-RA', artigo: 'A' },
+  { texto: 'ROLO', silabas: 'RO-LO', artigo: 'O' },
+  { texto: 'CHAVE', silabas: 'CHA-VE', artigo: 'A' },
+  { texto: 'CHUVA', silabas: 'CHU-VA', artigo: 'A' },
+  { texto: 'FRUTA', silabas: 'FRU-TA', artigo: 'A' },
+  { texto: 'CREME', silabas: 'CRE-ME', artigo: 'O' },
+  { texto: 'BRISA', silabas: 'BRI-SA', artigo: 'A' },
+  { texto: 'FRITA', silabas: 'FRI-TA', artigo: 'A' },
+  { texto: 'ROCHA', silabas: 'RO-CHA', artigo: 'A' },
+  { texto: 'SECA', silabas: 'SE-CA', artigo: 'A' },
+  { texto: 'RIMA', silabas: 'RI-MA', artigo: 'A' },
+  { texto: 'TREVO', silabas: 'TRE-VO', artigo: 'O' },
 ]
 
 function estimuloPalavra(idUnico: string, palavra: Palavra): Estimulo {
