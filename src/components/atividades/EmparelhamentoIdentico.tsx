@@ -4,14 +4,12 @@ import { Icone } from '../../curriculo/ativos/Icone'
 import type { IconeId } from '../../curriculo/ativos/tipos'
 import { embaralhar } from '../../utils/embaralhar'
 import { useTentativa, type RegistrarTentativa } from '../../hooks/useTentativa'
-import { useSpeech } from '../../hooks/useSpeech'
 import { usePreferencias } from '../../contexts/PreferenciasContext'
 import type { ApoioPreferencial } from '../../curriculo/apoioPreferencial'
 import type {
   AcessoPreferencial,
   RegulacaoPreferencial,
 } from '../../curriculo/perfilApoio'
-import { OuvirInstrucao } from '../ui/OuvirInstrucao'
 import {
   classesFeedbackCorreto,
   classesFeedbackResposta,
@@ -73,7 +71,6 @@ export function EmparelhamentoIdentico({
     sinalPedirAjuda,
     tentativasAnteriores,
   })
-  const { falar } = useSpeech()
   const { preferencias } = usePreferencias()
   const [feedback, setFeedback] = useState<Feedback>(null)
 
@@ -90,7 +87,6 @@ export function EmparelhamentoIdentico({
 
     const resultado = responder(estimuloId)
     setFeedback(resultado.correto ? 'correto' : 'incorreto')
-    falar(resultado.correto ? 'Isso!' : 'Tente de novo')
 
     setTimeout(() => {
       setFeedback(null)
@@ -125,7 +121,6 @@ export function EmparelhamentoIdentico({
           className="h-24 w-24 text-[var(--cor-primaria-escura)] drop-shadow-sm"
         />
 
-        <OuvirInstrucao texto={instrucao} />
         <ApoioAtual dicaAtual={dicaAtual} />
         <AvisoRegistroTentativa mensagem={erroRegistroTentativa} />
         {(sugestaoPausa || sugestaoEncerrarSessao) && (

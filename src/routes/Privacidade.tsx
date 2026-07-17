@@ -186,10 +186,8 @@ export function Privacidade() {
               Compartilhamento com operadores:
             </strong>{' '}
             os dados ficam no Firebase (Google Cloud), operador técnico da
-            infraestrutura. Quando a família ativa "Resposta por voz", o áudio é
-            enviado ao serviço de reconhecimento de fala do próprio navegador
-            (fora desta infraestrutura) só para virar texto — ver detalhes
-            acima. Não há venda de dados nem compartilhamento para publicidade.
+            infraestrutura. Não há venda de dados nem compartilhamento para
+            publicidade.
           </p>
           <p>
             <strong className="text-[var(--cor-texto)]">

@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Botao } from '../ui/Botao'
-import { OuvirInstrucao } from '../ui/OuvirInstrucao'
 import {
   conteudoApoioPreferencial,
   type ApoioPreferencial,
@@ -95,7 +94,6 @@ export function PrepararAtividade({
       {apoioMediador}
 
       <div className="flex flex-wrap justify-center gap-3">
-        <OuvirInstrucao texto={instrucao} />
         <Botao type="button" onClick={() => setIniciada(true)}>
           Começar
         </Botao>

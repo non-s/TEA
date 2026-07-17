@@ -3,19 +3,13 @@ import type { Atividade, Tentativa } from '../../curriculo/tipos'
 import { Icone } from '../../curriculo/ativos/Icone'
 import type { IconeId } from '../../curriculo/ativos/tipos'
 import { embaralhar } from '../../utils/embaralhar'
-import { falaCorrespondeResposta } from '../../curriculo/reconhecimentoFala'
 import { useTentativa } from '../../hooks/useTentativa'
-import { useSpeech } from '../../hooks/useSpeech'
-import { useReconhecimentoFala } from '../../hooks/useReconhecimentoFala'
-import { respostaPorVozAtiva } from '../../preferenciasDispositivo'
 import { usePreferencias } from '../../contexts/PreferenciasContext'
 import type { ApoioPreferencial } from '../../curriculo/apoioPreferencial'
 import type {
   AcessoPreferencial,
   RegulacaoPreferencial,
 } from '../../curriculo/perfilApoio'
-import { Botao } from '../ui/Botao'
-import { OuvirInstrucao } from '../ui/OuvirInstrucao'
 import {
   classesFeedbackCorreto,
   classesFeedbackResposta,
@@ -26,8 +20,6 @@ import { AvisoRegistroTentativa } from './AvisoRegistroTentativa'
 import { PrepararAtividade } from './PrepararAtividade'
 import { PausaSugerida } from './PausaSugerida'
 import { OpcoesResposta } from './OpcoesResposta'
-
-const ID_RESPOSTA_FALA_INCORRETA = 'fala-nao-corresponde'
 
 interface NomeacaoExpressivaProps {
   atividade: Atividade
@@ -50,10 +42,8 @@ type Feedback = 'correto' | 'incorreto' | null
 /**
  * "Expressiva" aqui significa a criança produzir/escolher ativamente o nome
  * da letra mostrada, em vez de apenas localizá-la (nomeação receptiva). A
- * produção acontece por seleção entre opções de nome (acessível também a
- * crianças não-verbais) e, quando o dispositivo permite e a família ativou
- * em Configurações, também por fala — nunca só por fala, sempre com a
- * opção de toque disponível.
+ * produção acontece por seleção entre opções de nome, acessível também a
+ * crianças não-verbais.
  */
 export function NomeacaoExpressiva({
   atividade,
@@ -84,7 +74,6 @@ export function NomeacaoExpressiva({
     sinalPedirAjuda,
     tentativasAnteriores,
   })
-  const { falar } = useSpeech()
   const { preferencias } = usePreferencias()
   const [feedback, setFeedback] = useState<Feedback>(null)
 
@@ -95,12 +84,11 @@ export function NomeacaoExpressiva({
 
   const instrucao = 'Qual é o nome desta letra?'
 
-  function processarResposta(estimuloId: string, rotulo: string) {
+  function processarResposta(estimuloId: string) {
     if (feedback) return
 
     const resultado = responder(estimuloId)
     setFeedback(resultado.correto ? 'correto' : 'incorreto')
-    falar(resultado.correto ? `Isso! ${rotulo}` : 'Tente de novo')
 
     setTimeout(() => {
       setFeedback(null)
@@ -110,22 +98,9 @@ export function NomeacaoExpressiva({
     }, 700)
   }
 
-  function aoClicarEmOpcao(estimuloId: string, rotulo: string) {
-    processarResposta(estimuloId, rotulo)
+  function aoClicarEmOpcao(estimuloId: string) {
+    processarResposta(estimuloId)
   }
-
-  const reconhecimentoFala = useReconhecimentoFala((texto) => {
-    const respostasAceitas = [
-      atividade.resposta.rotulo,
-      atividade.resposta.audioTexto,
-    ].filter((valor): valor is string => Boolean(valor))
-    const correspondeu = falaCorrespondeResposta(texto, respostasAceitas)
-    processarResposta(
-      correspondeu ? atividade.resposta.id : ID_RESPOSTA_FALA_INCORRETA,
-      atividade.resposta.rotulo,
-    )
-  })
-  const vozHabilitada = respostaPorVozAtiva() && reconhecimentoFala.disponivel
 
   return (
     <PrepararAtividade
@@ -152,7 +127,6 @@ export function NomeacaoExpressiva({
           className="h-24 w-24 text-[var(--cor-primaria-escura)] drop-shadow-sm"
         />
 
-        <OuvirInstrucao texto={instrucao} />
         <ApoioAtual dicaAtual={dicaAtual} />
         <AvisoRegistroTentativa mensagem={erroRegistroTentativa} />
         {(sugestaoPausa || sugestaoEncerrarSessao) && (
@@ -175,33 +149,6 @@ export function NomeacaoExpressiva({
           />
         )}
 
-        {vozHabilitada && (
-          <div className="flex flex-col items-center gap-2" aria-live="polite">
-            <Botao
-              type="button"
-              variante="secundario"
-              disabled={!!feedback}
-              onClick={
-                reconhecimentoFala.ouvindo
-                  ? reconhecimentoFala.pararEscuta
-                  : reconhecimentoFala.iniciarEscuta
-              }
-            >
-              {reconhecimentoFala.ouvindo
-                ? 'Ouvindo... toque para parar'
-                : 'Falar a resposta'}
-            </Botao>
-            {reconhecimentoFala.erro && (
-              <p role="alert" className="text-sm text-[var(--cor-erro)]">
-                {reconhecimentoFala.erro}
-              </p>
-            )}
-            <p className="text-sm text-[var(--cor-texto-suave)]">
-              ou toque numa opção abaixo
-            </p>
-          </div>
-        )}
-
         <OpcoesResposta
           opcoes={opcoes}
           respostaId={atividade.resposta.id}
@@ -211,7 +158,7 @@ export function NomeacaoExpressiva({
           tipoDicaAtual={dicaAtual?.tipo}
           classNameGrade="grid grid-cols-1 gap-4 border-0 p-0 sm:grid-cols-3"
           classNameOpcao="px-6 py-4 text-2xl font-semibold"
-          aoEscolher={(opcao) => aoClicarEmOpcao(opcao.id, opcao.rotulo)}
+          aoEscolher={(opcao) => aoClicarEmOpcao(opcao.id)}
           renderOpcao={(opcao) => opcao.rotulo}
         />
 

@@ -6,7 +6,6 @@ import {
   type CartaoComunicacao,
 } from '../../curriculo/cartoesComunicacao'
 import type { InteresseEspecialId } from '../../curriculo/interesses'
-import { useSpeech } from '../../hooks/useSpeech'
 
 interface PainelComunicacaoProps {
   aoComunicar?: (mensagem: CartaoComunicacao) => void
@@ -25,7 +24,6 @@ export function PainelComunicacao({
   cartoesComunicacao,
   interesseEspecialId,
 }: PainelComunicacaoProps) {
-  const { falar } = useSpeech()
   const [mensagemAtiva, setMensagemAtiva] = useState<string | null>(null)
   const mensagens = normalizarCartoesComunicacao(cartoesComunicacao)
   const motivoInteresse = motivoComunicacaoPorInteresse(interesseEspecialId)
@@ -43,7 +41,6 @@ export function PainelComunicacao({
             aria-label={`${mensagem.rotulo}. ${mensagem.fala}`}
             onClick={() => {
               setMensagemAtiva(mensagem.apoio)
-              falar(mensagem.fala)
               aoComunicar?.(mensagem)
               if (mensagem.id === 'pausa') {
                 aoPedirPausa?.()

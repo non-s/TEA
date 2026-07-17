@@ -13,11 +13,6 @@ import {
   definirCacheOfflineFirestore,
 } from '../../firebase/db'
 import { atualizarPreferenciasPerfil } from '../../firebase/perfis'
-import { reconhecimentoFalaDisponivel } from '../../hooks/useReconhecimentoFala'
-import {
-  definirRespostaPorVoz,
-  respostaPorVozAtiva,
-} from '../../preferenciasDispositivo'
 
 const TEXTO_CONFIRMACAO_EXCLUIR_CONTA = 'APAGAR CONTA'
 
@@ -30,10 +25,6 @@ export function Configuracoes() {
     cacheOfflineFirestoreAtivo,
   )
   const [mensagemCacheOffline, setMensagemCacheOffline] = useState<
-    string | null
-  >(null)
-  const [respostaPorVoz, setRespostaPorVoz] = useState(respostaPorVozAtiva)
-  const [mensagemRespostaPorVoz, setMensagemRespostaPorVoz] = useState<
     string | null
   >(null)
   const [senhaExclusao, setSenhaExclusao] = useState('')
@@ -164,54 +155,6 @@ export function Configuracoes() {
         {mensagemCacheOffline && (
           <output className="text-sm text-[var(--cor-texto-suave)]">
             {mensagemCacheOffline}
-          </output>
-        )}
-      </Cartao>
-
-      <Cartao className="flex flex-col gap-4">
-        <div>
-          <h2 className="font-medium text-[var(--cor-texto)]">
-            Resposta por voz
-          </h2>
-          <p className="mt-1 text-sm leading-6 text-[var(--cor-texto-suave)]">
-            Nas atividades de nomeação expressiva, a criança pode falar a
-            resposta em vez de tocar numa opção. Fica sempre disponível a opção
-            de tocar — a fala é um jeito extra, nunca obrigatório. Exige
-            microfone e, no navegador, o áudio é enviado a um serviço de
-            reconhecimento de fala para ser transcrito.
-          </p>
-        </div>
-
-        {reconhecimentoFalaDisponivel() ? (
-          <Interruptor
-            rotulo="Permitir resposta por voz neste dispositivo"
-            marcado={respostaPorVoz}
-            aoAlterar={(ativo) => {
-              const salvo = definirRespostaPorVoz(ativo)
-              if (salvo) {
-                setRespostaPorVoz(ativo)
-                setMensagemRespostaPorVoz(
-                  ativo
-                    ? 'Resposta por voz ativada. O navegador vai pedir permissão de microfone na primeira vez.'
-                    : 'Resposta por voz desativada neste dispositivo.',
-                )
-              } else {
-                setMensagemRespostaPorVoz(
-                  'Não foi possível alterar essa opção neste navegador.',
-                )
-              }
-            }}
-          />
-        ) : (
-          <p className="text-sm leading-6 text-[var(--cor-texto-suave)]">
-            Este navegador não oferece reconhecimento de fala. A resposta por
-            toque continua disponível normalmente.
-          </p>
-        )}
-
-        {mensagemRespostaPorVoz && (
-          <output className="text-sm text-[var(--cor-texto-suave)]">
-            {mensagemRespostaPorVoz}
           </output>
         )}
       </Cartao>

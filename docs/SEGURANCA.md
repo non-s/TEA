@@ -81,12 +81,6 @@ Por padrão, o Firestore usa cache em memória nesta aplicação. Na tela de con
 
 Esse ajuste é deliberadamente local e opt-in: não é sincronizado entre dispositivos, não ativa compartilhamento com terceiros e deve ser usado apenas em dispositivo confiável. Desativar o ajuste impede o uso de cache persistente nos próximos carregamentos, mas não promete apagar imediatamente uma cópia IndexedDB já criada pelo SDK do Firebase durante a sessão atual; em computador compartilhado, a recomendação é deixar desativado e limpar os dados do site pelo navegador depois do uso.
 
-## Resposta por voz e dados de áudio
-
-Quando a família ativa "Resposta por voz" nas configurações (opt-in por dispositivo, desligado por padrão — ver `docs/ARQUITETURA.md`), a Nomeação Expressiva passa a aceitar fala como via alternativa ao toque. Ao tocar em "Falar a resposta", o navegador aciona sua própria API de reconhecimento de fala (Web Speech API); em navegadores baseados em Chromium isso envia o áudio captado para um serviço de reconhecimento de fala do próprio navegador/fabricante (fora da infraestrutura desta plataforma) para ser transcrito em texto. O TEA nunca recebe, armazena ou processa o áudio em si — só o texto já transcrito, comparado localmente contra a resposta esperada da atividade (`src/curriculo/reconhecimentoFala.ts`) e descartado após a comparação (não é salvo no Firestore; só o resultado certo/errado da tentativa é registrado, exatamente como uma resposta por toque).
-
-Essa é uma escolha explícita: a plataforma não teria como oferecer reconhecimento de fala próprio dentro do orçamento zero-custo do projeto, então reaproveita o que o navegador já oferece nativamente, sendo transparente sobre a consequência (áudio sai do dispositivo para transcrição) em vez de esconder isso atrás de um botão sem explicação. A opção nunca é ativada automaticamente, é sempre alternativa ao toque (nunca obrigatória) e é uma preferência do navegador/dispositivo, não do perfil da criança — não é sincronizada com o Firestore.
-
 ## Exclusão de perfil
 
 Na tela de gerenciamento de perfis, o responsável pode apagar um perfil depois de digitar o nome/apelido da criança para confirmar. A ação remove o documento do perfil e também limpa as subcoleções `tentativas` e `observacoesSessao` em lotes antes de apagar o perfil principal.

@@ -76,9 +76,8 @@ src/
 ├── curriculo/          # conteúdo pedagógico versionado + ícones
 ├── firebase/           # toda a integração com Firebase (auth, perfis, progresso)
 ├── contexts/           # estado global via React Context (auth, perfil ativo, preferências)
-├── hooks/               # lógica reutilizável (useTentativa, useSpeech, useReconhecimentoFala, ...)
+├── hooks/               # lógica reutilizável (useTentativa, ...)
 ├── pwa/                 # registro do service worker e estado de atualização do PWA
-├── preferenciasDispositivo.ts  # preferências locais por dispositivo (nunca sincronizadas com o Firestore)
 └── test/                # setup global de testes (mocks do SDK do Firebase)
 ```
 
@@ -109,14 +108,6 @@ O manifest em `public/site.webmanifest` permite instalar/fixar o app em celular 
 `src/curriculo/tracadoLetras.ts` representa o guia de cada letra como polilinhas num espaço de coordenadas 0-100 (mesmo viewBox dos ícones em `curriculo/ativos/Icone.tsx`), e a avaliação (`avaliarTracado`) usa distância ponto-a-segmento — geometria pura, sem `<canvas>`, sem rasterização de pixel e sem nenhuma dependência de OCR/ML. A escolha evita duas armadilhas: (1) o stub de `HTMLCanvasElement.getContext` em `src/test/setup.ts` só existe para o `axe-core` não quebrar ao inspecionar canvas, não para suportar desenho real — testar lógica de traçado baseada em canvas exigiria mockar `getImageData` de um jeito que nunca reflete o desenho real; (2) manter tudo em SVG (guia pontilhado + traço do usuário, ambos `<polyline>`) reaproveita o mesmo padrão de ícones do resto do app. A avaliação em si é uma função pura testável com arrays de `{x, y}`, sem DOM.
 
 O componente (`src/components/atividades/TracadoLetra.tsx`) só avalia quando a criança clica "Verificar traçado" — nunca automaticamente enquanto ela desenha, consistente com "nada acontece sem uma ação explícita" no resto da trilha. O resultado aprovado/reprovado é traduzido para uma chamada de `responder()` do `useTentativa` igual às demais atividades (usando `atividade.resposta.id` quando aprovado, um id sentinela quando não), reaproveitando de graça o esmaecimento de dica e o critério de domínio já existentes em vez de duplicar essa lógica para um tipo de resposta contínua.
-
-## Resposta por voz: preferência de dispositivo, não de perfil
-
-A opção de responder por fala é uma preferência do **dispositivo** (`src/preferenciasDispositivo.ts`, localStorage, nunca sincronizada com o Firestore), não do perfil da criança (`preferenciasSensoriais`). A decisão foi deliberada: a capacidade depende de hardware de microfone e da API do navegador, não de quem é a criança — o mesmo perfil pode ser usado em um tablet com microfone funcionando e num Chromebook de escola sem microfone configurado. Colocar isso em `preferenciasSensoriais` exigiria adicionar um campo novo às regras do Firestore (`preferenciasValidas()` em `firestore.rules`, com `hasOnly`/`hasAll` estritos) só para uma capacidade que nunca deveria seguir a criança entre dispositivos.
-
-`src/hooks/useReconhecimentoFala.ts` expõe um callback (`aoResultado`) chamado a cada transcrição, em vez de só um valor de estado para o consumidor observar via `useEffect`. Isso evita um problema real de dependências de efeito: um `useEffect` que reage a `transcricao` precisaria excluir deliberadamente a atividade/callback das dependências (para não reprocessar a mesma transcrição a cada re-render por motivo não relacionado), e essa exclusão intencional gera aviso de lint sem solução limpa de supressão neste projeto (`oxlint` não aceitou o comentário de desabilitação nesse caso específico). O padrão de callback com "latest ref" interno resolve isso na raiz — quem usa o hook não precisa memoizar nada.
-
-A comparação da fala transcrita com a resposta esperada (`src/curriculo/reconhecimentoFala.ts`) exige correspondência de palavra completa (frase inteira ou uma palavra isolada da transcrição), nunca substring livre — um alvo curto como a vogal "i" apareceria dentro de quase qualquer frase transcrita.
 
 ## Débitos técnicos conhecidos (não escondidos, documentados)
 

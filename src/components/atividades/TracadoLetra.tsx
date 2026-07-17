@@ -10,11 +10,9 @@ import {
   type PontoTracado,
 } from '../../curriculo/tracadoLetras'
 import { useTentativa } from '../../hooks/useTentativa'
-import { useSpeech } from '../../hooks/useSpeech'
 import type { ApoioPreferencial } from '../../curriculo/apoioPreferencial'
 import type { RegulacaoPreferencial } from '../../curriculo/perfilApoio'
 import { Botao } from '../ui/Botao'
-import { OuvirInstrucao } from '../ui/OuvirInstrucao'
 import {
   classesFeedbackCorreto,
   classesFeedbackResposta,
@@ -84,7 +82,6 @@ export function TracadoLetra({
     sinalPedirAjuda,
     tentativasAnteriores,
   })
-  const { falar } = useSpeech()
   const [tracosDesenhados, setTracosDesenhados] = useState<PontoTracado[][]>([])
   const [feedback, setFeedback] = useState<Feedback>(null)
   const svgRef = useRef<SVGSVGElement>(null)
@@ -143,7 +140,6 @@ export function TracadoLetra({
       : ID_RESPOSTA_INCORRETA_TRACADO
     const resultadoTentativa = responder(idResposta)
     setFeedback(resultadoTentativa.correto ? 'correto' : 'incorreto')
-    falar(resultadoTentativa.correto ? `Isso! ${letra}` : 'Tente de novo')
 
     setTimeout(() => {
       setFeedback(null)
@@ -174,7 +170,6 @@ export function TracadoLetra({
           {instrucao}
         </p>
 
-        <OuvirInstrucao texto={instrucao} />
         <ApoioAtual dicaAtual={dicaAtual} />
         <AvisoRegistroTentativa mensagem={erroRegistroTentativa} />
         {(sugestaoPausa || sugestaoEncerrarSessao) && (

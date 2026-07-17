@@ -23,7 +23,7 @@ Na prática, isso significa:
 
 O TEA é um espectro amplo — da DSM-5, os "níveis de suporte" (1 a 3) descrevem necessidade de apoio, não capacidade cognitiva ou valor da pessoa, e a maioria das pessoas autistas não se encaixa perfeitamente em um nível fixo ao longo da vida. Por isso a trilha:
 
-1. **Não assume fala funcional.** Nenhuma atividade exige que a criança fale para responder — todas usam toque/seleção entre opções (compatível com CAA, apoio a crianças minimamente verbais) como via principal. A Nomeação Expressiva aceita fala como via **adicional** quando o dispositivo suporta e a família ativa, mas nunca como substituta obrigatória do toque (ver "Resposta por voz, opcional e nunca exclusiva" abaixo).
+1. **Não assume fala funcional.** Nenhuma atividade exige que a criança fale para responder — todas usam toque/seleção entre opções (compatível com CAA, apoio a crianças minimamente verbais) como via principal.
 2. **Não assume leitura prévia.** O Módulo 0 começa em discriminação visual pura (formas, não letras), o pré-requisito mais básico possível antes de qualquer conteúdo acadêmico.
 3. **Oferece dica com esmaecimento em toda atividade** (ver abaixo), então uma criança que precisa de mais suporte visual recebe mais suporte, e uma que já domina o conceito avança rápido — o mesmo currículo serve necessidades de suporte muito diferentes.
 4. **É ajustável sensorial e motoramente**, já que hipo/hipersensibilidade sensorial, coordenação motora fina, precisão de toque e forma de mediação variam enormemente entre indivíduos autistas e não se correlacionam diretamente com "nível de suporte".
@@ -46,7 +46,7 @@ Depois de emparelhamento idêntico, o próximo passo é generalização: reconhe
 
 ### Módulo 3 — Nomeação Expressiva de Letras
 
-Agora a criança escolhe/produz o nome da letra mostrada, e não apenas a localiza. A via principal continua sendo escolher a letra correspondente ao nome falado/ouvido entre poucas opções — acessível a crianças não-verbais, minimamente verbais ou com fala emergente. Quando o dispositivo suporta e a família ativa em Configurações, a criança pode também **falar** o nome da letra em vez de tocar (ver "Resposta por voz, opcional e nunca exclusiva" abaixo); a via por toque nunca é removida nem escondida quando a fala está disponível.
+Agora a criança escolhe/produz o nome da letra mostrada, e não apenas a localiza. A via principal continua sendo escolher a letra correspondente ao nome falado/ouvido entre poucas opções — acessível a crianças não-verbais, minimamente verbais ou com fala emergente.
 
 ### Módulo 3-T — Traçado de Letras
 
@@ -68,7 +68,7 @@ Depois que a criança domina sílabas-alvo, a trilha introduz palavras CV-CV com
 
 ### Módulo 6 — Leitura de Frases Simples
 
-Após palavras isoladas, a trilha apresenta frases curtas formadas com palavras já praticadas, como "A MALA", "A BALA", "O MAPA", "A MOTO" e "O BULE". A criança escolhe a frase correta entre poucas opções; não precisa ler em voz alta, falar oralmente nem responder perguntas abertas. A meta é começar a coordenar palavra + função de frase com baixa carga cognitiva, mantendo previsibilidade, voz sob demanda, pausas e apoio visual.
+Após palavras isoladas, a trilha apresenta frases curtas formadas com palavras já praticadas, como "A MALA", "A BALA", "O MAPA", "A MOTO" e "O BULE". A criança escolhe a frase correta entre poucas opções; não precisa ler em voz alta, falar oralmente nem responder perguntas abertas. A meta é começar a coordenar palavra + função de frase com baixa carga cognitiva, mantendo previsibilidade, pausas e apoio visual.
 
 ### Módulo 7 — Compreensão de Frases
 
@@ -106,7 +106,7 @@ O relatório do responsável também calcula uma recomendação de apoio graduad
 
 ### Critério de domínio
 
-Uma atividade é considerada dominada após 8 acertos consecutivos já no nível "sem dica" — um critério conservador comum em programas de Análise do Comportamento Aplicada, escolhido para reduzir a chance de "falso domínio" (acerto por sorte) antes de avançar.
+Uma atividade é considerada dominada assim que a criança acerta uma vez já no nível "sem dica" — depois de ter passado pelo esmaecimento de modelagem e destaque visual descrito acima. Isso evita o problema oposto de exigir repetição excessiva do mesmo item depois que a criança já demonstrou saber a resposta sem nenhum apoio: uma vez que a resposta veio de forma independente, insistir em mais tentativas idênticas não ensina nada novo, só cansa e frustra.
 
 Esse critério não exige que a criança faça tudo em uma única sessão longa. Ao abrir a atividade, a plataforma reconstrói o estado de apoio e a sequência recente a partir das tentativas salvas: se a criança fez acertos independentes, pausou e voltou depois, esse progresso continua contando; se houve erro ou necessidade de dica, o apoio também é retomado de forma coerente.
 
@@ -118,7 +118,7 @@ Para crianças autistas, isso também conversa com a preocupação recorrente da
 
 ### Reforço positivo imediato, nunca punição
 
-Toda resposta correta recebe feedback imediato (visual "Isso!" e, se o som estiver ligado, voz). Toda resposta incorreta recebe apenas "Tente de novo" — sem alarme, sem contagem visível de erros — e mais suporte na tentativa seguinte. Reforço positivo consistente e imediato é um dos elementos mais replicados na literatura de práticas baseadas em evidência para TEA (NPDC/NCAEP, ver abaixo).
+Toda resposta correta recebe feedback visual imediato ("Isso!"). Toda resposta incorreta recebe apenas "Tente de novo" — sem alarme, sem contagem visível de erros — e mais suporte na tentativa seguinte. Reforço positivo consistente e imediato é um dos elementos mais replicados na literatura de práticas baseadas em evidência para TEA (NPDC/NCAEP, ver abaixo).
 
 Quando a criança atinge domínio, a plataforma não troca de tela automaticamente. Depois do feedback de acerto, aparece uma tela simples de conclusão ("Feito", "Atividade concluída" e o nome da atividade), com foco no botão "Voltar para a trilha". Quando o domínio já foi salvo com sucesso, a tela também oferece "Próxima atividade" como escolha explícita. Se o salvamento falha, esse atalho não aparece: a prioridade é não mascarar perda de progresso. Isso mantém previsibilidade, evita transição surpresa e deixa a criança/adulto controlar o próximo passo.
 
@@ -134,9 +134,9 @@ Dentro da atividade, um roteiro visual permanece visível antes e depois de come
 
 O botão de voltar da atividade também não abandona a tarefa imediatamente: ele abre uma confirmação curta, com foco inicial em "Continuar atividade". Essa fricção intencional protege crianças com toque impulsivo, baixa precisão motora, uso de tablet ou apoio físico do mediador, sem impedir que a família encerre a tarefa quando essa for a melhor decisão.
 
-### Início previsível e voz sob demanda
+### Início previsível
 
-Cada atividade começa com uma etapa curta de preparação: o que fazer agora, um roteiro visual simples com ação atual, próxima ação, finalização e pausa, e um botão explícito de começar. A fala sintetizada não toca automaticamente ao entrar na tela; a criança ou mediador precisa escolher "Ouvir". Se a família desliga o som ou muda de tela, a fala em andamento é cancelada. Isso reduz surpresa sensorial, preserva controle e mantém a plataforma consistente com a promessa de som opcional.
+Cada atividade começa com uma etapa curta de preparação: o que fazer agora, um roteiro visual simples com ação atual, próxima ação, finalização e pausa, e um botão explícito de começar. Isso reduz surpresa sensorial e preserva controle antes de qualquer resposta ser exigida.
 
 A mesma lógica aparece na demonstração pública sem conta: a família pode experimentar uma etapa visual, uma etapa de sílaba e uma pergunta literal de texto, alternar entre toque direto, toque com confirmação e escolha mediada, testar um interesse da criança, pedir pausa/ajuda/pronto e ver o apoio visual antes de cadastrar qualquer dado. O cadastro existe para salvar continuidade, perfil individual e relatórios, não como barreira para conhecer a experiência.
 
@@ -183,14 +183,6 @@ Quando o perfil indica escolha por olhar/gesto e mediador toca, as atividades de
 Quando o perfil indica toque com confirmação, o primeiro toque apenas marca a opção escolhida e a tentativa só é registrada depois do botão "Confirmar". Esse modo existe para crianças que entendem a tarefa, mas podem tocar sem querer, arrastar a mão na tela, ter tremor, baixa precisão motora, impulsividade ou precisar que o adulto ajude a estabilizar o acesso. A intenção é separar "acesso motor inseguro" de "resposta acadêmica errada", reduzindo frustração e preservando dados de progresso mais fiéis.
 
 Quando o perfil indica toque com apoio do mediador, a lógica também deixa a resposta pendente, mas o texto da confirmação explicita que há apoio adulto. Assim, um olhar, gesto, aproximação de mão ou toque assistido pode ser conferido com a criança antes de virar tentativa registrada. Isso evita que o sistema transforme mediação de acesso em erro pedagógico e mantém a trilha compatível com crianças que precisam de co-regulação ou assistência física leve para responder.
-
-### Resposta por voz, opcional e nunca exclusiva
-
-O reconhecimento de fala do navegador (Web Speech API) permite que a Nomeação Expressiva também aceite a resposta falada, além da seleção por toque. Essa capacidade é ativada em duas camadas independentes, ambas fora do controle da atividade em si: o navegador precisa suportar a API (Firefox e outros não suportam — nesse caso a criança só vê a via por toque, sem erro nem aviso incômodo) e a família precisa ativar a opção explicitamente em Configurações, por dispositivo (não por criança), porque a capacidade depende de hardware de microfone, não de quem é a criança.
-
-A comparação da fala transcrita com a resposta esperada (`src/curriculo/reconhecimentoFala.ts`) exige palavra completa — nunca aceita a resposta certa por estar "contida" em qualquer frase, porque um alvo curto como a vogal "i" apareceria dentro de quase qualquer transcrição ("assim", "disse") e geraria falso positivo. Uma resposta que a criança fala mas o reconhecimento transcreve errado é tratada exatamente como um toque na opção errada: mais suporte na tentativa seguinte, nunca alarme.
-
-Essa via é aditiva, não uma segunda forma de avaliar a mesma habilidade com régua diferente: o critério de domínio, a dica com esmaecimento e o registro de tentativa são idênticos, venha a resposta de toque ou de fala. A decisão de nunca tornar a fala obrigatória segue o mesmo princípio do restante da trilha (item 1 de "Por que o foco é 100% TEA, 'não importando o grau'" acima) — nenhuma atividade pode depender de fala funcional para ser respondida.
 
 ### Jardim de Conquistas: gamificação sem pontuação, ranking ou tempo
 

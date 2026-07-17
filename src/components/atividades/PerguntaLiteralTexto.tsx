@@ -2,14 +2,12 @@ import { useMemo, useState } from 'react'
 import type { Atividade, Tentativa } from '../../curriculo/tipos'
 import { embaralhar } from '../../utils/embaralhar'
 import { useTentativa, type RegistrarTentativa } from '../../hooks/useTentativa'
-import { useSpeech } from '../../hooks/useSpeech'
 import { usePreferencias } from '../../contexts/PreferenciasContext'
 import type { ApoioPreferencial } from '../../curriculo/apoioPreferencial'
 import type {
   AcessoPreferencial,
   RegulacaoPreferencial,
 } from '../../curriculo/perfilApoio'
-import { OuvirInstrucao } from '../ui/OuvirInstrucao'
 import {
   classesFeedbackCorreto,
   classesFeedbackResposta,
@@ -72,7 +70,6 @@ export function PerguntaLiteralTexto({
     sinalPedirAjuda,
     tentativasAnteriores,
   })
-  const { falar } = useSpeech()
   const { preferencias } = usePreferencias()
   const [feedback, setFeedback] = useState<Feedback>(null)
 
@@ -90,7 +87,6 @@ export function PerguntaLiteralTexto({
 
     const resultado = responder(estimuloId)
     setFeedback(resultado.correto ? 'correto' : 'incorreto')
-    falar(resultado.correto ? 'Isso!' : 'Tente de novo')
 
     setTimeout(() => {
       setFeedback(null)
@@ -121,7 +117,6 @@ export function PerguntaLiteralTexto({
           </p>
         </section>
 
-        <OuvirInstrucao texto={instrucao} />
         <ApoioAtual dicaAtual={dicaAtual} />
         <AvisoRegistroTentativa mensagem={erroRegistroTentativa} />
         {(sugestaoPausa || sugestaoEncerrarSessao) && (
