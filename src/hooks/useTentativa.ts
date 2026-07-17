@@ -126,17 +126,15 @@ function estadoComMaisApoio(atual: EstadoAtividade): EstadoAtividade {
 }
 
 async function registrarTentativaPadrao(
-  uidResponsavel: string,
   perfilId: string,
   tentativa: Tentativa,
 ) {
-  const { registrarTentativa } = await import('../firebase/progresso')
-  return registrarTentativa(uidResponsavel, perfilId, tentativa)
+  const { registrarTentativa } = await import('../local/perfilLocal')
+  return registrarTentativa(perfilId, tentativa)
 }
 
 export function useTentativa(
   atividade: Atividade,
-  uidResponsavel: string,
   perfilId: string,
   opcoes: {
     limiteTentativasAntesEncerrar?: number
@@ -231,7 +229,7 @@ export function useTentativa(
     const registrar =
       opcoes.registrarTentativa ??
       ((tentativaAtual: Tentativa) =>
-        registrarTentativaPadrao(uidResponsavel, perfilId, tentativaAtual))
+        registrarTentativaPadrao(perfilId, tentativaAtual))
 
     void Promise.resolve()
       .then(() => registrar(tentativa))

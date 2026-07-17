@@ -27,11 +27,7 @@ export default defineConfig({
       },
     }),
   ],
-  build: {
-    // O maior chunk esperado e lazy é o vendor do Firestore. Mantemos o
-    // orçamento abaixo de 600 kB para ainda sinalizar crescimento real.
-    chunkSizeWarningLimit: 600,
-  },
+  build: {},
   test: {
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],

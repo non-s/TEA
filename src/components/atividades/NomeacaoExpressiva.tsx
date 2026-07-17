@@ -24,7 +24,6 @@ import { OpcoesResposta } from './OpcoesResposta'
 interface NomeacaoExpressivaProps {
   atividade: Atividade
   aoDominar: () => void
-  uidResponsavel: string
   perfilId: string
   apoioPreferencial?: ApoioPreferencial
   acessoPreferencial?: AcessoPreferencial
@@ -48,7 +47,6 @@ type Feedback = 'correto' | 'incorreto' | null
 export function NomeacaoExpressiva({
   atividade,
   aoDominar,
-  uidResponsavel,
   perfilId,
   apoioPreferencial,
   acessoPreferencial,
@@ -68,7 +66,7 @@ export function NomeacaoExpressiva({
     erroRegistroTentativa,
     dispensarSugestaoEncerrarSessao,
     dispensarSugestaoPausa,
-  } = useTentativa(atividade, uidResponsavel, perfilId, {
+  } = useTentativa(atividade, perfilId, {
     limiteTentativasAntesPausa,
     sinalComunicarPronto,
     sinalPedirAjuda,

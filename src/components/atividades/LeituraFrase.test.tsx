@@ -70,7 +70,6 @@ describe('LeituraFrase', () => {
       <LeituraFrase
         atividade={atividade}
         aoDominar={vi.fn()}
-        uidResponsavel="uid-teste"
         perfilId="perfil-teste"
       />,
     )
@@ -92,7 +91,6 @@ describe('LeituraFrase', () => {
       <LeituraFrase
         atividade={atividade}
         aoDominar={aoDominar}
-        uidResponsavel="uid-teste"
         perfilId="perfil-teste"
         tentativasAnteriores={tentativasParaNivelIndependente}
       />,
@@ -111,7 +109,6 @@ describe('LeituraFrase', () => {
       <LeituraFrase
         atividade={atividade}
         aoDominar={vi.fn()}
-        uidResponsavel="uid-teste"
         perfilId="perfil-teste"
       />,
     )

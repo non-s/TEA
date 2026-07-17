@@ -4,9 +4,9 @@ import {
 } from '../../hooks/useConexao'
 import { Botao } from './Botao'
 
-// Banner calmo e informativo (nunca alarmista): o app já funciona offline
-// via cache do Firestore + service worker, então "sem internet" não é um
-// erro para a criança — só um aviso discreto para quem acompanha.
+// Banner calmo e informativo (nunca alarmista): tudo é salvo no aparelho,
+// então "sem internet" não é um erro — só um aviso discreto para quem
+// acompanha.
 export function AvisoConexao() {
   const offline = useEstaOffline()
   const aplicarAtualizacao = useAtualizacaoPWADisponivel()
@@ -21,8 +21,8 @@ export function AvisoConexao() {
       <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-[var(--cor-borda)] bg-[var(--cor-fundo-alt)] px-4 py-3 text-sm text-[var(--cor-texto)] shadow-[var(--sombra-cartao)]">
         {offline ? (
           <span>
-            Sem conexão agora. O app continua funcionando e as respostas serão
-            salvas quando a internet voltar.
+            Sem conexão agora. O app continua funcionando normalmente — tudo é
+            salvo neste aparelho.
           </span>
         ) : (
           <>

@@ -6,14 +6,12 @@ import {
   encontrarProximaAtividadeDisponivel,
   moduloDesbloqueado,
 } from '../../curriculo/progressao'
-import { ouvirPerfil } from '../../firebase/perfis'
-import { ouvirTentativas } from '../../firebase/progresso'
+import { listarTentativas } from '../../local/perfilLocal'
 import { Icone } from '../../curriculo/ativos/Icone'
 import type { IconeId } from '../../curriculo/ativos/tipos'
 import { acentosPorModulo } from '../../curriculo/coresModulo'
-import type { Atividade, Tentativa } from '../../curriculo/tipos'
+import type { Atividade } from '../../curriculo/tipos'
 import { usePerfilAtivo } from '../../contexts/PerfilAtivoContext'
-import { usePreferencias } from '../../contexts/PreferenciasContext'
 import { useFocoPreso } from '../../hooks/useFocoPreso'
 
 interface CartaoAtividadeTrilhaProps {
@@ -73,87 +71,26 @@ function CartaoAtividadeTrilha({
 }
 
 export function Trilha() {
-  const [dominadas, setDominadas] = useState<Set<string>>(new Set())
-  const [tentativas, setTentativas] = useState<Tentativa[]>([])
   const [modulosAbertos, setModulosAbertos] = useState<Set<string>>(new Set())
-  const [erroPerfil, setErroPerfil] = useState<string | null>(null)
-  const [erroTentativas, setErroTentativas] = useState<string | null>(null)
-  const [confirmandoAreaResponsavel, setConfirmandoAreaResponsavel] =
-    useState(false)
-  const [codigoAreaResponsavel, setCodigoAreaResponsavel] = useState('')
+  const [confirmandoTrocaPerfil, setConfirmandoTrocaPerfil] = useState(false)
+  const [codigoTrocaPerfil, setCodigoTrocaPerfil] = useState('')
   const botaoContinuarTrilhaRef = useRef<HTMLButtonElement>(null)
-  const { ref: dialogoResponsavelRef, aoKeyDown: aoKeyDownDialogo } =
+  const { ref: dialogoTrocaRef, aoKeyDown: aoKeyDownDialogo } =
     useFocoPreso<HTMLDialogElement>()
-  const {
-    uidResponsavelPerfilAtivo,
-    perfilAtivo,
-    encerrarPerfil,
-    selecionarPerfil,
-  } = usePerfilAtivo()
-  const { atualizarPreferencias } = usePreferencias()
+  const { perfilAtivo, encerrarPerfil } = usePerfilAtivo()
   const navigate = useNavigate()
   const perfilId = perfilAtivo?.id
+  const dominadas = new Set(perfilAtivo?.atividadesDominadas ?? [])
+  const tentativas = perfilId ? listarTentativas(perfilId) : []
 
-  useEffect(() => {
-    if (!uidResponsavelPerfilAtivo || !perfilId) return
-    const pararPerfil = ouvirPerfil(
-      uidResponsavelPerfilAtivo,
-      perfilId,
-      (perfil) => {
-        if (!perfil) {
-          setDominadas(new Set())
-          setTentativas([])
-          encerrarPerfil()
-          navigate('/responsavel/perfis')
-          return
-        }
-
-        setErroPerfil(null)
-        setDominadas(new Set(perfil?.atividadesDominadas ?? []))
-        selecionarPerfil(perfil)
-        atualizarPreferencias(perfil.preferenciasSensoriais)
-      },
-      () => {
-        setErroPerfil(
-          'Não foi possível atualizar a trilha agora. Você pode tentar novamente em instantes.',
-        )
-      },
-    )
-    const pararTentativas = ouvirTentativas(
-      uidResponsavelPerfilAtivo,
-      perfilId,
-      (novasTentativas) => {
-        setTentativas(novasTentativas)
-        setErroTentativas(null)
-      },
-      () => {
-        setErroTentativas(
-          'Não foi possível atualizar a trilha agora. Você pode tentar novamente em instantes.',
-        )
-      },
-    )
-
-    return () => {
-      pararPerfil()
-      pararTentativas()
-    }
-  }, [
-    atualizarPreferencias,
-    encerrarPerfil,
-    navigate,
-    perfilId,
-    selecionarPerfil,
-    uidResponsavelPerfilAtivo,
-  ])
-
-  function fecharConfirmacaoAreaResponsavel() {
-    setConfirmandoAreaResponsavel(false)
-    setCodigoAreaResponsavel('')
+  function fecharConfirmacaoTrocaPerfil() {
+    setConfirmandoTrocaPerfil(false)
+    setCodigoTrocaPerfil('')
   }
 
-  function aoVoltarParaResponsavel() {
+  function aoTrocarPerfil() {
     encerrarPerfil()
-    navigate('/responsavel/perfis')
+    navigate('/')
   }
 
   function alternarModulo(moduloId: string) {
@@ -169,10 +106,10 @@ export function Trilha() {
   }
 
   useEffect(() => {
-    if (confirmandoAreaResponsavel) {
+    if (confirmandoTrocaPerfil) {
       botaoContinuarTrilhaRef.current?.focus()
     }
-  }, [confirmandoAreaResponsavel])
+  }, [confirmandoTrocaPerfil])
 
   const proximaAtividade = encontrarProximaAtividadeDisponivel(
     trilhaV1,
@@ -183,9 +120,8 @@ export function Trilha() {
     dominadas,
     tentativas,
   )
-  const erroCarregamento = erroPerfil ?? erroTentativas
   const codigoAdultoConfirmado =
-    codigoAreaResponsavel.trim().toUpperCase() === 'ADULTO'
+    codigoTrocaPerfil.trim().toUpperCase() === 'ADULTO'
 
   return (
     <main className="mx-auto flex max-w-4xl flex-col gap-12 px-6 py-12 animacao-surgir">
@@ -202,30 +138,13 @@ export function Trilha() {
           </Link>
           <button
             type="button"
-            onClick={() => setConfirmandoAreaResponsavel(true)}
+            onClick={() => setConfirmandoTrocaPerfil(true)}
             className="inline-flex min-h-[var(--min-alvo-controle)] items-center text-base font-bold text-[var(--cor-texto-suave)] hover:text-[var(--cor-texto)] transition-colors underline underline-offset-4"
           >
-            Área do responsável
-          </button>
-          <button
-            type="button"
-            onClick={aoVoltarParaResponsavel}
-            className="inline-flex min-h-[var(--min-alvo-controle)] items-center text-base font-bold text-[var(--cor-erro)] hover:text-[var(--cor-erro-escura)] transition-colors underline underline-offset-4"
-            aria-label="Sair do perfil"
-          >
-            Sair
+            Trocar de perfil
           </button>
         </div>
       </div>
-
-      {erroCarregamento && (
-        <p
-          role="alert"
-          className="rounded-2xl border border-[var(--cor-erro)] bg-[var(--cor-erro)]/10 px-6 py-4 text-sm font-medium text-[var(--cor-erro)] shadow-[var(--sombra-cartao)]"
-        >
-          {erroCarregamento}
-        </p>
-      )}
 
       <section className="relative overflow-hidden rounded-[2rem] border border-[var(--cor-borda)] bg-gradient-to-br from-[var(--cor-primaria-escura)] to-[var(--cor-acento-escura)] p-8 sm:p-10 shadow-[var(--sombra-brilho)] flutuar">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIi8+PC9zdmc+')] opacity-20"></div>
@@ -439,44 +358,41 @@ export function Trilha() {
         })}
       </div>
 
-      {confirmandoAreaResponsavel && (
+      {confirmandoTrocaPerfil && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 px-6"
           role="presentation"
         >
           <dialog
-            ref={dialogoResponsavelRef}
+            ref={dialogoTrocaRef}
             open
             aria-modal="true"
-            aria-labelledby="titulo-area-responsavel"
-            aria-describedby="texto-area-responsavel ajuda-area-responsavel"
+            aria-labelledby="titulo-troca-perfil"
+            aria-describedby="texto-troca-perfil ajuda-troca-perfil"
             onCancel={(evento) => {
               evento.preventDefault()
-              fecharConfirmacaoAreaResponsavel()
+              fecharConfirmacaoTrocaPerfil()
             }}
             onKeyDown={(evento) => {
               aoKeyDownDialogo(evento)
               if (evento.key === 'Escape') {
-                fecharConfirmacaoAreaResponsavel()
+                fecharConfirmacaoTrocaPerfil()
               }
             }}
             className="m-0 flex w-full max-w-sm flex-col gap-4 rounded-3xl border-2 border-[var(--cor-borda)] bg-[var(--cor-fundo-alt)] p-6 text-center shadow-[var(--sombra-cartao-hover)]"
           >
             <div>
               <h2
-                id="titulo-area-responsavel"
+                id="titulo-troca-perfil"
                 className="text-xl font-semibold text-[var(--cor-texto)]"
               >
-                Área do responsável
+                Trocar de perfil
               </h2>
-              <p className="mt-2 text-sm leading-6 text-[var(--cor-texto-suave)]">
-                Esta parte é para o adulto. A trilha pode continuar aqui.
-              </p>
               <p
-                id="texto-area-responsavel"
+                id="texto-troca-perfil"
                 className="mt-2 text-sm leading-6 text-[var(--cor-texto-suave)]"
               >
-                Para abrir, o adulto digita ADULTO.
+                Para trocar, o adulto digita ADULTO.
               </p>
             </div>
 
@@ -484,7 +400,7 @@ export function Trilha() {
               <button
                 ref={botaoContinuarTrilhaRef}
                 type="button"
-                onClick={fecharConfirmacaoAreaResponsavel}
+                onClick={fecharConfirmacaoTrocaPerfil}
                 className="inline-flex min-h-[var(--min-alvo-controle)] items-center justify-center rounded-full bg-[var(--cor-primaria)] px-5 py-3 text-base font-semibold text-white hover:bg-[var(--cor-primaria-escura)]"
               >
                 Continuar na trilha
@@ -494,16 +410,16 @@ export function Trilha() {
                 <input
                   autoComplete="off"
                   inputMode="text"
-                  value={codigoAreaResponsavel}
+                  value={codigoTrocaPerfil}
                   onChange={(evento) =>
-                    setCodigoAreaResponsavel(evento.target.value)
+                    setCodigoTrocaPerfil(evento.target.value)
                   }
                   className="rounded-2xl border-2 border-[var(--cor-borda)] bg-[var(--cor-fundo)] px-4 py-3 text-base text-[var(--cor-texto)] uppercase"
-                  aria-describedby="ajuda-area-responsavel"
+                  aria-describedby="ajuda-troca-perfil"
                 />
               </label>
               <p
-                id="ajuda-area-responsavel"
+                id="ajuda-troca-perfil"
                 className="text-left text-xs leading-5 text-[var(--cor-texto-suave)]"
               >
                 Isso evita que a criança saia da trilha por toque acidental.
@@ -511,10 +427,10 @@ export function Trilha() {
               <button
                 type="button"
                 disabled={!codigoAdultoConfirmado}
-                onClick={aoVoltarParaResponsavel}
+                onClick={aoTrocarPerfil}
                 className="inline-flex min-h-[var(--min-alvo-controle)] items-center justify-center rounded-full border-2 border-[var(--cor-borda)] bg-[var(--cor-fundo-alt)] px-5 py-3 text-base font-medium text-[var(--cor-texto)] hover:border-[var(--cor-primaria)] disabled:cursor-not-allowed disabled:opacity-50"
               >
-                Abrir área do responsável
+                Confirmar troca de perfil
               </button>
             </div>
           </dialog>

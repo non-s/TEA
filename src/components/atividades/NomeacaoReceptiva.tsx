@@ -24,7 +24,6 @@ import { OpcoesResposta } from './OpcoesResposta'
 interface NomeacaoReceptivaProps {
   atividade: Atividade
   aoDominar: () => void
-  uidResponsavel: string
   perfilId: string
   apoioPreferencial?: ApoioPreferencial
   acessoPreferencial?: AcessoPreferencial
@@ -42,7 +41,6 @@ type Feedback = 'correto' | 'incorreto' | null
 export function NomeacaoReceptiva({
   atividade,
   aoDominar,
-  uidResponsavel,
   perfilId,
   apoioPreferencial,
   acessoPreferencial,
@@ -62,7 +60,7 @@ export function NomeacaoReceptiva({
     erroRegistroTentativa,
     dispensarSugestaoEncerrarSessao,
     dispensarSugestaoPausa,
-  } = useTentativa(atividade, uidResponsavel, perfilId, {
+  } = useTentativa(atividade, perfilId, {
     limiteTentativasAntesPausa,
     sinalComunicarPronto,
     sinalPedirAjuda,

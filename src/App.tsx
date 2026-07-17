@@ -1,27 +1,14 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { HashRouter, Route, Routes, useLocation } from 'react-router-dom'
 import { PreferenciasProvider } from './contexts/PreferenciasContext'
-import { AuthProvider } from './contexts/AuthContext'
 import { PerfilAtivoProvider } from './contexts/PerfilAtivoContext'
-import { RequireAuth } from './routes/RequireAuth'
 import { RequirePerfilAtivo } from './routes/RequirePerfilAtivo'
-import { Home } from './routes/Home'
+import { Entrada } from './routes/Entrada'
 import { LimiteErro } from './components/ui/LimiteErro'
 import { AvisoConexao } from './components/ui/AvisoConexao'
-import { AvisoEmailNaoVerificado } from './components/ui/AvisoEmailNaoVerificado'
 
-const Login = lazy(() =>
-  import('./routes/responsavel/Login').then((m) => ({ default: m.Login })),
-)
-const Cadastro = lazy(() =>
-  import('./routes/responsavel/Cadastro').then((m) => ({
-    default: m.Cadastro,
-  })),
-)
-const Demo = lazy(() =>
-  import('./routes/Demo').then((m) => ({
-    default: m.Demo,
-  })),
+const Ajustes = lazy(() =>
+  import('./routes/Ajustes').then((m) => ({ default: m.Ajustes })),
 )
 const Privacidade = lazy(() =>
   import('./routes/Privacidade').then((m) => ({
@@ -38,36 +25,11 @@ const NaoEncontrada = lazy(() =>
     default: m.NaoEncontrada,
   })),
 )
-const SelecaoPerfil = lazy(() =>
-  import('./routes/responsavel/SelecaoPerfil').then((m) => ({
-    default: m.SelecaoPerfil,
-  })),
-)
-const GerenciarPerfis = lazy(() =>
-  import('./routes/responsavel/GerenciarPerfis').then((m) => ({
-    default: m.GerenciarPerfis,
-  })),
-)
-const Configuracoes = lazy(() =>
-  import('./routes/responsavel/Configuracoes').then((m) => ({
-    default: m.Configuracoes,
-  })),
-)
-const Progresso = lazy(() =>
-  import('./routes/responsavel/Progresso').then((m) => ({
-    default: m.Progresso,
-  })),
-)
 const Trilha = lazy(() =>
   import('./routes/crianca/Trilha').then((m) => ({ default: m.Trilha })),
 )
 const Jardim = lazy(() =>
   import('./routes/crianca/Jardim').then((m) => ({ default: m.Jardim })),
-)
-const ColaboradorPerfil = lazy(() =>
-  import('./routes/colaborador/ColaboradorPerfil').then((m) => ({
-    default: m.ColaboradorPerfil,
-  })),
 )
 const Atividade = lazy(() =>
   import('./routes/crianca/Atividade').then((m) => ({
@@ -85,20 +47,11 @@ function CarregandoPagina() {
 
 function tituloDaRota(pathname: string): string {
   if (pathname === '/') return 'TEA — Alfabetização para crianças autistas'
-  if (pathname === '/entrar') return 'Entrar — TEA'
-  if (pathname === '/cadastro') return 'Cadastro — TEA'
-  if (pathname === '/demo') return 'Demonstração — TEA'
+  if (pathname === '/ajustes') return 'Ajustes — TEA'
   if (pathname === '/privacidade') return 'Privacidade — TEA'
   if (pathname === '/termos') return 'Termos de uso — TEA'
-  if (pathname === '/responsavel/perfis') return 'Perfis — TEA'
-  if (pathname === '/responsavel/perfis/gerenciar') {
-    return 'Gerenciar perfis — TEA'
-  }
-  if (pathname === '/responsavel/configuracoes') return 'Configurações — TEA'
-  if (pathname.startsWith('/responsavel/progresso/')) return 'Progresso — TEA'
   if (pathname === '/crianca/trilha') return 'Trilha — TEA'
   if (pathname === '/crianca/jardim') return 'Meu jardim — TEA'
-  if (pathname.startsWith('/colaborador/')) return 'Progresso — TEA'
   if (pathname.startsWith('/crianca/atividade/')) return 'Atividade — TEA'
   return 'Página não encontrada — TEA'
 }
@@ -128,82 +81,33 @@ function RotasApp() {
         <LimiteErro chaveReset={chaveReset}>
           <Suspense fallback={<CarregandoPagina />}>
             <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/entrar" element={<Login />} />
-              <Route path="/cadastro" element={<Cadastro />} />
-              <Route path="/demo" element={<Demo />} />
+              <Route path="/" element={<Entrada />} />
+              <Route path="/ajustes" element={<Ajustes />} />
               <Route path="/privacidade" element={<Privacidade />} />
               <Route path="/termos" element={<Termos />} />
 
               <Route
-                path="/responsavel/perfis"
-                element={
-                  <RequireAuth>
-                    <SelecaoPerfil />
-                  </RequireAuth>
-                }
-              />
-              <Route
-                path="/responsavel/perfis/gerenciar"
-                element={
-                  <RequireAuth>
-                    <GerenciarPerfis />
-                  </RequireAuth>
-                }
-              />
-              <Route
-                path="/responsavel/configuracoes"
-                element={
-                  <RequireAuth>
-                    <Configuracoes />
-                  </RequireAuth>
-                }
-              />
-              <Route
-                path="/responsavel/progresso/:perfilId"
-                element={
-                  <RequireAuth>
-                    <Progresso />
-                  </RequireAuth>
-                }
-              />
-
-              <Route
                 path="/crianca/trilha"
                 element={
-                  <RequireAuth>
-                    <RequirePerfilAtivo>
-                      <Trilha />
-                    </RequirePerfilAtivo>
-                  </RequireAuth>
+                  <RequirePerfilAtivo>
+                    <Trilha />
+                  </RequirePerfilAtivo>
                 }
               />
               <Route
                 path="/crianca/atividade/:atividadeId"
                 element={
-                  <RequireAuth>
-                    <RequirePerfilAtivo>
-                      <Atividade />
-                    </RequirePerfilAtivo>
-                  </RequireAuth>
+                  <RequirePerfilAtivo>
+                    <Atividade />
+                  </RequirePerfilAtivo>
                 }
               />
               <Route
                 path="/crianca/jardim"
                 element={
-                  <RequireAuth>
-                    <RequirePerfilAtivo>
-                      <Jardim />
-                    </RequirePerfilAtivo>
-                  </RequireAuth>
-                }
-              />
-              <Route
-                path="/colaborador/:uidResponsavel/:perfilId"
-                element={
-                  <RequireAuth>
-                    <ColaboradorPerfil />
-                  </RequireAuth>
+                  <RequirePerfilAtivo>
+                    <Jardim />
+                  </RequirePerfilAtivo>
                 }
               />
               <Route path="*" element={<NaoEncontrada />} />
@@ -211,7 +115,6 @@ function RotasApp() {
           </Suspense>
         </LimiteErro>
       </div>
-      <AvisoEmailNaoVerificado />
       <AvisoConexao />
     </>
   )
@@ -220,13 +123,11 @@ function RotasApp() {
 function App() {
   return (
     <PreferenciasProvider>
-      <AuthProvider>
-        <PerfilAtivoProvider>
-          <HashRouter>
-            <RotasApp />
-          </HashRouter>
-        </PerfilAtivoProvider>
-      </AuthProvider>
+      <PerfilAtivoProvider>
+        <HashRouter>
+          <RotasApp />
+        </HashRouter>
+      </PerfilAtivoProvider>
     </PreferenciasProvider>
   )
 }

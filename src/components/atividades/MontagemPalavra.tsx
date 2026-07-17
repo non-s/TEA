@@ -21,7 +21,6 @@ import { PausaSugerida } from './PausaSugerida'
 interface MontagemPalavraProps {
   atividade: Atividade
   aoDominar: () => void
-  uidResponsavel: string
   perfilId: string
   apoioPreferencial?: ApoioPreferencial
   regulacaoPreferencial?: RegulacaoPreferencial
@@ -60,7 +59,6 @@ function ChipEscolhaEsta() {
 export function MontagemPalavra({
   atividade,
   aoDominar,
-  uidResponsavel,
   perfilId,
   apoioPreferencial,
   regulacaoPreferencial,
@@ -79,7 +77,7 @@ export function MontagemPalavra({
     erroRegistroTentativa,
     dispensarSugestaoEncerrarSessao,
     dispensarSugestaoPausa,
-  } = useTentativa(atividade, uidResponsavel, perfilId, {
+  } = useTentativa(atividade, perfilId, {
     limiteTentativasAntesPausa,
     sinalComunicarPronto,
     sinalPedirAjuda,

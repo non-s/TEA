@@ -26,7 +26,6 @@ import { PausaSugerida } from './PausaSugerida'
 interface TracadoLetraProps {
   atividade: Atividade
   aoDominar: () => void
-  uidResponsavel: string
   perfilId: string
   apoioPreferencial?: ApoioPreferencial
   regulacaoPreferencial?: RegulacaoPreferencial
@@ -57,7 +56,6 @@ function pontosParaTraco(pontos: PontoTracado[]): string {
 export function TracadoLetra({
   atividade,
   aoDominar,
-  uidResponsavel,
   perfilId,
   apoioPreferencial,
   regulacaoPreferencial,
@@ -76,7 +74,7 @@ export function TracadoLetra({
     erroRegistroTentativa,
     dispensarSugestaoEncerrarSessao,
     dispensarSugestaoPausa,
-  } = useTentativa(atividade, uidResponsavel, perfilId, {
+  } = useTentativa(atividade, perfilId, {
     limiteTentativasAntesPausa,
     sinalComunicarPronto,
     sinalPedirAjuda,

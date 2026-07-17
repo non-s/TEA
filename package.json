@@ -10,13 +10,10 @@
     "test": "vitest run",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "preview": "vite preview",
-    "emuladores:preparar": "bash scripts/gerar-regras-emulador.sh",
-    "emuladores": "npm run emuladores:preparar && firebase emulators:start --config firebase.emulator.json --project demo-tea-dev"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.2",
-    "firebase": "^12.15.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-router-dom": "^7.18.1",

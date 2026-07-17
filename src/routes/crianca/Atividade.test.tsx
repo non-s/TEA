@@ -9,21 +9,14 @@ import { Atividade } from './Atividade'
 
 const mocks = vi.hoisted(() => ({
   marcarAtividadeDominada: vi.fn(),
-  erroAoOuvirTentativas: false,
   navigate: vi.fn(),
-  registrarObservacaoSessao: vi.fn(),
   registrarTentativa: vi.fn(),
   tentativas: [] as Tentativa[],
-  usuario: { uid: 'responsavel-1' },
   perfilAtivo: {
     id: 'perfil-1',
     nome: 'Lia',
     interesseEspecialId: 'neutro',
-    planoIndividual: {
-      metaAtual: '',
-      apoioPreferencial: 'pausa',
-      observacaoMediador: '',
-    },
+    apoioPreferencial: 'pausa',
     perfilApoio: {
       acessoPreferencial: 'toque-direto',
       regulacaoPreferencial: 'pausa',
@@ -38,38 +31,15 @@ const mocks = vi.hoisted(() => ({
   },
 }))
 
-vi.mock('../../contexts/AuthContext', () => ({
-  useAuth: () => ({
-    usuario: mocks.usuario,
-  }),
-}))
-
 vi.mock('../../contexts/PerfilAtivoContext', () => ({
   usePerfilAtivo: () => ({
     perfilAtivo: mocks.perfilAtivo,
-    uidResponsavelPerfilAtivo: mocks.usuario?.uid,
+    marcarAtividadeDominada: mocks.marcarAtividadeDominada,
   }),
 }))
 
-vi.mock('../../firebase/perfis', () => ({
-  marcarAtividadeDominada: mocks.marcarAtividadeDominada,
-}))
-
-vi.mock('../../firebase/progresso', () => ({
-  ouvirTentativas: (
-    _uidResponsavel: string,
-    _perfilId: string,
-    aoAtualizar: (tentativas: unknown[]) => void,
-    aoErro?: (erro: unknown) => void,
-  ) => {
-    if (mocks.erroAoOuvirTentativas) {
-      aoErro?.(new Error('sem-conexao'))
-    } else {
-      aoAtualizar(mocks.tentativas)
-    }
-    return () => {}
-  },
-  registrarObservacaoSessao: mocks.registrarObservacaoSessao,
+vi.mock('../../local/perfilLocal', () => ({
+  listarTentativas: () => mocks.tentativas,
   registrarTentativa: mocks.registrarTentativa,
 }))
 
@@ -105,7 +75,6 @@ describe('Atividade', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mocks.tentativas = []
-    mocks.erroAoOuvirTentativas = false
     mocks.perfilAtivo.interesseEspecialId = 'neutro'
     mocks.perfilAtivo.perfilApoio.acessoPreferencial = 'toque-direto'
     mocks.perfilAtivo.perfilApoio.regulacaoPreferencial = 'pausa'
@@ -116,7 +85,6 @@ describe('Atividade', () => {
       estrategiasAjudam: 'fone e luz baixa',
       evitarDuranteSobrecarga: '',
     }
-    mocks.registrarObservacaoSessao.mockResolvedValue(undefined)
   })
 
   it('abre pausa como dialogo nomeado e retorna foco para continuar', async () => {
@@ -175,12 +143,6 @@ describe('Atividade', () => {
     expect(
       within(planoRegulacao).getByText('fone e luz baixa'),
     ).toBeInTheDocument()
-    expect(mocks.registrarObservacaoSessao).toHaveBeenCalledWith(
-      'responsavel-1',
-      'perfil-1',
-      'Comunicou "Pausa": Preciso de uma pausa.',
-      'regulacao',
-    )
 
     const results = await axe(container)
     expect(results.violations).toHaveLength(0)
@@ -389,18 +351,6 @@ describe('Atividade', () => {
     ).toBeInTheDocument()
   })
 
-  it('continua com apoio visual quando o historico nao carrega', async () => {
-    mocks.erroAoOuvirTentativas = true
-    renderizarAtividade('m0-n1-a1')
-
-    expect(await screen.findByRole('alert')).toHaveTextContent(
-      'O histórico não carregou agora.',
-    )
-    expect(
-      screen.getByText('Toque na figura igual a esta: círculo'),
-    ).toBeInTheDocument()
-  })
-
   it('avisa quando a resposta ainda nao foi salva sem bloquear a atividade', async () => {
     mocks.registrarTentativa.mockRejectedValueOnce(new Error('offline'))
     const usuario = userEvent.setup()
@@ -452,32 +402,6 @@ describe('Atividade', () => {
     ).toBeInTheDocument()
     expect(
       screen.getByText('A próxima resposta terá ajuda visual.'),
-    ).toBeInTheDocument()
-    expect(mocks.registrarObservacaoSessao).toHaveBeenCalledWith(
-      'responsavel-1',
-      'perfil-1',
-      'Comunicou "Ajuda": Preciso de ajuda.',
-      'comunicacao',
-    )
-  })
-
-  it('avisa quando a comunicacao foi respeitada mas nao registrada', async () => {
-    mocks.registrarObservacaoSessao.mockRejectedValueOnce(new Error('offline'))
-    const usuario = userEvent.setup()
-    renderizarAtividade('m0-n1-a1')
-
-    await usuario.click(screen.getByRole('button', { name: 'Começar' }))
-    await usuario.click(
-      screen.getByRole('button', { name: 'Ajuda. Preciso de ajuda.' }),
-    )
-
-    expect(
-      await screen.findByText(
-        'A comunicacao foi respeitada, mas o registro nao salvou agora.',
-      ),
-    ).toBeInTheDocument()
-    expect(
-      screen.getByRole('button', { name: 'círculo. Escolha esta' }),
     ).toBeInTheDocument()
   })
 
@@ -630,11 +554,7 @@ describe('Atividade', () => {
       await vi.advanceTimersByTimeAsync(800)
     })
 
-    expect(mocks.marcarAtividadeDominada).toHaveBeenCalledWith(
-      'responsavel-1',
-      'perfil-1',
-      'm0-n1-a1',
-    )
+    expect(mocks.marcarAtividadeDominada).toHaveBeenCalledWith('m0-n1-a1')
     expect(mocks.navigate).not.toHaveBeenCalled()
     expect(
       screen.getByRole('heading', { name: 'Atividade concluída' }),
@@ -657,43 +577,6 @@ describe('Atividade', () => {
 
     expect(mocks.navigate).toHaveBeenCalledWith('/crianca/atividade/m0-n1-a2')
     vi.useRealTimers()
-  })
-
-  it('avisa quando o dominio foi concluido mas ainda nao salvo', async () => {
-    vi.useFakeTimers({ shouldAdvanceTime: true })
-    const usuario = userEvent.setup({
-      advanceTimers: vi.advanceTimersByTime,
-      delay: null,
-    })
-    mocks.marcarAtividadeDominada.mockRejectedValue(new Error('offline'))
-    mocks.tentativas = Array.from({ length: 7 }, (_, indice) => ({
-      atividadeId: 'm0-n1-a1',
-      moduloId: 'm0',
-      timestamp: indice + 1,
-      resultado: 'correto' as const,
-      nivelDicaUsado: 2,
-      tempoRespostaMs: 1000,
-    }))
-    renderizarAtividade('m0-n1-a1')
-
-    await usuario.click(screen.getByRole('button', { name: 'Começar' }))
-    await usuario.click(screen.getByRole('button', { name: 'círculo' }))
-    await act(async () => {
-      await vi.advanceTimersByTimeAsync(800)
-    })
-
-    expect(
-      screen.getByRole('heading', { name: 'Atividade concluída' }),
-    ).toBeInTheDocument()
-
-    vi.useRealTimers() // findByRole needs real timers to poll DOM
-
-    expect(await screen.findByRole('alert')).toHaveTextContent(
-      'Falha ao salvar (Erro do Firebase): offline',
-    )
-    expect(
-      screen.queryByRole('button', { name: /Próxima atividade/i }),
-    ).not.toBeInTheDocument()
   })
 
   it('usa escolha mediada quando o perfil indica olhar ou gesto', async () => {

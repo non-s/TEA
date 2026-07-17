@@ -1,62 +1,21 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import type { PerfilCrianca } from '../firebase/perfis'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { PerfilAtivoProvider, usePerfilAtivo } from './PerfilAtivoContext'
 
-const perfil: PerfilCrianca = {
-  id: 'perfil-1',
-  nome: 'Lia',
-  avatarId: 'estrela',
-  interesseEspecialId: 'neutro',
-  perfilApoio: {
-    comunicacaoPreferencial: 'figuras',
-    acessoPreferencial: 'escolha-mediada',
-    regulacaoPreferencial: 'pausa',
-    limiteTentativasAntesPausa: 6,
-    cartoesComunicacao: [],
-    planoRegulacao: {
-      sinaisPausa: '',
-      estrategiasAjudam: '',
-      evitarDuranteSobrecarga: '',
-    },
-    observacoes: '',
-  },
-  preferenciasSensoriais: {
-    som: true,
-    animacoes: false,
-    altoContraste: false,
-    alvosMaiores: true,
-    tamanhoFonte: 'grande',
-  },
-  planoIndividual: {
-    metaAtual: '',
-    apoioPreferencial: 'visual',
-    observacaoMediador: '',
-  },
-  atividadesDominadas: [],
-  colaboradoresEmail: [],
-}
-
-const mocks = vi.hoisted(() => ({
-  auth: {
-    carregando: false,
-    usuario: { uid: 'responsavel-1' } as { uid: string } | null,
-  },
-}))
-
-vi.mock('./AuthContext', () => ({
-  useAuth: () => mocks.auth,
-}))
-
 function ExemploPerfilAtivo() {
-  const { encerrarPerfil, perfilAtivo, selecionarPerfil } = usePerfilAtivo()
+  const { criarPerfil, encerrarPerfil, perfilAtivo, marcarAtividadeDominada } =
+    usePerfilAtivo()
 
   return (
     <div>
       <p>{perfilAtivo ? perfilAtivo.nome : 'sem perfil'}</p>
-      <button type="button" onClick={() => selecionarPerfil(perfil)}>
-        selecionar
+      <p>{perfilAtivo?.atividadesDominadas.length ?? 0}</p>
+      <button type="button" onClick={() => criarPerfil('Lia', 'estrela')}>
+        criar
+      </button>
+      <button type="button" onClick={() => marcarAtividadeDominada('m0-n1-a1')}>
+        dominar
       </button>
       <button type="button" onClick={encerrarPerfil}>
         encerrar
@@ -75,72 +34,41 @@ function renderizarProvider() {
 
 describe('PerfilAtivoProvider', () => {
   beforeEach(() => {
-    sessionStorage.clear()
-    mocks.auth.carregando = false
-    mocks.auth.usuario = { uid: 'responsavel-1' }
+    localStorage.clear()
   })
 
-  it('salva e encerra o perfil ativo na sessao do navegador', async () => {
+  it('cria e seleciona um perfil salvo neste aparelho', async () => {
     const usuario = userEvent.setup()
     renderizarProvider()
 
-    await usuario.click(screen.getByRole('button', { name: 'selecionar' }))
+    await usuario.click(screen.getByRole('button', { name: 'criar' }))
 
     expect(screen.getByText('Lia')).toBeInTheDocument()
-    expect(sessionStorage.getItem('tea:perfilAtivo')).toContain('"id"')
-    expect(sessionStorage.getItem('tea:perfilAtivo')).toContain(
-      '"uidResponsavel":"responsavel-1"',
-    )
+    expect(localStorage.getItem('tea:perfil-ativo-id')).toBeTruthy()
+    expect(localStorage.getItem('tea:perfis-locais')).toContain('"Lia"')
+  })
+
+  it('encerra o perfil ativo sem apagar o perfil salvo', async () => {
+    const usuario = userEvent.setup()
+    renderizarProvider()
+
+    await usuario.click(screen.getByRole('button', { name: 'criar' }))
+    expect(screen.getByText('Lia')).toBeInTheDocument()
 
     await usuario.click(screen.getByRole('button', { name: 'encerrar' }))
 
     expect(screen.getByText('sem perfil')).toBeInTheDocument()
-    expect(sessionStorage.getItem('tea:perfilAtivo')).toBeNull()
+    expect(localStorage.getItem('tea:perfil-ativo-id')).toBeNull()
+    expect(localStorage.getItem('tea:perfis-locais')).toContain('"Lia"')
   })
 
-  it('remove perfil salvo quando ele pertence a outro responsavel', async () => {
-    sessionStorage.setItem(
-      'tea:perfilAtivo',
-      JSON.stringify({
-        uidResponsavel: 'responsavel-antigo',
-        perfil,
-      }),
-    )
-
+  it('marca atividade dominada no perfil ativo', async () => {
+    const usuario = userEvent.setup()
     renderizarProvider()
 
-    await waitFor(() => {
-      expect(screen.getByText('sem perfil')).toBeInTheDocument()
-    })
-    expect(sessionStorage.getItem('tea:perfilAtivo')).toBeNull()
-  })
+    await usuario.click(screen.getByRole('button', { name: 'criar' }))
+    await usuario.click(screen.getByRole('button', { name: 'dominar' }))
 
-  it('remove formato legado sem responsavel verificavel', async () => {
-    sessionStorage.setItem('tea:perfilAtivo', JSON.stringify(perfil))
-
-    renderizarProvider()
-
-    await waitFor(() => {
-      expect(screen.getByText('sem perfil')).toBeInTheDocument()
-    })
-    expect(sessionStorage.getItem('tea:perfilAtivo')).toBeNull()
-  })
-
-  it('remove perfil salvo quando nao ha usuario autenticado', async () => {
-    sessionStorage.setItem(
-      'tea:perfilAtivo',
-      JSON.stringify({
-        uidResponsavel: 'responsavel-1',
-        perfil,
-      }),
-    )
-    mocks.auth.usuario = null
-
-    renderizarProvider()
-
-    await waitFor(() => {
-      expect(screen.getByText('sem perfil')).toBeInTheDocument()
-    })
-    expect(sessionStorage.getItem('tea:perfilAtivo')).toBeNull()
+    expect(screen.getByText('1')).toBeInTheDocument()
   })
 })

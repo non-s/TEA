@@ -13,45 +13,46 @@ function renderizarPrivacidade() {
 }
 
 describe('Privacidade', () => {
-  it('explica coleta, limites e controle familiar em linguagem direta', () => {
+  it('explica o que fica salvo, o que nunca e coletado e por que nao ha LGPD a cumprir', () => {
     renderizarPrivacidade()
 
     expect(
       screen.getByRole('heading', { name: 'Privacidade e dados' }),
     ).toBeInTheDocument()
     expect(
-      screen.getByRole('heading', { name: 'O que guardamos' }),
+      screen.getByRole('heading', { name: 'O que fica salvo neste aparelho' }),
     ).toBeInTheDocument()
     expect(
-      screen.getByRole('heading', { name: 'O que não pedimos' }),
+      screen.getByRole('heading', {
+        name: 'O que nunca é coletado ou enviado',
+      }),
     ).toBeInTheDocument()
     expect(screen.getByText(/Diagnóstico, laudo, CID/i)).toBeInTheDocument()
     expect(
-      screen.getByText(/cache offline persistente fica desligado por padrão/i),
+      screen.getByText(/Nenhuma conta, e-mail ou senha/i),
     ).toBeInTheDocument()
     expect(
       screen.getByText(/não substitui avaliação clínica/i),
     ).toBeInTheDocument()
+    expect(
+      screen.getByText(/nenhum consentimento é solicitado/i),
+    ).toBeInTheDocument()
   })
 
-  it('oferece caminhos publicos para voltar, entrar ou criar conta', () => {
+  it('oferece caminhos publicos para voltar ou ver os termos', () => {
     renderizarPrivacidade()
 
     expect(screen.getByRole('link', { name: 'Voltar' })).toHaveAttribute(
       'href',
       '/',
     )
+    expect(screen.getByRole('link', { name: 'Termos de uso' })).toHaveAttribute(
+      'href',
+      '/termos',
+    )
     expect(
-      screen.getByRole('link', { name: 'Experimentar sem conta' }),
-    ).toHaveAttribute('href', '/demo')
-    expect(screen.getByRole('link', { name: 'Criar conta' })).toHaveAttribute(
-      'href',
-      '/cadastro',
-    )
-    expect(screen.getByRole('link', { name: 'Entrar' })).toHaveAttribute(
-      'href',
-      '/entrar',
-    )
+      screen.getByRole('link', { name: 'Voltar para o início' }),
+    ).toHaveAttribute('href', '/')
   })
 
   it('não tem violações de acessibilidade detectáveis automaticamente', async () => {

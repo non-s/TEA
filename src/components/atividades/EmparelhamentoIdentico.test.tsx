@@ -53,7 +53,6 @@ describe('EmparelhamentoIdentico', () => {
       <EmparelhamentoIdentico
         atividade={atividade}
         aoDominar={vi.fn()}
-        uidResponsavel="uid-teste"
         perfilId="perfil-teste"
       />,
     )
@@ -80,7 +79,6 @@ describe('EmparelhamentoIdentico', () => {
       <EmparelhamentoIdentico
         atividade={atividade}
         aoDominar={aoDominar}
-        uidResponsavel="uid-teste"
         perfilId="perfil-teste"
         tentativasAnteriores={tentativasParaNivelIndependente}
       />,
@@ -99,7 +97,6 @@ describe('EmparelhamentoIdentico', () => {
       <EmparelhamentoIdentico
         atividade={atividade}
         aoDominar={vi.fn()}
-        uidResponsavel="uid-teste"
         perfilId="perfil-teste"
       />,
     )

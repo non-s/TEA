@@ -6,7 +6,6 @@ import type {
   Atividade as AtividadeCurricular,
   Tentativa,
 } from '../../curriculo/tipos'
-import type { CartaoComunicacao } from '../../curriculo/cartoesComunicacao'
 import { encontrarProximaAtividadeAposConclusao } from '../../curriculo/proximoPassoSessao'
 import {
   conteudoAcordoPausa,
@@ -18,11 +17,7 @@ import {
   type PlanoRegulacao,
   type RegulacaoPreferencial,
 } from '../../curriculo/perfilApoio'
-import { marcarAtividadeDominada } from '../../firebase/perfis'
-import {
-  ouvirTentativas,
-  registrarObservacaoSessao,
-} from '../../firebase/progresso'
+import { listarTentativas } from '../../local/perfilLocal'
 import { useFocoPreso } from '../../hooks/useFocoPreso'
 import { usePerfilAtivo } from '../../contexts/PerfilAtivoContext'
 import { EmparelhamentoIdentico } from '../../components/atividades/EmparelhamentoIdentico'
@@ -48,8 +43,6 @@ interface PausaAtividadeProps {
 
 interface AtividadeConcluidaProps {
   rotuloAtividade: string
-  erroSalvamento?: string | null
-  salvandoDominio?: boolean
   proximaAtividade: AtividadeCurricular | null
   aoVoltarTrilha: () => void
   aoAbrirProximaAtividade: (atividadeId: string) => void
@@ -68,8 +61,6 @@ interface ConfirmarVoltarTrilhaProps {
 
 function AtividadeConcluida({
   rotuloAtividade,
-  erroSalvamento,
-  salvandoDominio = false,
   proximaAtividade,
   aoVoltarTrilha,
   aoAbrirProximaAtividade,
@@ -103,26 +94,8 @@ function AtividadeConcluida({
         </div>
       </div>
 
-      {erroSalvamento && (
-        <p
-          role="alert"
-          className="rounded-2xl border border-[var(--cor-erro)] bg-[var(--cor-erro)]/10 px-6 py-4 text-sm font-medium text-[var(--cor-erro)] shadow-sm animacao-surgir"
-        >
-          {erroSalvamento}
-        </p>
-      )}
-
-      {salvandoDominio && (
-        <p
-          aria-live="polite"
-          className="text-sm font-bold text-white brilho-pulsante px-4 py-2 rounded-full bg-[var(--cor-primaria)]"
-        >
-          Salvando progresso...
-        </p>
-      )}
-
       <div className="flex w-full flex-col gap-4 z-10">
-        {!salvandoDominio && !erroSalvamento && proximaAtividade && (
+        {proximaAtividade && (
           <Botao
             type="button"
             variante="primario"
@@ -422,25 +395,18 @@ function PausaAtividade({
 export function Atividade() {
   const { atividadeId } = useParams<{ atividadeId: string }>()
   const navigate = useNavigate()
-  const { perfilAtivo, uidResponsavelPerfilAtivo } = usePerfilAtivo()
+  const { perfilAtivo, marcarAtividadeDominada } = usePerfilAtivo()
   const [emPausa, setEmPausa] = useState(false)
   const [confirmandoVoltarTrilha, setConfirmandoVoltarTrilha] = useState(false)
   const [atividadeConcluida, setAtividadeConcluida] = useState(false)
   const [sessaoEncerrada, setSessaoEncerrada] = useState(false)
-  const [salvandoDominio, setSalvandoDominio] = useState(false)
-  const [erroSalvamentoDominio, setErroSalvamentoDominio] = useState<
-    string | null
-  >(null)
   const [atividadesDominadasNestaSessao, setAtividadesDominadasNestaSessao] =
     useState<string[]>([])
   const [sinalComunicarPronto, setSinalComunicarPronto] = useState(0)
   const [sinalPedirAjuda, setSinalPedirAjuda] = useState(0)
-  const [mensagemRegistroComunicacao, setMensagemRegistroComunicacao] =
-    useState<string | null>(null)
   const [tentativasAnteriores, setTentativasAnteriores] = useState<Tentativa[]>(
     [],
   )
-  const [erroHistorico, setErroHistorico] = useState<string | null>(null)
   const atividadeBase = atividadeId
     ? encontrarAtividade(atividadeId)
     : undefined
@@ -450,7 +416,7 @@ export function Atividade() {
         perfilAtivo?.interesseEspecialId,
       )
     : undefined
-  const apoioPreferencial = perfilAtivo?.planoIndividual?.apoioPreferencial
+  const apoioPreferencial = perfilAtivo?.apoioPreferencial
   const acessoPreferencial = perfilAtivo?.perfilApoio?.acessoPreferencial
   const regulacaoPreferencial = perfilAtivo?.perfilApoio?.regulacaoPreferencial
   const planoRegulacao = perfilAtivo?.perfilApoio?.planoRegulacao
@@ -458,21 +424,9 @@ export function Atividade() {
     perfilAtivo?.perfilApoio?.limiteTentativasAntesPausa
 
   useEffect(() => {
-    if (!uidResponsavelPerfilAtivo || !perfilAtivo) return
-    return ouvirTentativas(
-      uidResponsavelPerfilAtivo,
-      perfilAtivo.id,
-      (tentativas) => {
-        setTentativasAnteriores(tentativas)
-        setErroHistorico(null)
-      },
-      () => {
-        setErroHistorico(
-          'O histórico não carregou agora. A atividade continua com apoio visual para preservar segurança.',
-        )
-      },
-    )
-  }, [uidResponsavelPerfilAtivo, perfilAtivo])
+    if (!perfilAtivo) return
+    setTentativasAnteriores(listarTentativas(perfilAtivo.id))
+  }, [perfilAtivo])
 
   useEffect(() => {
     setAtividadesDominadasNestaSessao([])
@@ -480,14 +434,11 @@ export function Atividade() {
 
   useEffect(() => {
     setAtividadeConcluida(false)
-    setSalvandoDominio(false)
-    setErroSalvamentoDominio(null)
     setEmPausa(false)
     setConfirmandoVoltarTrilha(false)
     setSessaoEncerrada(false)
     setSinalComunicarPronto(0)
     setSinalPedirAjuda(0)
-    setMensagemRegistroComunicacao(null)
   }, [atividade?.id])
 
   if (!atividade) {
@@ -510,30 +461,12 @@ export function Atividade() {
     if (!atividade) return
 
     const atividadeDominadaId = atividade.id
-
-    setErroSalvamentoDominio(null)
-    setSalvandoDominio(true)
-    void Promise.resolve(
-      marcarAtividadeDominada(
-        uidResponsavelPerfilAtivo!,
-        perfilAtivo!.id,
-        atividadeDominadaId,
-      ),
+    marcarAtividadeDominada(atividadeDominadaId)
+    setAtividadesDominadasNestaSessao((atuais) =>
+      atuais.includes(atividadeDominadaId)
+        ? atuais
+        : [...atuais, atividadeDominadaId],
     )
-      .then(() => {
-        setAtividadesDominadasNestaSessao((atuais) =>
-          atuais.includes(atividadeDominadaId)
-            ? atuais
-            : [...atuais, atividadeDominadaId],
-        )
-      })
-      .catch((erro: any) => {
-        console.error('Erro ao salvar no Firebase:', erro)
-        setErroSalvamentoDominio(
-          `Falha ao salvar (Erro do Firebase): ${erro.message || JSON.stringify(erro)}`,
-        )
-      })
-      .finally(() => setSalvandoDominio(false))
     setEmPausa(false)
     setAtividadeConcluida(true)
   }
@@ -560,35 +493,12 @@ export function Atividade() {
     navigate('/crianca/trilha')
   }
 
-  function registrarComunicacaoFuncional(mensagem: CartaoComunicacao) {
-    if (!uidResponsavelPerfilAtivo || !perfilAtivo) return
-    const tipo = mensagem.id === 'pausa' ? 'regulacao' : 'comunicacao'
-    const texto = `Comunicou "${mensagem.rotulo}": ${mensagem.fala}`
-    setMensagemRegistroComunicacao(null)
-    void registrarObservacaoSessao(
-      uidResponsavelPerfilAtivo,
-      perfilAtivo.id,
-      texto,
-      tipo,
-    ).catch(() => {
-      setMensagemRegistroComunicacao(
-        'A comunicacao foi respeitada, mas o registro nao salvou agora.',
-      )
-    })
-  }
-
   if (atividadeConcluida) {
     return (
       <main className="mx-auto flex min-h-svh max-w-xl flex-col items-center justify-center px-6 py-10">
         <AtividadeConcluida
           rotuloAtividade={atividade.alvo.rotulo}
-          erroSalvamento={erroSalvamentoDominio}
-          salvandoDominio={salvandoDominio}
-          proximaAtividade={
-            salvandoDominio || erroSalvamentoDominio
-              ? null
-              : encontrarProximoPassoAposConclusao(atividade)
-          }
+          proximaAtividade={encontrarProximoPassoAposConclusao(atividade)}
           aoVoltarTrilha={() => navigate('/crianca/trilha')}
           aoAbrirProximaAtividade={(proximaAtividadeId) =>
             navigate(`/crianca/atividade/${proximaAtividadeId}`)
@@ -617,27 +527,11 @@ export function Atividade() {
         </button>
 
         <div className="flex flex-1 flex-col items-center justify-center">
-          {mensagemRegistroComunicacao && (
-            <output className="mb-4 max-w-md rounded-2xl bg-[var(--cor-primaria-clara)] px-4 py-3 text-center text-sm leading-6 text-[var(--cor-primaria-escura)]">
-              {mensagemRegistroComunicacao}
-            </output>
-          )}
-
-          {erroHistorico && (
-            <p
-              role="alert"
-              className="mb-4 max-w-md rounded-2xl bg-[var(--cor-erro)]/10 px-4 py-3 text-center text-sm text-[var(--cor-erro)]"
-            >
-              {erroHistorico}
-            </p>
-          )}
-
           {(atividade.tipo === 'emparelhamento-identico' ||
             atividade.tipo === 'emparelhamento-categoria') && (
             <EmparelhamentoIdentico
               atividade={atividade}
               aoDominar={aoDominar}
-              uidResponsavel={uidResponsavelPerfilAtivo!}
               perfilId={perfilAtivo!.id}
               apoioPreferencial={apoioPreferencial}
               acessoPreferencial={acessoPreferencial}
@@ -654,7 +548,6 @@ export function Atividade() {
             <NomeacaoReceptiva
               atividade={atividade}
               aoDominar={aoDominar}
-              uidResponsavel={uidResponsavelPerfilAtivo!}
               perfilId={perfilAtivo!.id}
               apoioPreferencial={apoioPreferencial}
               acessoPreferencial={acessoPreferencial}
@@ -671,7 +564,6 @@ export function Atividade() {
             <NomeacaoExpressiva
               atividade={atividade}
               aoDominar={aoDominar}
-              uidResponsavel={uidResponsavelPerfilAtivo!}
               perfilId={perfilAtivo!.id}
               apoioPreferencial={apoioPreferencial}
               acessoPreferencial={acessoPreferencial}
@@ -688,7 +580,6 @@ export function Atividade() {
             <TracadoLetra
               atividade={atividade}
               aoDominar={aoDominar}
-              uidResponsavel={uidResponsavelPerfilAtivo!}
               perfilId={perfilAtivo!.id}
               apoioPreferencial={apoioPreferencial}
               regulacaoPreferencial={regulacaoPreferencial}
@@ -704,7 +595,6 @@ export function Atividade() {
             <FormacaoSilaba
               atividade={atividade}
               aoDominar={aoDominar}
-              uidResponsavel={uidResponsavelPerfilAtivo!}
               perfilId={perfilAtivo!.id}
               apoioPreferencial={apoioPreferencial}
               acessoPreferencial={acessoPreferencial}
@@ -721,7 +611,6 @@ export function Atividade() {
             <FormacaoPalavra
               atividade={atividade}
               aoDominar={aoDominar}
-              uidResponsavel={uidResponsavelPerfilAtivo!}
               perfilId={perfilAtivo!.id}
               apoioPreferencial={apoioPreferencial}
               acessoPreferencial={acessoPreferencial}
@@ -738,7 +627,6 @@ export function Atividade() {
             <MontagemPalavra
               atividade={atividade}
               aoDominar={aoDominar}
-              uidResponsavel={uidResponsavelPerfilAtivo!}
               perfilId={perfilAtivo!.id}
               apoioPreferencial={apoioPreferencial}
               regulacaoPreferencial={regulacaoPreferencial}
@@ -754,7 +642,6 @@ export function Atividade() {
             <LeituraFrase
               atividade={atividade}
               aoDominar={aoDominar}
-              uidResponsavel={uidResponsavelPerfilAtivo!}
               perfilId={perfilAtivo!.id}
               apoioPreferencial={apoioPreferencial}
               acessoPreferencial={acessoPreferencial}
@@ -771,7 +658,6 @@ export function Atividade() {
             <CompreensaoFrase
               atividade={atividade}
               aoDominar={aoDominar}
-              uidResponsavel={uidResponsavelPerfilAtivo!}
               perfilId={perfilAtivo!.id}
               apoioPreferencial={apoioPreferencial}
               acessoPreferencial={acessoPreferencial}
@@ -788,7 +674,6 @@ export function Atividade() {
             <CompreensaoTexto
               atividade={atividade}
               aoDominar={aoDominar}
-              uidResponsavel={uidResponsavelPerfilAtivo!}
               perfilId={perfilAtivo!.id}
               apoioPreferencial={apoioPreferencial}
               acessoPreferencial={acessoPreferencial}
@@ -807,7 +692,6 @@ export function Atividade() {
             <PerguntaLiteralTexto
               atividade={atividade}
               aoDominar={aoDominar}
-              uidResponsavel={uidResponsavelPerfilAtivo!}
               perfilId={perfilAtivo!.id}
               apoioPreferencial={apoioPreferencial}
               acessoPreferencial={acessoPreferencial}
@@ -825,7 +709,6 @@ export function Atividade() {
         <PainelComunicacao
           cartoesComunicacao={perfilAtivo?.perfilApoio?.cartoesComunicacao}
           interesseEspecialId={perfilAtivo?.interesseEspecialId}
-          aoComunicar={registrarComunicacaoFuncional}
           aoComunicarPronto={() =>
             setSinalComunicarPronto((sinal) => sinal + 1)
           }

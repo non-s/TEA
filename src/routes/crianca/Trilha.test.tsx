@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { axe } from 'vitest-axe'
@@ -7,74 +7,25 @@ import { trilhaV1 } from '../../curriculo/trilha-v1'
 import { Trilha } from './Trilha'
 
 const mocks = vi.hoisted(() => ({
-  atualizarPreferencias: vi.fn(),
   encerrarPerfil: vi.fn(),
-  erroAoOuvirPerfil: false,
   navigate: vi.fn(),
-  selecionarPerfil: vi.fn(),
-  usuario: { uid: 'responsavel-1' },
-  perfilAtivo: { id: 'perfil-1', nome: 'Lia' },
-  perfilFirestore: {
+  perfilAtivo: {
     id: 'perfil-1',
     nome: 'Lia',
     atividadesDominadas: ['m0-n1-a1'],
-    preferenciasSensoriais: {
-      som: false,
-      animacoes: false,
-      altoContraste: false,
-      alvosMaiores: true,
-      tamanhoFonte: 'grande',
-    },
   },
-  tentativas: [],
-}))
-
-vi.mock('../../contexts/AuthContext', () => ({
-  useAuth: () => ({
-    usuario: mocks.usuario,
-  }),
+  tentativas: [] as unknown[],
 }))
 
 vi.mock('../../contexts/PerfilAtivoContext', () => ({
   usePerfilAtivo: () => ({
     perfilAtivo: mocks.perfilAtivo,
-    uidResponsavelPerfilAtivo: mocks.usuario?.uid,
     encerrarPerfil: mocks.encerrarPerfil,
-    selecionarPerfil: mocks.selecionarPerfil,
   }),
 }))
 
-vi.mock('../../contexts/PreferenciasContext', () => ({
-  usePreferencias: () => ({
-    atualizarPreferencias: mocks.atualizarPreferencias,
-  }),
-}))
-
-vi.mock('../../firebase/perfis', () => ({
-  ouvirPerfil: (
-    _uidResponsavel: string,
-    _perfilId: string,
-    aoAtualizar: (perfil: unknown) => void,
-    aoErro?: (erro: unknown) => void,
-  ) => {
-    if (mocks.erroAoOuvirPerfil) {
-      aoErro?.(new Error('sem-conexao'))
-    } else {
-      aoAtualizar(mocks.perfilFirestore)
-    }
-    return () => {}
-  },
-}))
-
-vi.mock('../../firebase/progresso', () => ({
-  ouvirTentativas: (
-    _uidResponsavel: string,
-    _perfilId: string,
-    aoAtualizar: (tentativas: unknown[]) => void,
-  ) => {
-    aoAtualizar(mocks.tentativas)
-    return () => {}
-  },
+vi.mock('../../local/perfilLocal', () => ({
+  listarTentativas: () => mocks.tentativas,
 }))
 
 vi.mock('react-router-dom', async () => {
@@ -103,57 +54,12 @@ function idsDoModulo(moduloId: string): string[] {
 describe('Trilha', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mocks.erroAoOuvirPerfil = false
-    ;(mocks as { perfilFirestore: unknown }).perfilFirestore = {
+    mocks.perfilAtivo = {
       id: 'perfil-1',
       nome: 'Lia',
       atividadesDominadas: ['m0-n1-a1'],
-      preferenciasSensoriais: {
-        som: false,
-        animacoes: false,
-        altoContraste: false,
-        alvosMaiores: true,
-        tamanhoFonte: 'grande',
-      },
     }
-    ;(mocks as { tentativas: unknown[] }).tentativas = []
-  })
-
-  it('encerra a sessao infantil quando o perfil ativo nao existe mais', async () => {
-    ;(mocks as { perfilFirestore: unknown }).perfilFirestore = null
-
-    renderizarTrilha()
-
-    await waitFor(() => {
-      expect(mocks.encerrarPerfil).toHaveBeenCalledOnce()
-    })
-    expect(mocks.navigate).toHaveBeenCalledWith('/responsavel/perfis')
-    expect(mocks.selecionarPerfil).not.toHaveBeenCalled()
-    expect(mocks.atualizarPreferencias).not.toHaveBeenCalled()
-  })
-
-  it('sincroniza perfil ativo e preferencias quando o perfil muda no banco', async () => {
-    renderizarTrilha()
-
-    await screen.findByRole('heading', { name: 'Olá, Lia' })
-
-    expect(mocks.selecionarPerfil).toHaveBeenCalledWith(
-      expect.objectContaining({ id: 'perfil-1' }),
-    )
-    expect(mocks.atualizarPreferencias).toHaveBeenCalledWith(
-      expect.objectContaining({ som: false, alvosMaiores: true }),
-    )
-  })
-
-  it('mostra aviso quando a trilha nao consegue atualizar agora', async () => {
-    mocks.erroAoOuvirPerfil = true
-
-    renderizarTrilha()
-
-    expect(await screen.findByRole('alert')).toHaveTextContent(
-      'Não foi possível atualizar a trilha agora.',
-    )
-    expect(mocks.encerrarPerfil).not.toHaveBeenCalled()
+    mocks.tentativas = []
   })
 
   it('nomeia links concluídos com a habilidade para tecnologia assistiva', async () => {
@@ -163,11 +69,9 @@ describe('Trilha', () => {
       await screen.findByRole('heading', { name: 'Olá, Lia' }),
     ).toBeInTheDocument()
 
-    await waitFor(() => {
-      expect(
-        screen.getByRole('link', { name: 'círculo concluída' }),
-      ).toBeInTheDocument()
-    })
+    expect(
+      screen.getByRole('link', { name: 'círculo concluída' }),
+    ).toBeInTheDocument()
     expect(
       screen.getByRole('link', { name: 'Continuar com estrela' }),
     ).toBeInTheDocument()
@@ -178,19 +82,18 @@ describe('Trilha', () => {
 
   it('mantem somente o modulo em foco aberto e abre revisoes sob demanda', async () => {
     const usuario = userEvent.setup()
-    ;(
-      mocks.perfilFirestore as { atividadesDominadas: string[] }
-    ).atividadesDominadas = idsDoModulo('m0')
-    ;(mocks as { tentativas: unknown[] }).tentativas = idsDoModulo('m0').map(
-      (atividadeId) => ({
-        atividadeId,
-        moduloId: 'm0',
-        timestamp: Date.now(),
-        resultado: 'correto',
-        nivelDicaUsado: 2,
-        tempoRespostaMs: 1000,
-      }),
-    )
+    mocks.perfilAtivo = {
+      ...mocks.perfilAtivo,
+      atividadesDominadas: idsDoModulo('m0'),
+    }
+    mocks.tentativas = idsDoModulo('m0').map((atividadeId) => ({
+      atividadeId,
+      moduloId: 'm0',
+      timestamp: Date.now(),
+      resultado: 'correto',
+      nivelDicaUsado: 2,
+      tempoRespostaMs: 1000,
+    }))
 
     renderizarTrilha()
 
@@ -229,20 +132,22 @@ describe('Trilha', () => {
     ).not.toBeInTheDocument()
   })
 
-  it('exige confirmacao adulta antes de sair da trilha infantil', async () => {
+  it('exige confirmacao adulta antes de trocar de perfil', async () => {
     const usuario = userEvent.setup()
     renderizarTrilha()
 
     await usuario.click(
-      screen.getByRole('button', { name: 'Área do responsável' }),
+      screen.getByRole('button', { name: 'Trocar de perfil' }),
     )
 
-    expect(screen.getByRole('dialog', { name: /respons/ })).toBeInTheDocument()
+    expect(screen.getByRole('dialog', { name: /troca/i })).toBeInTheDocument()
     expect(
       screen.getByRole('button', { name: 'Continuar na trilha' }),
     ).toHaveFocus()
     expect(screen.getByLabelText(/Confirma/)).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /Abrir/ })).toBeDisabled()
+    expect(
+      screen.getByRole('button', { name: 'Confirmar troca de perfil' }),
+    ).toBeDisabled()
 
     await usuario.tab()
     expect(screen.getByLabelText(/Confirma/)).toHaveFocus()
@@ -256,24 +161,29 @@ describe('Trilha', () => {
 
     await usuario.clear(screen.getByLabelText(/Confirma/))
     await usuario.type(screen.getByLabelText(/Confirma/), 'adulto')
-    expect(screen.getByRole('button', { name: /Abrir/ })).toBeEnabled()
-    await usuario.click(screen.getByRole('button', { name: /Abrir/ }))
+    const botaoConfirmar = screen.getByRole('button', {
+      name: 'Confirmar troca de perfil',
+    })
+    expect(botaoConfirmar).toBeEnabled()
+    await usuario.click(botaoConfirmar)
 
     expect(mocks.encerrarPerfil).toHaveBeenCalledOnce()
-    expect(mocks.navigate).toHaveBeenCalledWith('/responsavel/perfis')
+    expect(mocks.navigate).toHaveBeenCalledWith('/')
   })
 
-  it('mantem a crianca na trilha quando o acesso adulto foi aberto por engano', async () => {
+  it('mantem a crianca na trilha quando a troca de perfil foi aberta por engano', async () => {
     const usuario = userEvent.setup()
     renderizarTrilha()
 
-    await usuario.click(screen.getByRole('button', { name: /respons/ }))
+    await usuario.click(
+      screen.getByRole('button', { name: 'Trocar de perfil' }),
+    )
     await usuario.click(
       screen.getByRole('button', { name: 'Continuar na trilha' }),
     )
 
     expect(
-      screen.queryByRole('dialog', { name: /respons/ }),
+      screen.queryByRole('dialog', { name: /troca/i }),
     ).not.toBeInTheDocument()
     expect(mocks.encerrarPerfil).not.toHaveBeenCalled()
     expect(mocks.navigate).not.toHaveBeenCalled()

@@ -1,11 +1,8 @@
-import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { calcularJardim, contarFlorescidas } from '../../curriculo/jardim'
 import { trilhaV1 } from '../../curriculo/trilha-v1'
 import { acentoDoModulo } from '../../curriculo/coresModulo'
 import { PlantaJardim } from '../../curriculo/ativos/PlantaJardim'
-import { ouvirPerfil } from '../../firebase/perfis'
-import { useAuth } from '../../contexts/AuthContext'
 import { usePerfilAtivo } from '../../contexts/PerfilAtivoContext'
 
 const textoPorEstagio = {
@@ -21,36 +18,8 @@ const incentivoPorEstagio = {
 } as const
 
 export function Jardim() {
-  const [dominadas, setDominadas] = useState<Set<string>>(new Set())
-  const [erro, setErro] = useState<string | null>(null)
-  const { usuario } = useAuth()
-  const { perfilAtivo, encerrarPerfil } = usePerfilAtivo()
-  const navigate = useNavigate()
-  const perfilId = perfilAtivo?.id
-
-  useEffect(() => {
-    if (!usuario || !perfilId) return
-    return ouvirPerfil(
-      usuario.uid,
-      perfilId,
-      (perfil) => {
-        if (!perfil) {
-          setDominadas(new Set())
-          encerrarPerfil()
-          navigate('/responsavel/perfis')
-          return
-        }
-        setErro(null)
-        setDominadas(new Set(perfil?.atividadesDominadas ?? []))
-      },
-      () => {
-        setErro(
-          'Não foi possível atualizar o jardim agora. Você pode tentar novamente em instantes.',
-        )
-      },
-    )
-  }, [encerrarPerfil, navigate, perfilId, usuario])
-
+  const { perfilAtivo } = usePerfilAtivo()
+  const dominadas = new Set(perfilAtivo?.atividadesDominadas ?? [])
   const canteiros = calcularJardim(trilhaV1, dominadas)
   const florescidas = contarFlorescidas(canteiros)
 
@@ -75,15 +44,6 @@ export function Jardim() {
             ? 'Todos os canteiros floresceram! Você pode voltar aqui sempre que quiser.'
             : `${florescidas} de ${canteiros.length} canteiros já floresceram.`}
       </p>
-
-      {erro && (
-        <p
-          role="alert"
-          className="rounded-2xl bg-[var(--cor-erro)]/10 px-4 py-3 text-sm text-[var(--cor-erro)]"
-        >
-          {erro}
-        </p>
-      )}
 
       <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
         {canteiros.map((canteiro) => {

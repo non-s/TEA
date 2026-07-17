@@ -7,7 +7,7 @@ const mocks = vi.hoisted(() => ({
   registrarTentativa: vi.fn(),
 }))
 
-vi.mock('../firebase/progresso', () => ({
+vi.mock('../local/perfilLocal', () => ({
   registrarTentativa: mocks.registrarTentativa,
 }))
 
@@ -34,9 +34,7 @@ describe('useTentativa', () => {
   })
 
   it('comeca com suporte total e so domina apos fading ate o nivel independente', () => {
-    const { result } = renderHook(() =>
-      useTentativa(atividade, 'uid-teste', 'perfil-teste'),
-    )
+    const { result } = renderHook(() => useTentativa(atividade, 'perfil-teste'))
 
     expect(result.current.nivelDicaAtual).toBe(0)
 
@@ -56,7 +54,7 @@ describe('useTentativa', () => {
 
   it('aumenta o apoio apos uma resposta incorreta no nivel independente', () => {
     const { result } = renderHook(() =>
-      useTentativa(atividade, 'uid-teste', 'perfil-teste', {
+      useTentativa(atividade, 'perfil-teste', {
         tentativasAnteriores: [
           {
             atividadeId: atividade.id,
@@ -90,7 +88,7 @@ describe('useTentativa', () => {
   it('aumenta o apoio quando a crianca pede ajuda sem registrar erro', () => {
     const { result, rerender } = renderHook(
       ({ sinalPedirAjuda }: { sinalPedirAjuda: number }) =>
-        useTentativa(atividade, 'uid-teste', 'perfil-teste', {
+        useTentativa(atividade, 'perfil-teste', {
           sinalPedirAjuda,
           tentativasAnteriores: [
             {
@@ -126,9 +124,7 @@ describe('useTentativa', () => {
   })
 
   it('nao marca como dominada apos uma unica resposta correta com dica', () => {
-    const { result } = renderHook(() =>
-      useTentativa(atividade, 'uid-teste', 'perfil-teste'),
-    )
+    const { result } = renderHook(() => useTentativa(atividade, 'perfil-teste'))
 
     let resultado
     act(() => {
@@ -141,7 +137,7 @@ describe('useTentativa', () => {
   it('permite registrar tentativa local sem usar o backend padrao', async () => {
     const registrarTentativaLocal = vi.fn()
     const { result } = renderHook(() =>
-      useTentativa(atividade, 'uid-teste', 'perfil-teste', {
+      useTentativa(atividade, 'perfil-teste', {
         registrarTentativa: registrarTentativaLocal,
       }),
     )
@@ -163,7 +159,7 @@ describe('useTentativa', () => {
 
   it('sugere pausa em intervalos configurados sem bloquear resposta', () => {
     const { result } = renderHook(() =>
-      useTentativa(atividade, 'uid-teste', 'perfil-teste', {
+      useTentativa(atividade, 'perfil-teste', {
         limiteTentativasAntesPausa: 2,
       }),
     )
@@ -188,7 +184,7 @@ describe('useTentativa', () => {
   it('dispensa sugestao de pausa quando a crianca comunica prontidao', () => {
     const { result, rerender } = renderHook(
       ({ sinalComunicarPronto }: { sinalComunicarPronto: number }) =>
-        useTentativa(atividade, 'uid-teste', 'perfil-teste', {
+        useTentativa(atividade, 'perfil-teste', {
           limiteTentativasAntesPausa: 2,
           sinalComunicarPronto,
         }),
@@ -215,7 +211,7 @@ describe('useTentativa', () => {
 
   it('sugere encerrar por agora depois de alguns intervalos de pausa', () => {
     const { result } = renderHook(() =>
-      useTentativa(atividade, 'uid-teste', 'perfil-teste', {
+      useTentativa(atividade, 'perfil-teste', {
         limiteTentativasAntesPausa: 2,
       }),
     )
@@ -238,7 +234,7 @@ describe('useTentativa', () => {
 
   it('continua sequencia independente registrada antes de sair da atividade', () => {
     const { result } = renderHook(() =>
-      useTentativa(atividade, 'uid-teste', 'perfil-teste', {
+      useTentativa(atividade, 'perfil-teste', {
         tentativasAnteriores: [
           {
             atividadeId: atividade.id,
@@ -270,9 +266,7 @@ describe('useTentativa', () => {
 
   it('avisa quando nao consegue salvar a tentativa sem bloquear a resposta', async () => {
     mocks.registrarTentativa.mockRejectedValueOnce(new Error('offline'))
-    const { result } = renderHook(() =>
-      useTentativa(atividade, 'uid-teste', 'perfil-teste'),
-    )
+    const { result } = renderHook(() => useTentativa(atividade, 'perfil-teste'))
 
     let resposta
     act(() => {
@@ -292,9 +286,7 @@ describe('useTentativa', () => {
     mocks.registrarTentativa
       .mockRejectedValueOnce(new Error('offline'))
       .mockResolvedValueOnce(undefined)
-    const { result } = renderHook(() =>
-      useTentativa(atividade, 'uid-teste', 'perfil-teste'),
-    )
+    const { result } = renderHook(() => useTentativa(atividade, 'perfil-teste'))
 
     act(() => {
       result.current.responder('alvo')

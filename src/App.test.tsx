@@ -11,7 +11,9 @@ describe('App', () => {
 
   it('mostra o nome da plataforma', () => {
     render(<App />)
-    expect(screen.getByRole('heading', { name: 'TEA' })).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: 'Quem vai estudar agora?' }),
+    ).toBeInTheDocument()
   })
 
   it('oferece atalho para pular ao conteudo principal', () => {

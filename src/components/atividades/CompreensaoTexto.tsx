@@ -23,7 +23,6 @@ import { ApoioLeituraCompartilhada } from './ApoioLeituraCompartilhada'
 interface CompreensaoTextoProps {
   atividade: Atividade
   aoDominar: () => void
-  uidResponsavel: string
   perfilId: string
   apoioPreferencial?: ApoioPreferencial
   acessoPreferencial?: AcessoPreferencial
@@ -41,7 +40,6 @@ type Feedback = 'correto' | 'incorreto' | null
 export function CompreensaoTexto({
   atividade,
   aoDominar,
-  uidResponsavel,
   perfilId,
   apoioPreferencial,
   acessoPreferencial,
@@ -61,7 +59,7 @@ export function CompreensaoTexto({
     erroRegistroTentativa,
     dispensarSugestaoEncerrarSessao,
     dispensarSugestaoPausa,
-  } = useTentativa(atividade, uidResponsavel, perfilId, {
+  } = useTentativa(atividade, perfilId, {
     limiteTentativasAntesPausa,
     sinalComunicarPronto,
     sinalPedirAjuda,

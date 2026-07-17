@@ -71,7 +71,6 @@ describe('PerguntaLiteralTexto', () => {
       <PerguntaLiteralTexto
         atividade={atividade}
         aoDominar={vi.fn()}
-        uidResponsavel="uid-teste"
         perfilId="perfil-teste"
       />,
     )
@@ -106,7 +105,6 @@ describe('PerguntaLiteralTexto', () => {
       <PerguntaLiteralTexto
         atividade={atividade}
         aoDominar={aoDominar}
-        uidResponsavel="uid-teste"
         perfilId="perfil-teste"
         tentativasAnteriores={tentativasParaNivelIndependente}
       />,
@@ -125,7 +123,6 @@ describe('PerguntaLiteralTexto', () => {
       <PerguntaLiteralTexto
         atividade={atividade}
         aoDominar={vi.fn()}
-        uidResponsavel="uid-teste"
         perfilId="perfil-teste"
       />,
     )

@@ -33,15 +33,6 @@ export function NaoEncontrada() {
         >
           Ir para o início
         </Link>
-        <Link
-          className={classesBotao({
-            variante: 'secundario',
-            tamanho: 'grande',
-          })}
-          to="/demo"
-        >
-          Ver demonstração
-        </Link>
       </div>
     </main>
   )

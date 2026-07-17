@@ -18,9 +18,6 @@ describe('NaoEncontrada', () => {
     expect(
       screen.getByRole('link', { name: 'Ir para o início' }),
     ).toHaveAttribute('href', '/')
-    expect(
-      screen.getByRole('link', { name: 'Ver demonstração' }),
-    ).toHaveAttribute('href', '/demo')
   })
 
   it('nao tem violacoes de acessibilidade detectaveis automaticamente', async () => {

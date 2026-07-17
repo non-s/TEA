@@ -6,7 +6,7 @@ export function RequirePerfilAtivo({ children }: { children: ReactNode }) {
   const { perfilAtivo } = usePerfilAtivo()
 
   if (!perfilAtivo) {
-    return <Navigate to="/responsavel/perfis" replace />
+    return <Navigate to="/" replace />
   }
 
   return <>{children}</>

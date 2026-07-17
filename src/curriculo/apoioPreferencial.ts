@@ -1,7 +1,13 @@
-import type { PlanoIndividual } from '../firebase/perfis'
 import type { RegulacaoPreferencial } from './perfilApoio'
 
-export type ApoioPreferencial = PlanoIndividual['apoioPreferencial']
+export const apoiosPreferenciais = [
+  'visual',
+  'verbal',
+  'gestual',
+  'pausa',
+] as const
+
+export type ApoioPreferencial = (typeof apoiosPreferenciais)[number]
 
 interface ConteudoApoioPreferencial {
   passosPreparacao: [string, string, string]

@@ -2,117 +2,147 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
   type ReactNode,
 } from 'react'
-import type { PerfilCrianca } from '../firebase/perfis'
-import { useAuth } from './AuthContext'
-
-const CHAVE_SESSAO = 'tea:perfilAtivo'
-
-interface PerfilAtivoSalvo {
-  uidResponsavel: string | null
-  perfil: PerfilCrianca
-}
-
-function lerPerfilSalvo(): PerfilAtivoSalvo | null {
-  const bruto = sessionStorage.getItem(CHAVE_SESSAO)
-  if (!bruto) return null
-  try {
-    const dados = JSON.parse(bruto) as Partial<PerfilAtivoSalvo>
-    if (dados.perfil && 'id' in dados.perfil) {
-      return {
-        uidResponsavel:
-          typeof dados.uidResponsavel === 'string'
-            ? dados.uidResponsavel
-            : null,
-        perfil: dados.perfil as PerfilCrianca,
-      }
-    }
-    sessionStorage.removeItem(CHAVE_SESSAO)
-    return null
-  } catch {
-    sessionStorage.removeItem(CHAVE_SESSAO)
-    return null
-  }
-}
+import {
+  atualizarPerfil as atualizarPerfilLocal,
+  criarPerfil as criarPerfilLocal,
+  definirPerfilAtivoId,
+  excluirPerfil as excluirPerfilLocal,
+  listarPerfis,
+  marcarAtividadeDominada as marcarAtividadeDominadaLocal,
+  perfilAtivoId,
+  type PerfilLocal,
+} from '../local/perfilLocal'
 
 interface PerfilAtivoContextValor {
-  perfilAtivo: PerfilCrianca | null
-  uidResponsavelPerfilAtivo: string | null
-  selecionarPerfil: (perfil: PerfilCrianca) => void
+  perfilAtivo: PerfilLocal | null
+  perfis: PerfilLocal[]
+  criarPerfil: (
+    nome: string,
+    avatarId: string,
+    opcoes?: Partial<
+      Pick<
+        PerfilLocal,
+        'interesseEspecialId' | 'apoioPreferencial' | 'perfilApoio'
+      >
+    >,
+    tornarAtivo?: boolean,
+  ) => PerfilLocal
+  selecionarPerfil: (perfilId: string) => void
+  atualizarPerfilAtivo: (
+    alteracoes: Partial<Omit<PerfilLocal, 'id' | 'criadoEm'>>,
+  ) => void
+  marcarAtividadeDominada: (atividadeId: string) => void
+  excluirPerfil: (perfilId: string) => void
   encerrarPerfil: () => void
 }
 
 const PerfilAtivoContext = createContext<PerfilAtivoContextValor | null>(null)
 
 export function PerfilAtivoProvider({ children }: { children: ReactNode }) {
-  const { carregando, usuario } = useAuth()
-  const perfilSalvo = useMemo(() => lerPerfilSalvo(), [])
-  const [perfilAtivo, setPerfilAtivo] = useState<PerfilCrianca | null>(
-    () => perfilSalvo?.perfil ?? null,
+  const [perfis, setPerfis] = useState<PerfilLocal[]>(() => listarPerfis())
+  const [perfilAtivoIdEstado, setPerfilAtivoIdEstado] = useState<string | null>(
+    () => perfilAtivoId(),
   )
-  const [uidResponsavelPerfilAtivo, setUidResponsavelPerfilAtivo] = useState<
-    string | null
-  >(() => perfilSalvo?.uidResponsavel ?? null)
 
-  const encerrarPerfil = useCallback(() => {
-    setPerfilAtivo(null)
-    setUidResponsavelPerfilAtivo(null)
-    sessionStorage.removeItem(CHAVE_SESSAO)
+  const perfilAtivo = useMemo(
+    () => perfis.find((perfil) => perfil.id === perfilAtivoIdEstado) ?? null,
+    [perfis, perfilAtivoIdEstado],
+  )
+
+  const selecionarPerfil = useCallback((perfilId: string) => {
+    definirPerfilAtivoId(perfilId)
+    setPerfilAtivoIdEstado(perfilId)
   }, [])
 
-  const selecionarPerfil = useCallback(
-    (perfil: PerfilCrianca) => {
-      const uidResponsavel = usuario?.uid ?? null
-      setPerfilAtivo(perfil)
-      setUidResponsavelPerfilAtivo(uidResponsavel)
-      sessionStorage.setItem(
-        CHAVE_SESSAO,
-        JSON.stringify({ uidResponsavel, perfil }),
-      )
+  const criarPerfil = useCallback(
+    (
+      nome: string,
+      avatarId: string,
+      opcoes?: Partial<
+        Pick<
+          PerfilLocal,
+          'interesseEspecialId' | 'apoioPreferencial' | 'perfilApoio'
+        >
+      >,
+      tornarAtivo = true,
+    ) => {
+      const perfil = criarPerfilLocal(nome, avatarId, opcoes)
+      setPerfis((atuais) => [...atuais, perfil])
+      if (tornarAtivo) selecionarPerfil(perfil.id)
+      return perfil
     },
-    [usuario],
+    [selecionarPerfil],
   )
 
-  useEffect(() => {
-    if (!carregando && !usuario) {
-      encerrarPerfil()
-      return
-    }
+  const atualizarPerfilAtivo = useCallback(
+    (alteracoes: Partial<Omit<PerfilLocal, 'id' | 'criadoEm'>>) => {
+      if (!perfilAtivoIdEstado) return
+      const atualizado = atualizarPerfilLocal(perfilAtivoIdEstado, alteracoes)
+      if (!atualizado) return
+      setPerfis((atuais) =>
+        atuais.map((perfil) =>
+          perfil.id === atualizado.id ? atualizado : perfil,
+        ),
+      )
+    },
+    [perfilAtivoIdEstado],
+  )
 
-    if (
-      !carregando &&
-      usuario &&
-      perfilAtivo &&
-      uidResponsavelPerfilAtivo !== usuario.uid
-    ) {
-      encerrarPerfil()
-    }
-  }, [
-    carregando,
-    encerrarPerfil,
-    perfilAtivo,
-    uidResponsavelPerfilAtivo,
-    usuario,
-  ])
+  const marcarAtividadeDominada = useCallback(
+    (atividadeId: string) => {
+      if (!perfilAtivoIdEstado) return
+      const atualizado = marcarAtividadeDominadaLocal(
+        perfilAtivoIdEstado,
+        atividadeId,
+      )
+      if (!atualizado) return
+      setPerfis((atuais) =>
+        atuais.map((perfil) =>
+          perfil.id === atualizado.id ? atualizado : perfil,
+        ),
+      )
+    },
+    [perfilAtivoIdEstado],
+  )
+
+  const excluirPerfil = useCallback(
+    (perfilId: string) => {
+      excluirPerfilLocal(perfilId)
+      setPerfis((atuais) => atuais.filter((perfil) => perfil.id !== perfilId))
+      if (perfilId === perfilAtivoIdEstado) setPerfilAtivoIdEstado(null)
+    },
+    [perfilAtivoIdEstado],
+  )
+
+  const encerrarPerfil = useCallback(() => {
+    definirPerfilAtivoId(null)
+    setPerfilAtivoIdEstado(null)
+  }, [])
 
   const valor = useMemo(
     () => ({
       perfilAtivo,
-      uidResponsavelPerfilAtivo:
-        uidResponsavelPerfilAtivo ?? usuario?.uid ?? null,
+      perfis,
+      criarPerfil,
       selecionarPerfil,
+      atualizarPerfilAtivo,
+      marcarAtividadeDominada,
+      excluirPerfil,
       encerrarPerfil,
     }),
     [
-      encerrarPerfil,
       perfilAtivo,
+      perfis,
+      criarPerfil,
       selecionarPerfil,
-      uidResponsavelPerfilAtivo,
-      usuario,
+      atualizarPerfilAtivo,
+      marcarAtividadeDominada,
+      excluirPerfil,
+      encerrarPerfil,
     ],
   )
 
