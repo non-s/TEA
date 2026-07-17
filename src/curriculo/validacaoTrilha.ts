@@ -279,6 +279,11 @@ function validarAtividadeContraRepertorio(
     return
   }
 
+  if (atividade.tipo === 'montagem-palavra') {
+    validarMontagemPalavra(atividade, repertorio, problemas)
+    return
+  }
+
   if (atividade.tipo === 'leitura-frase') {
     validarFrase(atividade, repertorio, problemas)
     return
@@ -354,6 +359,64 @@ function validarPalavra(
         moduloId: atividade.moduloId,
         atividadeId: atividade.id,
         mensagem: `Palavra ${palavra} usa a silaba ${silaba} antes de ela aparecer na trilha.`,
+      })
+    }
+  }
+}
+
+function validarMontagemPalavra(
+  atividade: Atividade,
+  repertorio: RepertorioEnsino,
+  problemas: ProblemaTrilha[],
+) {
+  const palavra = normalizarToken(atividade.resposta.rotulo)
+  const pecas = atividade.pecas ?? []
+
+  if (pecas.length < 2) {
+    registrarProblema(problemas, {
+      codigo: 'MONTAGEM_PALAVRA_SEM_PECAS_SUFICIENTES',
+      moduloId: atividade.moduloId,
+      atividadeId: atividade.id,
+      mensagem: `Montagem de palavra ${palavra} precisa de pelo menos 2 pecas.`,
+    })
+  }
+
+  const palavraMontada = pecas
+    .map((peca) => normalizarToken(peca.rotulo))
+    .join('')
+
+  if (palavra.length > 0 && palavraMontada !== palavra) {
+    registrarProblema(problemas, {
+      codigo: 'MONTAGEM_PALAVRA_PECAS_NAO_FORMAM_PALAVRA',
+      moduloId: atividade.moduloId,
+      atividadeId: atividade.id,
+      mensagem: `As pecas de ${atividade.id} formam "${palavraMontada}", nao "${palavra}".`,
+    })
+  }
+
+  for (const peca of pecas) {
+    const silaba = normalizarToken(peca.rotulo)
+    if (silaba && !repertorio.silabas.has(silaba)) {
+      registrarProblema(problemas, {
+        codigo: 'MONTAGEM_PALAVRA_COM_SILABA_NAO_ENSINADA',
+        moduloId: atividade.moduloId,
+        atividadeId: atividade.id,
+        mensagem: `Montagem de palavra ${palavra} usa a silaba ${silaba} antes de ela aparecer na trilha.`,
+      })
+    }
+  }
+
+  const rotulosPecas = new Set(
+    pecas.map((peca) => normalizarToken(peca.rotulo)),
+  )
+  for (const distrator of atividade.distratores) {
+    const silabaDistratora = normalizarToken(distrator.rotulo)
+    if (rotulosPecas.has(silabaDistratora)) {
+      registrarProblema(problemas, {
+        codigo: 'MONTAGEM_PALAVRA_DISTRATOR_IGUAL_PECA',
+        moduloId: atividade.moduloId,
+        atividadeId: atividade.id,
+        mensagem: `Montagem de palavra ${palavra} tem uma silaba distratora igual a uma das pecas certas.`,
       })
     }
   }
@@ -606,7 +669,10 @@ function adicionarAoRepertorio(
     return
   }
 
-  if (atividade.tipo === 'formacao-palavra') {
+  if (
+    atividade.tipo === 'formacao-palavra' ||
+    atividade.tipo === 'montagem-palavra'
+  ) {
     repertorio.palavras.add(normalizarToken(atividade.resposta.rotulo))
   }
 }

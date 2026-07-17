@@ -23,9 +23,15 @@ describe('validarTrilha', () => {
     expect(codigosDaTrilha(trilha)).toContain('ATIVIDADE_DUPLICADA')
   })
 
+  function moduloPorId(trilha: Trilha, id: string) {
+    const modulo = trilha.modulos.find((modulo) => modulo.id === id)
+    if (!modulo) throw new Error(`Modulo ${id} nao encontrado`)
+    return modulo
+  }
+
   it('detecta palavra formada por silaba ainda nao ensinada', () => {
     const trilha = clonarTrilha(trilhaV1)
-    const atividade = trilha.modulos[6].atividades[0]
+    const atividade = moduloPorId(trilha, 'm5').atividades[0]
     atividade.resposta.rotulo = 'HAPA'
     atividade.resposta.audioTexto = 'HA-PA, HAPA'
 
@@ -34,7 +40,7 @@ describe('validarTrilha', () => {
 
   it('detecta frase com palavra ainda nao ensinada', () => {
     const trilha = clonarTrilha(trilhaV1)
-    const atividade = trilha.modulos[7].atividades[0]
+    const atividade = moduloPorId(trilha, 'm6').atividades[0]
     atividade.resposta.rotulo = 'O ZEBU'
     atividade.resposta.audioTexto = 'O zebu'
 
@@ -43,7 +49,7 @@ describe('validarTrilha', () => {
 
   it('detecta compreensao de frase com palavra-resposta ainda nao ensinada', () => {
     const trilha = clonarTrilha(trilhaV1)
-    const atividade = trilha.modulos[8].atividades[0]
+    const atividade = moduloPorId(trilha, 'm7').atividades[0]
     atividade.resposta.rotulo = 'ZEBU'
     atividade.resposta.audioTexto = 'CA-SA, CASA'
 
@@ -54,7 +60,7 @@ describe('validarTrilha', () => {
 
   it('detecta compreensao de texto com palavra ainda nao ensinada', () => {
     const trilha = clonarTrilha(trilhaV1)
-    const atividade = trilha.modulos[9].atividades[0]
+    const atividade = moduloPorId(trilha, 'm8').atividades[0]
     atividade.alvo.rotulo = 'A MALA. A ZEBU.'
 
     expect(codigosDaTrilha(trilha)).toContain('TEXTO_COM_PALAVRA_NAO_ENSINADA')
@@ -69,7 +75,7 @@ describe('validarTrilha', () => {
 
   it('detecta pergunta literal de texto incompleta ou fora do repertorio', () => {
     const trilha = clonarTrilha(trilhaV1)
-    const atividade = trilha.modulos[10].atividades[0]
+    const atividade = moduloPorId(trilha, 'm9').atividades[0]
     atividade.alvo.rotulo = 'A MALA. A ZEBU.'
     atividade.pergunta = ''
 

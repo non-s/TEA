@@ -56,6 +56,7 @@ function construirAtividade(
   distratores: Estimulo[],
   pergunta?: string,
   respostaDeveAparecerNoTexto?: boolean,
+  pecas?: Estimulo[],
 ): Atividade {
   return {
     id,
@@ -67,6 +68,7 @@ function construirAtividade(
     ...(respostaDeveAparecerNoTexto === undefined
       ? {}
       : { respostaDeveAparecerNoTexto }),
+    ...(pecas === undefined ? {} : { pecas }),
     resposta,
     distratores,
     dicas: dicasPadrao,
@@ -740,6 +742,75 @@ const modulo5: Modulo = {
       palavrasModulo5[(indice + 1) % palavrasModulo5.length],
       palavrasModulo5[(indice + 2) % palavrasModulo5.length],
     ]),
+  ),
+}
+
+function estimuloSilabaPeca(idUnico: string, silaba: string): Estimulo {
+  return {
+    id: idUnico,
+    rotulo: silaba,
+    iconeId: iconeLetra(silaba),
+  }
+}
+
+const silabasDisponiveisParaMontagem = silabasModulo4.map(
+  (silaba) => silaba.caractere,
+)
+
+function silabasDistratorasParaMontagem(
+  palavra: Palavra,
+  indice: number,
+): string[] {
+  const silabasProprias = new Set(palavra.silabas.split('-'))
+  const candidatas = silabasDisponiveisParaMontagem.filter(
+    (caractere) => !silabasProprias.has(caractere),
+  )
+  const primeira = candidatas[indice % candidatas.length]
+  const segunda = candidatas[(indice + 7) % candidatas.length]
+  return primeira === segunda ? [primeira] : [primeira, segunda]
+}
+
+function atividadeMontagemPalavra(palavra: Palavra, indice: number): Atividade {
+  const estimuloAlvo = estimuloPalavra(`montagem-${palavra.texto}`, palavra)
+  const pecas = palavra.silabas
+    .split('-')
+    .map((silaba, indiceSilaba) =>
+      estimuloSilabaPeca(
+        `montagem-${palavra.texto}-peca-${indiceSilaba}`,
+        silaba,
+      ),
+    )
+  const distratores = silabasDistratorasParaMontagem(palavra, indice).map(
+    (silaba) =>
+      estimuloSilabaPeca(
+        `montagem-${palavra.texto}-distrator-${silaba}`,
+        silaba,
+      ),
+  )
+
+  return construirAtividade(
+    `m10-${palavra.texto}`,
+    'm10',
+    'montagem-palavra',
+    1,
+    estimuloAlvo,
+    estimuloAlvo,
+    distratores,
+    undefined,
+    undefined,
+    pecas,
+  )
+}
+
+const modulo10: Modulo = {
+  id: 'm10',
+  titulo: 'Montagem de Palavras',
+  descricao:
+    'Toque as sílabas certas em ordem para montar a palavra mostrada, entre sílabas distratoras misturadas. Primeira prática de escrita da trilha: a criança produz a sequência em vez de só reconhecer a palavra pronta, mas continua por toque — sem exigir fala, digitação ou caligrafia.',
+  ordem: 5.5,
+  preRequisitoModuloId: 'm5',
+  atividades: palavrasModulo5.map((palavra, indice) =>
+    atividadeMontagemPalavra(palavra, indice),
   ),
 }
 
@@ -1465,6 +1536,7 @@ export const trilhaV1: Trilha = {
     modulo3t,
     modulo4,
     modulo5,
+    modulo10,
     modulo6,
     modulo7,
     modulo8,

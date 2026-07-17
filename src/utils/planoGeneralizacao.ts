@@ -54,6 +54,8 @@ function objetivoForaDaTela(atividade: Atividade | null): string {
       return 'Associar a sílaba-alvo a uma palavra familiar, mantendo apoio visual.'
     case 'formacao-palavra':
       return 'Reconhecer uma palavra simples formada por sílabas já praticadas.'
+    case 'montagem-palavra':
+      return 'Montar uma palavra simples tocando as sílabas certas em ordem, entre sílabas distratoras.'
     case 'leitura-frase':
       return 'Ler uma frase curta formada por palavras já praticadas, respondendo por seleção.'
     case 'compreensao-frase':
@@ -110,6 +112,12 @@ function materiaisSimples(atividade: Atividade | null): string[] {
         `Cartão da palavra "${atividade.alvo.rotulo}".`,
         'Sílabas móveis da palavra e uma palavra distratora simples.',
         'Figura ou objeto que ajude a ligar palavra e significado.',
+      ]
+    case 'montagem-palavra':
+      return [
+        `Cartão-modelo da palavra "${atividade.alvo.rotulo}".`,
+        'Sílabas móveis certas da palavra, misturadas com 1 ou 2 erradas.',
+        'Espaço livre na mesa para organizar as sílabas em sequência.',
       ]
     case 'leitura-frase':
       return [
@@ -182,6 +190,7 @@ function oportunidadesNaturais(atividade: Atividade | null): string[] {
       ]
     case 'formacao-silaba':
     case 'formacao-palavra':
+    case 'montagem-palavra':
       return [
         'Casa: ligar a sílaba ou palavra a uma figura familiar da rotina.',
         'Escola/terapia: montar a sílaba ou palavra com cartões móveis antes de pedir escolha.',

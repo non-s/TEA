@@ -59,6 +59,8 @@ function instrucaoMediador(atividade: Atividade | null): string {
       return `Diga "${atividade.alvo.audioTexto ?? atividade.alvo.rotulo}" e ofereça sílabas para seleção.`
     case 'formacao-palavra':
       return `Diga "${atividade.alvo.audioTexto ?? atividade.alvo.rotulo}" e ofereça palavras para seleção.`
+    case 'montagem-palavra':
+      return `Mostre a palavra "${atividade.alvo.rotulo}" escrita e ofereça as sílabas recortadas (certas e algumas erradas) para a criança montar em ordem sobre a mesa.`
     case 'leitura-frase':
       return `Leia "${atividade.alvo.audioTexto ?? atividade.alvo.rotulo}" e ofereça frases curtas para seleção.`
     case 'compreensao-frase':
@@ -88,7 +90,10 @@ function cartoesAtividade(atividade: Atividade | null): string {
     `
   }
 
-  const opcoes = [atividade.resposta, ...atividade.distratores]
+  const opcoes =
+    atividade.tipo === 'montagem-palavra'
+      ? [...(atividade.pecas ?? []), ...atividade.distratores]
+      : [atividade.resposta, ...atividade.distratores]
   return `
     <article class="card target">
       <small>Modelo</small>

@@ -14,13 +14,13 @@ describe('trilhaV1', () => {
       (modulo) => modulo.id === 'm9',
     )
 
-    expect(trilhaV1.modulos).toHaveLength(11)
+    expect(trilhaV1.modulos).toHaveLength(12)
     expect(
       trilhaV1.modulos.reduce(
         (total, modulo) => total + modulo.atividades.length,
         0,
       ),
-    ).toBe(635)
+    ).toBe(753)
     expect(moduloSilabas?.atividades).toHaveLength(157)
     expect(moduloSilabas?.atividades).toContainEqual(
       expect.objectContaining({
@@ -328,5 +328,50 @@ describe('trilhaV1', () => {
         resposta: expect.objectContaining({ rotulo: 'MOTO' }),
       }),
     )
+  })
+
+  it('monta palavras a partir das silabas certas, com sequencia e distratores', () => {
+    const moduloMontagem = trilhaV1.modulos.find(
+      (modulo) => modulo.id === 'm10',
+    )
+
+    expect(moduloMontagem?.preRequisitoModuloId).toBe('m5')
+    expect(moduloMontagem?.atividades).toHaveLength(118)
+
+    const montagemMala = moduloMontagem?.atividades.find(
+      (atividade) => atividade.id === 'm10-MALA',
+    )
+    expect(montagemMala).toEqual(
+      expect.objectContaining({
+        tipo: 'montagem-palavra',
+        resposta: expect.objectContaining({ rotulo: 'MALA' }),
+        pecas: [
+          expect.objectContaining({ rotulo: 'MA' }),
+          expect.objectContaining({ rotulo: 'LA' }),
+        ],
+      }),
+    )
+    expect(montagemMala?.distratores.length).toBeGreaterThan(0)
+    // As sílabas distratoras não podem coincidir com as peças certas, senão
+    // a criança teria duas peças indistinguíveis pra escolher no mesmo
+    // passo da sequência.
+    const rotulosPecas = new Set(
+      montagemMala?.pecas?.map((peca) => peca.rotulo),
+    )
+    for (const distrator of montagemMala?.distratores ?? []) {
+      expect(rotulosPecas.has(distrator.rotulo)).toBe(false)
+    }
+
+    // Palavra com sílaba repetida (BEBE = BE-BE): cada peça precisa de um
+    // id único mesmo tendo o mesmo rótulo, senão o React reclamaria de
+    // chaves duplicadas e a segunda peça nunca ficaria disponível.
+    const montagemBebe = moduloMontagem?.atividades.find(
+      (atividade) => atividade.id === 'm10-BEBE',
+    )
+    expect(montagemBebe?.pecas).toEqual([
+      expect.objectContaining({ rotulo: 'BE' }),
+      expect.objectContaining({ rotulo: 'BE' }),
+    ])
+    expect(montagemBebe?.pecas?.[0].id).not.toBe(montagemBebe?.pecas?.[1].id)
   })
 })

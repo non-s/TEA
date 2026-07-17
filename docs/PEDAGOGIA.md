@@ -28,7 +28,7 @@ O TEA é um espectro amplo — da DSM-5, os "níveis de suporte" (1 a 3) descrev
 3. **Oferece dica com esmaecimento em toda atividade** (ver abaixo), então uma criança que precisa de mais suporte visual recebe mais suporte, e uma que já domina o conceito avança rápido — o mesmo currículo serve necessidades de suporte muito diferentes.
 4. **É ajustável sensorial e motoramente**, já que hipo/hipersensibilidade sensorial, coordenação motora fina, precisão de toque e forma de mediação variam enormemente entre indivíduos autistas e não se correlacionam diretamente com "nível de suporte".
 
-## A sequência de habilidades (Módulos 0–11, mais o módulo paralelo 3-T)
+## A sequência de habilidades (Módulos 0–9, mais os módulos paralelos 3-T e 5-M)
 
 A ordem dos módulos segue uma cadeia de pré-requisitos bem estabelecida na literatura comportamental sobre discriminação de estímulos, unida ao consenso mais recente sobre alfabetização em TEA.
 
@@ -42,7 +42,7 @@ Depois de emparelhamento idêntico, o próximo passo é generalização: reconhe
 
 ### Módulo 2 — Nomeação Receptiva de Letras
 
-"Toque na letra que eu disser" (nomeação receptiva) é ensinada antes de "diga o nome desta letra" (nomeação expressiva) porque não depende de fala — é acessível a crianças não-verbais ou com fala emergente, e antecede consistentemente a nomeação expressiva em programas de ensino de discriminação. Vogais entram primeiro, seguidas pelas 5 consoantes de maior frequência em português (M, P, T, L, B), refletindo a ordem comum de cartilhas fônicas no Brasil.
+"Toque na letra que eu disser" (nomeação receptiva) é ensinada antes de "diga o nome desta letra" (nomeação expressiva) porque não depende de fala — é acessível a crianças não-verbais ou com fala emergente, e antecede consistentemente a nomeação expressiva em programas de ensino de discriminação. Vogais entram primeiro, seguidas das consoantes em ordem de frequência/regularidade em português (M, P, T, L, B, D, N, V, F, S, C, R, H, G, J, Q, Z — H e Q são ensinadas pelo nome, já que quase não têm som isoladas em português e só aparecem em dígrafos/combinações).
 
 ### Módulo 3 — Nomeação Expressiva de Letras
 
@@ -58,13 +58,19 @@ Esse módulo é deliberadamente **não bloqueante**: ele não é pré-requisito 
 
 ### Módulo 4 — Consciência Fonológica e Formação de Sílabas
 
-Juntar consoante + vogal (ex: M + A = "MA") só é introduzido depois que as letras-alvo já foram dominadas nos módulos 2–3 — consciência fonológica depende de já reconhecer os grafemas envolvidos. O método é fônico-silábico, o padrão de alfabetização inicial em português do Brasil, com apoio de imagem (ponte de Comunicação Alternativa: a sílaba aparece associada a uma palavra/figura familiar, ex. "MA" de "mamãe"). A trilha cobre combinações CV com as consoantes ensinadas e as vogais A/E/I/O/U, como MA/ME/MI/MO/MU, PA/PE/PI/PO/PU, TA/TE/TI/TO/TU, LA/LE/LI/LO/LU e BA/BE/BI/BO/BU.
+Juntar consoante + vogal (ex: M + A = "MA") só é introduzido depois que as letras-alvo já foram dominadas nos módulos 2–3 — consciência fonológica depende de já reconhecer os grafemas envolvidos. O método é fônico-silábico, o padrão de alfabetização inicial em português do Brasil, com apoio de imagem (ponte de Comunicação Alternativa: a sílaba aparece associada a uma palavra/figura familiar, ex. "MA" de "mamãe"). A trilha cobre combinações CV com todas as consoantes ensinadas e as vogais A/E/I/O/U, e depois amplia progressivamente para os padrões silábicos de maior frequência do português que ainda usam só o alfabeto já ensinado: dígrafos (CH, LH, NH, QU, GU), encontros consonantais com R e alguns com L (BR, CR, DR, FR, GR, PR, TR, BLO, BLU, CLA, CLO, CLU, FLO, GLO, PLA, PLU), um primeiro grupo de ditongos orais combinados com consoante (FEI, BEI, NOI, AU, BAI, LOU, MOI, COU) e sílabas fechadas — tanto orais (POR, CAR, FES, GOS, VOL, SAL, MOS, PER) quanto nasalizadas com M/N (CAN, CON, TEM, VEN, MON, PON). Vogais nasais com til (ÃO, ÃE, ÕE) ficam de fora por enquanto: exigiriam ensinar letras acentuadas como unidades próprias, o que muda a granularidade do alfabeto e merece um passo dedicado.
 
 A pesquisa mais recente sobre leitura em TEA (Wittenburg-Bausell & Ganz, 2020, _"The Promise of Comprehensive Early Reading Instruction for Children With Autism"_, ASHA _LSHSS_) recomenda cobrir os "cinco pilares" da leitura — consciência fonêmica, fonética, fluência, vocabulário e compreensão — de forma direta, sistemática e individualizada. A trilha desta plataforma começa pelos dois primeiros pilares (consciência fonêmica e fonética/fonics) e, depois de palavras simples, introduz leitura inicial de frases curtas por seleção, compreensão literal de frase, primeiro contato com textos de duas frases, perguntas literais sobre esses textos, discriminação explícita de palavra que apareceu/não apareceu e inferência guiada por seleção. Fluência, vocabulário amplo e compreensão textual aberta continuam como evolução futura.
 
 ### Módulo 5 — Formação de Palavras Simples
 
-Depois que a criança domina sílabas-alvo, a trilha introduz palavras CV-CV compostas apenas por sílabas já trabalhadas (ex: "MALA", "PATA", "BALA", "MAPA", "LAMA", "BABA", "MOTO", "PIPA", "BOLA", "BULE", "LOBO" e "TUBO"). A tarefa ainda é por seleção/toque, sem exigir fala, e mantém o mesmo desenho de ensino sem erro. Esta etapa cria a ponte entre consciência silábica e leitura de palavras, com repertório suficiente para variar frases e textos sem introduzir sílabas novas escondidas.
+Depois que a criança domina sílabas-alvo, a trilha introduz palavras compostas apenas por sílabas já trabalhadas (ex: "MALA", "PATA", "CHAVE", "PORTA", "TEMPO"). A tarefa ainda é por seleção/toque, sem exigir fala, e mantém o mesmo desenho de ensino sem erro. Esta etapa cria a ponte entre consciência silábica e leitura de palavras, com repertório suficiente para variar frases e textos sem introduzir sílabas novas escondidas.
+
+### Módulo 5-M — Montagem de Palavras
+
+Em paralelo ao Módulo 5 (mesmo pré-requisito, sem depender um do outro — mesma lógica de inclusão de acesso do Módulo 3-T), a trilha oferece a primeira prática de **escrita/codificação**: em vez de reconhecer a palavra já pronta entre opções, a criança toca as sílabas certas em ordem, entre 1–2 sílabas erradas misturadas, para reconstruir a palavra mostrada como modelo.
+
+Isso responde a uma limitação real das atividades de leitura anteriores — todas pedem só reconhecimento/seleção da unidade inteira, nenhuma exige que a criança produza a sequência correta. Diferente de digitar ou desenhar (que exigiriam teclado, precisão motora fina ou visão de escrita cursiva), a montagem por toque de sílabas continua acessível a crianças não-verbais, com baixa precisão motora ou que usam escolha mediada — o mesmo método de toque/seleção do resto da trilha, só que aplicado a uma sequência em vez de uma escolha única. Um toque na sílaba errada é tratado como qualquer resposta incorreta do resto da trilha: sem alarme, com mais apoio (dica destacando a próxima sílaba certa) na tentativa seguinte.
 
 ### Módulo 6 — Leitura de Frases Simples
 
@@ -78,17 +84,15 @@ Depois de escolher a frase correta, a trilha dá um passo pequeno para compreens
 
 Depois da frase isolada, a trilha apresenta textos de duas frases formados apenas por palavras já praticadas (ex: "A MALA. A BALA.", "O MAPA. A MALA." e "A MOTO. A PIPA."). A criança escolhe uma palavra que aparece no texto entre poucas alternativas conhecidas. Ainda não há pergunta aberta, reconto ou exigência de fala; o objetivo é aumentar a unidade de leitura de uma frase para um texto mínimo preservando seleção visual, previsibilidade e apoio.
 
-### Módulo 9 — Perguntas Literais sobre Textos
+### Módulo 9 — Perguntas sobre o Texto
 
-Depois de reconhecer palavras dentro de textos curtos, a trilha apresenta uma pergunta literal simples sobre o texto, como "O que apareceu primeiro?" ou "O que apareceu depois?". A resposta continua por seleção entre palavras conhecidas, sem fala oral, digitação, reconto, inferência ou pergunta aberta. Esse degrau começa a aproximar compreensão de pergunta-resposta mantendo baixa carga motora, previsibilidade e apoio visual.
+Depois de reconhecer palavras dentro de textos curtos, a trilha mistura três tipos de pergunta sobre o mesmo banco de textos, intercalados na mesma prática em vez de três portões sequenciais separados (essa fusão veio de uma simplificação posterior — os três tipos já usavam o mesmo componente de tela e testavam habilidades próximas o bastante pra não precisarem de três módulos completos cada um):
 
-### Módulo 10 — Presença e Ausência no Texto
+- **Pergunta literal** ("O que apareceu primeiro?", "O que apareceu depois?"): resposta por seleção entre palavras conhecidas, sem fala oral, digitação, reconto ou pergunta aberta.
+- **Presença/ausência** ("Qual palavra apareceu no texto?", "Qual palavra não apareceu no texto?"): trabalha atenção ao texto inteiro e discriminação de presença/ausência. Cada atividade declara se a resposta correta deve estar presente ou ausente no texto, e o validador da trilha confere isso para evitar telas com duas respostas semanticamente corretas.
+- **Inferência guiada** ("Qual palavra anda na rua?" depois de ler "A MOTO. A PIPA."): perguntas de sentido muito ancoradas no repertório já ensinado, sem fala oral, escrita, justificativa aberta ou avaliação de intenção social complexa. O validador exige que o texto use apenas palavras já ensinadas, que a pergunta exista, que a resposta seja uma palavra já ensinada e que ela apareça no texto âncora.
 
-Antes de pergunta aberta, a trilha acrescenta um degrau literal mais explícito: a criança responde "Qual palavra apareceu no texto?" ou "Qual palavra não apareceu no texto?". Esse tipo de pergunta trabalha atenção ao texto inteiro e discriminação de presença/ausência com palavras conhecidas, sem exigir explicar, recontar, interpretar intenção de personagem ou produzir fala oral. Tecnicamente, cada atividade declara se a resposta correta deve estar presente ou ausente no texto, e o validador da trilha confere isso para evitar telas com duas respostas semanticamente corretas.
-
-### Módulo 11 — Inferência Guiada em Textos
-
-Depois de dominar presença/ausência literal, a trilha introduz inferência guiada com perguntas de sentido muito ancoradas no repertório já ensinado, como "Qual palavra anda na rua?" depois de ler "A MOTO. A PIPA.". A resposta continua por seleção entre poucas palavras conhecidas, sem fala oral, escrita, justificativa aberta ou avaliação de intenção social complexa. O objetivo é começar a ligar texto e conhecimento sem abandonar previsibilidade, apoio visual e baixa carga motora. O validador exige que o texto use apenas palavras já ensinadas, que a pergunta exista, que a resposta seja uma palavra já ensinada e que ela apareça no texto âncora.
+Os três mantêm baixa carga motora, previsibilidade e apoio visual, sem exigir fala oral ou resposta aberta em nenhum caso.
 
 Nas atividades de frase e texto, a tela de preparação também lembra o mediador de fazer uma leitura compartilhada curta: esperar comunicação por olhar, gesto, toque, vocalização ou CAA, comentar uma palavra do texto e só então convidar a criança a responder. Essa decisão se inspira em leitura dialogada/compartilhada adaptada ao autismo: a revisão de Alharbi, Terlektsi & Kossyvaki (2023) encontrou qualidade de relato adequada/forte nos estudos incluídos e concluiu que a prática é promissora, embora os efeitos sobre iniciações e respostas comunicativas ainda sejam inconsistentes. Por isso o app usa esse apoio como orientação leve de mediação, não como exigência, escore ou intervenção clínica fechada.
 
@@ -216,7 +220,8 @@ O apoio preferencial também altera a experiência da criança: a tela de prepar
 
 ## O que fica fora do escopo do v1 (documentado para não virar débito técnico silencioso)
 
-- Compreensão textual aberta, novas famílias silábicas e expansão lexical mais ampla — planejadas para depois que Módulos 0–11 estiverem validados com uso real.
+- Compreensão textual aberta, vogais nasais com til (ão/ãe/õe) e leitura fluente de textos maiores — planejadas para depois que os módulos atuais estiverem validados com uso real.
+- Escrita livre (digitar ou compor uma frase própria, não só montar uma palavra a partir de sílabas oferecidas) — o Módulo 5-M cobre uma primeira forma de produção/codificação acessível por toque, mas continua sendo seleção de sequência, não composição aberta.
 - Personalização visual profunda por interesse especial da criança (ex. trocar conjuntos inteiros de ícones por trens/dinossauros/personagens favoritos) — a v1 já adapta palavras de apoio por tema e usa um motivo visual complementar no painel de comunicação, mas ainda não oferece biblioteca visual completa por interesse.
 - Compartilhamento de progresso com terapeutas externos (fora da conta do responsável) — exigiria um sistema de convite/permissão que não existe no v1.
 

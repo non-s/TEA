@@ -31,6 +31,7 @@ import { NomeacaoExpressiva } from '../../components/atividades/NomeacaoExpressi
 import { TracadoLetra } from '../../components/atividades/TracadoLetra'
 import { FormacaoSilaba } from '../../components/atividades/FormacaoSilaba'
 import { FormacaoPalavra } from '../../components/atividades/FormacaoPalavra'
+import { MontagemPalavra } from '../../components/atividades/MontagemPalavra'
 import { LeituraFrase } from '../../components/atividades/LeituraFrase'
 import { CompreensaoFrase } from '../../components/atividades/CompreensaoFrase'
 import { CompreensaoTexto } from '../../components/atividades/CompreensaoTexto'
@@ -724,6 +725,22 @@ export function Atividade() {
               perfilId={perfilAtivo!.id}
               apoioPreferencial={apoioPreferencial}
               acessoPreferencial={acessoPreferencial}
+              regulacaoPreferencial={regulacaoPreferencial}
+              limiteTentativasAntesPausa={limiteTentativasAntesPausa}
+              sinalComunicarPronto={sinalComunicarPronto}
+              sinalPedirAjuda={sinalPedirAjuda}
+              tentativasAnteriores={tentativasAnteriores}
+              aoEncerrarSessao={aoEncerrarSessao}
+              aoPedirPausa={() => setEmPausa(true)}
+            />
+          )}
+          {atividade.tipo === 'montagem-palavra' && (
+            <MontagemPalavra
+              atividade={atividade}
+              aoDominar={aoDominar}
+              uidResponsavel={uidResponsavelPerfilAtivo!}
+              perfilId={perfilAtivo!.id}
+              apoioPreferencial={apoioPreferencial}
               regulacaoPreferencial={regulacaoPreferencial}
               limiteTentativasAntesPausa={limiteTentativasAntesPausa}
               sinalComunicarPronto={sinalComunicarPronto}

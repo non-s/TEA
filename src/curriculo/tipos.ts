@@ -6,6 +6,7 @@ export type TipoAtividade =
   | 'tracado-letra'
   | 'formacao-silaba'
   | 'formacao-palavra'
+  | 'montagem-palavra'
   | 'leitura-frase'
   | 'compreensao-frase'
   | 'compreensao-texto'
@@ -43,6 +44,13 @@ export interface Atividade {
    */
   resposta: Estimulo
   distratores: Estimulo[]
+  /**
+   * Só usada em `montagem-palavra`: as sílabas certas, na ordem certa, que
+   * a criança precisa tocar em sequência pra reconstruir a palavra em
+   * `resposta`. `distratores` nessa atividade são sílabas erradas
+   * misturadas no mesmo grupo de peças, não uma palavra inteira errada.
+   */
+  pecas?: Estimulo[]
   dicas: NivelDica[]
   criteriosDominio: {
     acertosConsecutivosNecessarios: number

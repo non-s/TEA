@@ -24,6 +24,7 @@ const ordemModulos = [
   'm3t',
   'm4',
   'm5',
+  'm10',
   'm6',
   'm7',
   'm8',
